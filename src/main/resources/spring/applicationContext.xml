@@ -8,6 +8,6 @@
                         ">
 
     <import resource="spring-mybatis.xml"/>
-    <context:component-scan base-package="com.example.service"/>
-    <context:component-scan base-package="com.example.dao"/>
+    <context:component-scan base-package="com.woodpecker.service"/>
+    <context:component-scan base-package="com.woodpecker.dao"/>
 </beans>

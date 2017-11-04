@@ -8,7 +8,7 @@
                         http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
     <!-- 自动扫描 -->
-    <context:component-scan base-package="com.example.service" />
+    <context:component-scan base-package="com.woodpecker.service" />
 
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -34,7 +34,7 @@
     <!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了。 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage"
-                  value="com.example.dao" />
+                  value="com.woodpecker.dao" />
     </bean>
 
     <!-- 配置Mybatis的文件 ，mapperLocations配置**Mapper.xml文件位置，configLocation配置mybatis-config文件位置-->

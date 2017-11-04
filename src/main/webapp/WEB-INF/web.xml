@@ -57,7 +57,7 @@
     <!--解决跨域访问问题-->
     <filter>
         <filter-name>cors</filter-name>
-        <filter-class>com.example.filter.myCORSFilter</filter-class>
+        <filter-class>com.woodpecker.filter.myCORSFilter</filter-class>
     </filter>
 
     <filter-mapping>

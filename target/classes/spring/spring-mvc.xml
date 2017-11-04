@@ -21,6 +21,6 @@
     <mvc:annotation-driven/>
 
     <!--跨域访问问题-->
-    <context:component-scan base-package="com.example.controller"/>
+    <context:component-scan base-package="com.woodpecker.controller"/>
 
 </beans>
