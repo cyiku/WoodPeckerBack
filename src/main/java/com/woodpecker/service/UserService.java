@@ -4,5 +4,5 @@ import com.woodpecker.domain.User;
 
 public interface UserService {
 
-    User login(User user);
+    User getUser(User user);
 }
