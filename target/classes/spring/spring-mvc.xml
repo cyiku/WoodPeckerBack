@@ -16,6 +16,7 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+
     <mvc:annotation-driven/>
 
     <!--跨域访问问题-->
