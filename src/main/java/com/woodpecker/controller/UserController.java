@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONObject;
 
 import java.io.PrintWriter;
@@ -41,8 +42,8 @@ public class UserController {
         // 将info的格式由String转为jsonObject
         JSONObject jsonObject = new JSONObject(info);
 
-        String username = (String) jsonObject.get("username");
-        String password = (String) jsonObject.get("password");
+        String username = jsonObject.getString("username");
+        String password = jsonObject.getString("password");
 
         System.out.println(username + " try to log in");
 

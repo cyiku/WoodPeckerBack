@@ -168,6 +168,18 @@
       <version>2.2.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>javax.websocket</groupId>
+      <artifactId>javax.websocket-api</artifactId>
+      <version>1.1</version>
+      <scope>provided</scope> <!-- 注意,scope必须为provided,否则runtime会冲突，如果使用tomcat 8,还需要将TOMCAT_HOME/lib下的javax.websocket-api.jar一并删除 -->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-websocket</artifactId>
+      <version>4.0.1.RELEASE</version>
+    </dependency>
+
   </dependencies>
 
 

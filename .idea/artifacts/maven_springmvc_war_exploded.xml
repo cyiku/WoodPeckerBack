@@ -35,6 +35,7 @@
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.2" />
           <element id="library" level="project" name="Maven: org.json:json:20171018" />
           <element id="library" level="project" name="Maven: com.auth0:java-jwt:2.2.0" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-websocket:4.0.1.RELEASE" />
         </element>
       </element>
       <element id="directory" name="META-INF">
