@@ -13,6 +13,7 @@ public class DemoWSHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        
         System.out.println("connect to the websocket success......");
         session.sendMessage(new TextMessage("Server:connected OK!"));
     }
@@ -25,8 +26,10 @@ public class DemoWSHandler implements WebSocketHandler {
 
         TextMessage returnMessage = new TextMessage(jsonObject.getString("token")
                 + " received at server");
-        System.out.println(wss.getHandshakeHeaders().getFirst("Cookie"));
+        //System.out.println(wss.getHandshakeHeaders().getFirst("Cookie"));
+
         wss.sendMessage(returnMessage);
+
     }
 
     @Override
