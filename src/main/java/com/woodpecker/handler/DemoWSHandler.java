@@ -13,7 +13,7 @@ public class DemoWSHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        
+
         System.out.println("connect to the websocket success......");
         session.sendMessage(new TextMessage("Server:connected OK!"));
     }
