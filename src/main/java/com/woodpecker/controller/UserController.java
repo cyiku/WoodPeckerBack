@@ -108,13 +108,13 @@ public class UserController {
             List<String> list = new LinkedList<String>();
             list.add("成考"); list.add("作弊"); list.add("NJU");
 
-            map.put("status", "true");
+            map.put("status", true);
             map.put("reason", "");
             map.put("keyword", list);
 
         } else {
             System.out.println("reject");
-            map.put("status", "false");
+            map.put("status", false);
             map.put("reason", "用户身份验证失败");
             map.put("keyword", null);
         }
