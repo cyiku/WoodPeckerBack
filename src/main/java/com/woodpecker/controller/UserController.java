@@ -3,6 +3,7 @@ package com.woodpecker.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.awt.print.PrinterGraphics;
 import java.io.PrintWriter;
 
 import com.woodpecker.domain.User;
@@ -151,10 +153,13 @@ public class UserController {
 
 
     @RequestMapping(value = "/addKws", method = RequestMethod.POST)
-    public void addKeyword(@RequestBody String info, HttpServletResponse resp) {
-        try {
-            Map<String, Object> map = new HashMap<String, Object>();
+    public void addKeyword(@RequestBody String info, HttpServletResponse resp) throws Exception{
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = resp.getWriter();
+        try {
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
@@ -165,9 +170,6 @@ public class UserController {
 
             System.out.println(id + "is adding keyword");
 
-            // 解决乱码
-            resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-            PrintWriter out = resp.getWriter();
 
             User user = verifyUser(id, token);
             if(null!=user) {
@@ -181,14 +183,9 @@ public class UserController {
                 }
                 System.out.println("Sites: "+sitesInDB);
                 Keyword keyword = new Keyword(user.getId(),name,sitesInDB);
-                if(true==userService.addKeyword(keyword)) {
-                    map.put("status", true);
-                    map.put("reason", "");
-                }
-                else {
-                    map.put("status", false);
-                    map.put("reason", "关键词已存在");
-                }
+                userService.addKeyword(keyword);
+                map.put("status", true);
+                map.put("reason", "");
             }
             else {
                 System.out.println("reject");
@@ -196,10 +193,15 @@ public class UserController {
                 map.put("reason", "用户身份验证失败");
             }
 
-
-        } catch (Exception e) {
+        } catch (DuplicateKeyException e) {
+            map.put("status",false);
+            map.put("reason", "关键词已存在");
+        }
+        catch (Exception e) {
             System.out.println(e);
         }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
     }
 
 }
