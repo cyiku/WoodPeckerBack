@@ -28,4 +28,12 @@
 		INSERT INTO keyword_t VALUES(#{id}, #{name}, #{sites})
 	</insert>
 
+	<delete id="delKeyword" >
+		DELETE FROM keyword_t WHERE userid = #{id} AND name = #{name}
+	</delete>
+
+	<update id="updateKeyword" >
+		UPDATE keyword_t SET sites=#{sites} WHERE userid=#{id} AND name=#{name}
+	</update>
+
 </mapper>

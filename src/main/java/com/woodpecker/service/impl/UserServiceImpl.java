@@ -23,7 +23,8 @@ public class UserServiceImpl implements UserService{
     public List<Keyword> getKeyword(User user)
     {return userDao.getKeyword(user);}
 
-    public boolean addKeyword(Keyword keyword){
-        return userDao.addKeyword(keyword);
-    }
+    public void addKeyword(Keyword keyword){userDao.addKeyword(keyword);}
+    public void delKeyword(Keyword keyword){userDao.delKeyword(keyword);}
+    public void updateKeyword(Keyword keyword){userDao.updateKeyword(keyword);}
+
 }

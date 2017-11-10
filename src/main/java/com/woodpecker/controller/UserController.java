@@ -153,12 +153,12 @@ public class UserController {
 
 
     @RequestMapping(value = "/addKws", method = RequestMethod.POST)
-    public void addKeyword(@RequestBody String info, HttpServletResponse resp) throws Exception{
+    public void addKeyword(@RequestBody String info, HttpServletResponse resp) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-        PrintWriter out = resp.getWriter();
+        PrintWriter out = null;
         try {
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
@@ -169,7 +169,7 @@ public class UserController {
             JSONArray sites = (JSONArray) jsonObject.get("sites");
 
             System.out.println(id + "is adding keyword");
-
+            out = resp.getWriter();
 
             User user = verifyUser(id, token);
             if(null!=user) {
@@ -196,8 +196,100 @@ public class UserController {
         } catch (DuplicateKeyException e) {
             map.put("status",false);
             map.put("reason", "关键词已存在");
+            System.out.println("key err");
+        } catch (Exception e) {
+            map.put("status",false);
+            map.put("reason", "未知错误");
+            System.out.println(e);
         }
-        catch (Exception e) {
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
+    }
+
+    @RequestMapping(value = "/delKws", method = RequestMethod.POST)
+    public void delKeyword(@RequestBody String info, HttpServletResponse resp) {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        try {
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer id = (Integer) jsonObject.get("id");
+            String token = (String) jsonObject.get("token");
+            String name = (String) jsonObject.get("name");
+
+            System.out.println(id + "is deleting keyword");
+            out = resp.getWriter();
+
+            User user = verifyUser(id, token);
+            if(null!=user) {
+                Keyword keyword = new Keyword(user.getId(),name,null);
+                userService.delKeyword(keyword);
+                map.put("status", true);
+                map.put("reason", "");
+            }
+            else {
+                System.out.println("reject");
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+            }
+
+        } catch (Exception e) {
+            map.put("status",false);
+            map.put("reason", "未知错误");
+            System.out.println(e);
+        }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
+    }
+
+    @RequestMapping(value = "/updateKws", method = RequestMethod.POST)
+    public void updateKeyword(@RequestBody String info, HttpServletResponse resp) {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        try {
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer id = (Integer) jsonObject.get("id");
+            String token = (String) jsonObject.get("token");
+            String name = (String) jsonObject.get("name");
+            JSONArray sites = (JSONArray) jsonObject.get("sites");
+
+            System.out.println(id + "is adding keyword");
+            out = resp.getWriter();
+
+            User user = verifyUser(id, token);
+            if(null!=user) {
+                String sitesInDB = "";
+                for(Integer i=0;i<sites.length();i++){
+                    String site=sites.getString(i);
+                    if(i==0)
+                        sitesInDB = sitesInDB + site;
+                    else
+                        sitesInDB = sitesInDB + ";" + site;
+                }
+                System.out.println("Sites: "+sitesInDB);
+                Keyword keyword = new Keyword(user.getId(),name,sitesInDB);
+                userService.updateKeyword(keyword);
+                map.put("status", true);
+                map.put("reason", "");
+            }
+            else {
+                System.out.println("reject");
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+            }
+
+        } catch (Exception e) {
+            map.put("status",false);
+            map.put("reason", "未知错误");
             System.out.println(e);
         }
         JSONObject returnJson = new JSONObject(map);

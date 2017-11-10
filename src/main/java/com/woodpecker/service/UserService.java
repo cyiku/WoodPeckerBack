@@ -9,5 +9,7 @@ public interface UserService {
 
     User getUser(User user);
     List<Keyword> getKeyword(User user);
-    boolean addKeyword(Keyword keyword);
+    void addKeyword(Keyword keyword);
+    void delKeyword(Keyword keyword);
+    void updateKeyword(Keyword keyword);
 }
