@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.io.PrintWriter;
 
 import com.woodpecker.domain.User;
+import com.woodpecker.domain.Keyword;
 import com.woodpecker.service.UserService;
 
 import com.woodpecker.utils.JWT;
@@ -34,6 +35,26 @@ public class UserController {
 
     //添加一个日志器
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    //验证用户id与token是否对应
+    private User verifyUser(Integer id, String token){
+        System.out.println("Verifying user id = "+ id + " with token " + token);
+
+        // 从token获取user信息
+        User user = JWT.unsign(token, User.class);
+
+        if (user != null && userService.getUser(user).getId().equals(id)) {
+            // 用户身份验证通过
+            System.out.println("Verification success.");
+            return user;
+        }
+        else {
+            // 验证不通过
+            System.out.println("Verification failed.");
+            return null;
+        }
+
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public void login(@RequestBody String info, HttpServletResponse resp) throws Exception{
@@ -82,8 +103,9 @@ public class UserController {
     }
 
 
+
     @RequestMapping(value = "/getKws", method = RequestMethod.POST)
-    public void getKws(@RequestBody String info, HttpServletResponse resp) throws Exception{
+    public void getKeyword(@RequestBody String info, HttpServletResponse resp) throws Exception{
 
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -93,24 +115,20 @@ public class UserController {
         Integer id = (Integer) jsonObject.get("id");
         String token = (String) jsonObject.get("token");
 
-        System.out.println(id + " try to get homepage data");
-
-        // 验证token
-        User user = JWT.unsign(token, User.class);
+        System.out.println(id + " try to get keyword");
 
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
-        if (user != null && userService.getUser(user).getId().equals(id)) {
-            // 用户身份验证通过
-            System.out.println("pass");
 
-            List<String> list = new LinkedList<String>();
-            list.add("成考"); list.add("作弊"); list.add("NJU");
+        User user = verifyUser(id,token);
+        if(null != user)
+        {
+            Keyword keyword = userService.getKeyword(user);
 
             map.put("status", true);
             map.put("reason", "");
-            map.put("keyword", list);
+            map.put("keyword", keyword);
 
         } else {
             System.out.println("reject");
@@ -122,5 +140,7 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
+
+    
 
 }
