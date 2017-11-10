@@ -56,89 +56,97 @@ public class UserController {
 
     }
 
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public void login(@RequestBody String info, HttpServletResponse resp) throws Exception{
+    public void login(@RequestBody String info, HttpServletResponse resp){
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
 
-        // 将info的格式由String转为jsonObject
-        JSONObject jsonObject = new JSONObject(info);
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
 
-        String username = jsonObject.getString("username");
-        String password = jsonObject.getString("password");
+            String username = jsonObject.getString("username");
+            String password = jsonObject.getString("password");
 
-        System.out.println(username + " try to log in");
+            System.out.println(username + " try to log in");
 
-        // 验证用户身份
-        User userFromInput = new User(username, password);
-        User userFromDB = userService.getUser(userFromInput);
+            // 验证用户身份
+            User userFromInput = new User(username, password);
+            User userFromDB = userService.getUser(userFromInput);
 
-        // 要返回的json数据
+            // 要返回的json数据
 
-        // 解决乱码
-        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-        PrintWriter out = resp.getWriter();
+            // 解决乱码
+            resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+            PrintWriter out = resp.getWriter();
 
-        if (userFromDB != null) {
-            // 用户身份验证通过
-            System.out.println("pass");
+            if (userFromDB != null) {
+                // 用户身份验证通过
+                System.out.println("pass");
 
-            // 生成token
-            String token = JWT.sign(userFromDB, 600L * 10L * 1000L);
+                // 生成token
+                String token = JWT.sign(userFromDB, 600L * 10L * 1000L);
 
-            // 返回token
-            map.put("id", userFromDB.getId());
-            map.put("username", username);
-            map.put("token", token);
+                // 返回token
+                map.put("id", userFromDB.getId());
+                map.put("username", username);
+                map.put("token", token);
 
-        } else {
-            System.out.println("reject");
-            map.put("id", null);
-            map.put("username", username);
-            map.put("token", null);
+            } else {
+                System.out.println("reject");
+                map.put("id", null);
+                map.put("username", username);
+                map.put("token", null);
 
+            }
+            JSONObject returnJson = new JSONObject(map);
+            out.write(returnJson.toString());
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        JSONObject returnJson = new JSONObject(map);
-        out.write(returnJson.toString());
     }
 
 
 
     @RequestMapping(value = "/getKws", method = RequestMethod.POST)
-    public void getKeyword(@RequestBody String info, HttpServletResponse resp) throws Exception{
+    public void getKeyword(@RequestBody String info, HttpServletResponse resp) {
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
 
-        Map<String, Object> map = new HashMap<String, Object>();
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
 
-        // 将info的格式由String转为jsonObject
-        JSONObject jsonObject = new JSONObject(info);
+            Integer id = (Integer) jsonObject.get("id");
+            String token = (String) jsonObject.get("token");
 
-        Integer id = (Integer) jsonObject.get("id");
-        String token = (String) jsonObject.get("token");
+            System.out.println(id + " try to get keyword");
 
-        System.out.println(id + " try to get keyword");
+            // 解决乱码
+            resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+            PrintWriter out = resp.getWriter();
 
-        // 解决乱码
-        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-        PrintWriter out = resp.getWriter();
+            User user = verifyUser(id, token);
+            if (null != user) {
+                List<Keyword> keyword = userService.getKeyword(user);
 
-        User user = verifyUser(id,token);
-        if(null != user)
-        {
-            Keyword keyword = userService.getKeyword(user);
+                map.put("status", true);
+                map.put("reason", "");
+                map.put("keyword", keyword);
 
-            map.put("status", true);
-            map.put("reason", "");
-            map.put("keyword", keyword);
+            } else {
+                System.out.println("reject");
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+                map.put("keyword", null);
+            }
 
-        } else {
-            System.out.println("reject");
-            map.put("status", false);
-            map.put("reason", "用户身份验证失败");
-            map.put("keyword", null);
+            JSONObject returnJson = new JSONObject(map);
+            out.write(returnJson.toString());
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
-        JSONObject returnJson = new JSONObject(map);
-        out.write(returnJson.toString());
     }
 
     

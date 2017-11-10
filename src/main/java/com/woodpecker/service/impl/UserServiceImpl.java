@@ -7,6 +7,8 @@ import com.woodpecker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service("userService")
 public class UserServiceImpl implements UserService{
@@ -18,7 +20,7 @@ public class UserServiceImpl implements UserService{
     public User getUser(User user){
         return userDao.getUser(user);
     }
-    public Keyword getKeyword(User user)
+    public List<Keyword> getKeyword(User user)
     {return userDao.getKeyword(user);}
 
 
