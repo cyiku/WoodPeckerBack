@@ -23,4 +23,8 @@
 		SELECT * FROM keyword_t WHERE userid = #{id}
 	</select>
 
+	<insert id="addKeyword"  >
+		INSERT INTO keyword_t VALUES(#{id}, #{name}, #{sites})
+	</insert>
+
 </mapper>

@@ -9,4 +9,5 @@ public interface UserService {
 
     User getUser(User user);
     List<Keyword> getKeyword(User user);
+    boolean addKeyword(User user, String name, String sites);
 }

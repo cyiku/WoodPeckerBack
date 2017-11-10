@@ -10,4 +10,5 @@ public interface UserDao {
 
 	public User getUser(User user);
 	public List<Keyword> getKeyword(User user);
+	public boolean addKeyword(User user, String name, String sites);
 }

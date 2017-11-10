@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.PrintWriter;
 
@@ -128,8 +129,8 @@ public class UserController {
 
             User user = verifyUser(id, token);
             if (null != user) {
-                List<Keyword> keyword = userService.getKeyword(user);
 
+                List<Keyword> keyword = userService.getKeyword(user);
                 map.put("status", true);
                 map.put("reason", "");
                 map.put("keyword", keyword);
@@ -146,9 +147,58 @@ public class UserController {
         } catch (Exception e) {
             System.out.println(e);
         }
-
     }
 
-    
+
+    @RequestMapping(value = "/addKws", method = RequestMethod.POST)
+    public void addKeyword(@RequestBody String info, HttpServletResponse resp) {
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
+
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer id = (Integer) jsonObject.get("id");
+            String token = (String) jsonObject.get("token");
+            String name = (String) jsonObject.get("name");
+            JSONArray sites = (JSONArray) jsonObject.get("sites");
+
+            System.out.println(id + "is adding keyword");
+
+            // 解决乱码
+            resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+            PrintWriter out = resp.getWriter();
+
+            User user = verifyUser(id, token);
+            if(null!=user) {
+                String sitesInDB = "";
+                for(Integer i=0;i<sites.length();i++){
+                    String site=sites.getString(i);
+                    if(i==0)
+                        sitesInDB = sitesInDB + site;
+                    else
+                        sitesInDB = sitesInDB + ";" + site;
+                }
+                System.out.println("Sites: "+sitesInDB);
+                if(true==userService.addKeyword(user,name,sitesInDB)) {
+                    map.put("status", true);
+                    map.put("reason", "");
+                }
+                else {
+                    map.put("status", false);
+                    map.put("reason", "关键词已存在");
+                }
+            }
+            else {
+                System.out.println("reject");
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+            }
+
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 
 }
