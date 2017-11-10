@@ -180,7 +180,8 @@ public class UserController {
                         sitesInDB = sitesInDB + ";" + site;
                 }
                 System.out.println("Sites: "+sitesInDB);
-                if(true==userService.addKeyword(user,name,sitesInDB)) {
+                Keyword keyword = new Keyword(user.getId(),name,sitesInDB);
+                if(true==userService.addKeyword(keyword)) {
                     map.put("status", true);
                     map.put("reason", "");
                 }
