@@ -255,7 +255,7 @@ public class UserController {
         out.write(returnJson.toString());
     }
 
-    @RequestMapping(value = "/updateKws", method = RequestMethod.POST)
+    @RequestMapping(value = "/updKws", method = RequestMethod.POST)
     public void updateKeyword(@RequestBody String info, HttpServletResponse resp) {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -267,6 +267,7 @@ public class UserController {
             JSONObject jsonObject = new JSONObject(info);
 
             Integer id = (Integer) jsonObject.get("id");
+            Integer keywordid = (Integer) jsonObject.get("keywordid");
             String token = (String) jsonObject.get("token");
             String name = (String) jsonObject.get("name");
             JSONArray sites = (JSONArray) jsonObject.get("sites");
@@ -285,7 +286,7 @@ public class UserController {
                         sitesInDB = sitesInDB + ";" + site;
                 }
                 System.out.println("Sites: "+sitesInDB);
-                Keyword keyword = new Keyword(null,user.getId(),name,sitesInDB);
+                Keyword keyword = new Keyword(keywordid,user.getId(),name,sitesInDB);
                 userService.updateKeyword(keyword);
                 map.put("status", true);
                 map.put("reason", "");
@@ -295,7 +296,6 @@ public class UserController {
                 map.put("status", false);
                 map.put("reason", "用户身份验证失败");
             }
-
         } catch (Exception e) {
             map.put("status",false);
             map.put("reason", "未知错误");

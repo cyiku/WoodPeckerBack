@@ -37,7 +37,7 @@
 	</delete>
 
 	<update id="updateKeyword" >
-		UPDATE keyword_t SET sites=#{sites} WHERE userid=#{userid} AND name=#{name}
+		UPDATE keyword_t SET name = #{name} AND sites = #{sites} WHERE id = #{keywordid}
 	</update>
 
 </mapper>
