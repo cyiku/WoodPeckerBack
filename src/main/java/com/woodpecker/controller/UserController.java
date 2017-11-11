@@ -61,6 +61,10 @@ public class UserController {
 
     }
 
+    public void initializeLoggers(){
+        System.out.println("Initializing loggers ...");
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public void login(@RequestBody String info, HttpServletResponse resp){
 
@@ -115,8 +119,13 @@ public class UserController {
 
     @RequestMapping(value = "/getKws", method = RequestMethod.POST)
     public void getKeyword(@RequestBody String info, HttpServletResponse resp) {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+
         try {
-            Map<String, Object> map = new HashMap<String, Object>();
 
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
@@ -125,10 +134,7 @@ public class UserController {
             String token = (String) jsonObject.get("token");
 
             System.out.println(id + " try to get keyword");
-
-            // 解决乱码
-            resp.setHeader("Content-Type", "application/json;charset=UTF-8");
-            PrintWriter out = resp.getWriter();
+            out = resp.getWriter();
 
             User user = verifyUser(id, token);
             if (null != user) {
@@ -143,11 +149,14 @@ public class UserController {
                 map.put("keyword", null);
             }
 
-            JSONObject returnJson = new JSONObject(map);
-            out.write(returnJson.toString());
         } catch (Exception e) {
+            map.put("status", false);
+            map.put("reason", "未知错误");
+            map.put("keyword", null);
             System.out.println(e);
         }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
     }
 
 

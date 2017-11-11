@@ -1,0 +1,14 @@
+表名：	user_t
+用途：	记录用户数据
+内容：	id		用户ID
+	username	用户名
+	password	用户密码
+
+表名：	keyword_t
+用途：	记录每个用户的关键字
+内容：	id		关键字ID
+	userid		用户ID
+	name		关键字名
+	sites		关键字涉及的站点，用';'隔开
+
+

@@ -1,0 +1,37 @@
+接口：	/login			登录
+接收：	String username		用户名
+	String password		密码
+返回：	Integer id		用户ID
+	String username		用户名
+	String token		用户token
+
+接口：	/getKws			获取关键字
+接收：	Integer id		用户ID
+	String token		用户token
+返回：	Boolean status		执行结果
+	String reason		（若失败）原因
+	List<Keyword> keyword	关键字列表，Keywords包含userid, keywordid, name, sites（用';'隔开）
+
+接口：	/addKws			添加关键字
+接收：	Integer id		用户ID
+	String token		用户token
+	String name		关键字
+	JSONArray sites		站点列表
+返回：	Boolean status		执行结果
+	String reason		（若失败）原因
+	Integer keywordid	关键字ID
+	Integer userid		用户ID
+
+接口：	/delKws			删除关键字
+接收：	Integer id		用户ID
+	String token		用户token
+	String name		关键字
+返回：	Boolean status		执行结果
+	String reason		（若失败）原因
+
+接口：	/updKws			更新关键字
+接收：	Integer id		用户ID
+	String token		用户token
+	Integer keywordid	关键字ID
+	String name		新关键字
+	JSONArray sites		新关键字列表
