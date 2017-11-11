@@ -25,15 +25,15 @@
 	</select>
 
 	<insert id="addKeyword"  >
-		INSERT INTO keyword_t VALUES(#{id}, #{name}, #{sites})
+		INSERT INTO keyword_t(userid,name,sites) VALUES(#{userid}, #{name}, #{sites})
 	</insert>
 
 	<delete id="delKeyword" >
-		DELETE FROM keyword_t WHERE userid = #{id} AND name = #{name}
+		DELETE FROM keyword_t WHERE userid = #{userid} AND name = #{name}
 	</delete>
 
 	<update id="updateKeyword" >
-		UPDATE keyword_t SET sites=#{sites} WHERE userid=#{id} AND name=#{name}
+		UPDATE keyword_t SET sites=#{sites} WHERE userid=#{userid} AND name=#{name}
 	</update>
 
 </mapper>

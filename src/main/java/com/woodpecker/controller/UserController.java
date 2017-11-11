@@ -182,7 +182,7 @@ public class UserController {
                         sitesInDB = sitesInDB + ";" + site;
                 }
                 System.out.println("Sites: "+sitesInDB);
-                Keyword keyword = new Keyword(user.getId(),name,sitesInDB);
+                Keyword keyword = new Keyword(null,user.getId(),name,sitesInDB);
                 userService.addKeyword(keyword);
                 map.put("status", true);
                 map.put("reason", "");
@@ -226,7 +226,7 @@ public class UserController {
 
             User user = verifyUser(id, token);
             if(null!=user) {
-                Keyword keyword = new Keyword(user.getId(),name,null);
+                Keyword keyword = new Keyword(null,user.getId(),name,null);
                 userService.delKeyword(keyword);
                 map.put("status", true);
                 map.put("reason", "");
@@ -276,7 +276,7 @@ public class UserController {
                         sitesInDB = sitesInDB + ";" + site;
                 }
                 System.out.println("Sites: "+sitesInDB);
-                Keyword keyword = new Keyword(user.getId(),name,sitesInDB);
+                Keyword keyword = new Keyword(null,user.getId(),name,sitesInDB);
                 userService.updateKeyword(keyword);
                 map.put("status", true);
                 map.put("reason", "");
