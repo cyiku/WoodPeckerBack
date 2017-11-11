@@ -16,11 +16,10 @@
 
     <!--采用前后端分离，welcomepage 暂时用不到-->
     <!--welcome pages-->
-    <!--
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    -->
 
     <!--配置静态资源-->
     <servlet-mapping>

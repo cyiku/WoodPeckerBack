@@ -10,7 +10,8 @@
 	</resultMap>
 
 	<resultMap id="KeywordMap" type="com.woodpecker.domain.Keyword">
-		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="id" property="keywordid" jdbcType="INTEGER" />
+		<result column="userid" property="userid" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="sites" property="sites" jdbcType="VARCHAR" />
 	</resultMap>
@@ -37,7 +38,7 @@
 	</delete>
 
 	<update id="updateKeyword" >
-		UPDATE keyword_t SET name = #{name} AND sites = #{sites} WHERE id = #{keywordid}
+		UPDATE keyword_t SET name = #{name}, sites = #{sites} WHERE id = #{keywordid}
 	</update>
 
 </mapper>

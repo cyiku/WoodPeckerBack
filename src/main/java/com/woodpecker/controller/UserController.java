@@ -37,7 +37,9 @@ public class UserController {
     private UserService userService;
 
     //添加一个日志器
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger debug_info = LoggerFactory.getLogger(UserController.class);
+    private static final Logger server_info = LoggerFactory.getLogger(UserController.class);
+    private static final Logger error_info = LoggerFactory.getLogger(UserController.class);
 
     //验证用户id与token是否对应
     private User verifyUser(Integer id, String token){
@@ -58,7 +60,6 @@ public class UserController {
         }
 
     }
-
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public void login(@RequestBody String info, HttpServletResponse resp){
@@ -166,7 +167,7 @@ public class UserController {
             String name = (String) jsonObject.get("name");
             JSONArray sites = (JSONArray) jsonObject.get("sites");
 
-            System.out.println(id + "is adding keyword");
+            System.out.println(id + " is adding keyword");
             out = resp.getWriter();
 
             User user = verifyUser(id, token);
@@ -183,13 +184,18 @@ public class UserController {
                 Keyword keyword = new Keyword(null,user.getId(),name,sitesInDB);
                 List<Keyword> keywordForSearch = userService.searchKeyword(keyword);
                 if(keywordForSearch.isEmpty()) {
-                    System.out.println("Add result= " + userService.addKeyword(keyword));
+                    System.out.println("Add result = " + userService.addKeyword(keyword));
+                    keywordForSearch = userService.searchKeyword(keyword);
                     map.put("status", true);
                     map.put("reason", "");
+                    map.put("keywordid", keywordForSearch.get(0).getKeywordid());
+                    map.put("userid", keywordForSearch.get(0).getUserid());
                 }
                 else {
                     map.put("status",false);
                     map.put("reason", "关键词已存在");
+                    map.put("keywordid", null);
+                    map.put("userid",null);
                     System.out.println("key err");
                 }
             }
@@ -223,7 +229,7 @@ public class UserController {
             String token = (String) jsonObject.get("token");
             String name = (String) jsonObject.get("name");
 
-            System.out.println(id + "is deleting keyword");
+            System.out.println(id + " is deleting keyword");
             out = resp.getWriter();
 
             User user = verifyUser(id, token);
@@ -231,7 +237,7 @@ public class UserController {
                 Keyword keyword = new Keyword(null,user.getId(),name,null);
                 List<Keyword> keywordForSearch = userService.searchKeyword(keyword);
                 if(!keywordForSearch.isEmpty()) {
-                    System.out.println("Del result= " + userService.delKeyword(keyword));
+                    System.out.println("Del result = " + userService.delKeyword(keyword));
                     map.put("status", true);
                     map.put("reason", "");
                 }
@@ -271,8 +277,8 @@ public class UserController {
             String token = (String) jsonObject.get("token");
             String name = (String) jsonObject.get("name");
             JSONArray sites = (JSONArray) jsonObject.get("sites");
-
-            System.out.println(id + "is adding keyword");
+            System.out.println(id + " is updating keyword");
+            System.out.println(keywordid + " " + name);
             out = resp.getWriter();
 
             User user = verifyUser(id, token);
@@ -287,7 +293,7 @@ public class UserController {
                 }
                 System.out.println("Sites: "+sitesInDB);
                 Keyword keyword = new Keyword(keywordid,user.getId(),name,sitesInDB);
-                userService.updateKeyword(keyword);
+                System.out.println("upd result = " + userService.updateKeyword(keyword));
                 map.put("status", true);
                 map.put("reason", "");
             }
