@@ -28,6 +28,10 @@
 		INSERT INTO keyword_t(userid,name,sites) VALUES(#{userid}, #{name}, #{sites})
 	</insert>
 
+	<select id="searchKeyword" resultMap="KeywordMap">
+		SELECT * FROM keyword_t WHERE userid = #{userid} AND name = #{name}
+	</select>
+
 	<delete id="delKeyword" >
 		DELETE FROM keyword_t WHERE userid = #{userid} AND name = #{name}
 	</delete>

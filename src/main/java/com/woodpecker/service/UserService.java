@@ -9,7 +9,8 @@ public interface UserService {
 
     User getUser(User user);
     List<Keyword> getKeyword(User user);
-    void addKeyword(Keyword keyword);
-    void delKeyword(Keyword keyword);
-    void updateKeyword(Keyword keyword);
+    Integer addKeyword(Keyword keyword);
+    List<Keyword> searchKeyword(Keyword keyword);
+    Integer delKeyword(Keyword keyword);
+    Integer updateKeyword(Keyword keyword);
 }

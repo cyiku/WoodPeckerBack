@@ -23,8 +23,9 @@ public class UserServiceImpl implements UserService{
     public List<Keyword> getKeyword(User user)
     {return userDao.getKeyword(user);}
 
-    public void addKeyword(Keyword keyword){userDao.addKeyword(keyword);}
-    public void delKeyword(Keyword keyword){userDao.delKeyword(keyword);}
-    public void updateKeyword(Keyword keyword){userDao.updateKeyword(keyword);}
+    public Integer addKeyword(Keyword keyword){return userDao.addKeyword(keyword);}
+    public List<Keyword> searchKeyword(Keyword keyword){return userDao.searchKeyword(keyword);}
+    public Integer delKeyword(Keyword keyword){return userDao.delKeyword(keyword);}
+    public Integer updateKeyword(Keyword keyword){return userDao.updateKeyword(keyword);}
 
 }

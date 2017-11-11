@@ -131,12 +131,10 @@ public class UserController {
 
             User user = verifyUser(id, token);
             if (null != user) {
-
                 List<Keyword> keyword = userService.getKeyword(user);
                 map.put("status", true);
                 map.put("reason", "");
                 map.put("keyword", keyword);
-
             } else {
                 System.out.println("reject");
                 map.put("status", false);
@@ -183,9 +181,17 @@ public class UserController {
                 }
                 System.out.println("Sites: "+sitesInDB);
                 Keyword keyword = new Keyword(null,user.getId(),name,sitesInDB);
-                userService.addKeyword(keyword);
-                map.put("status", true);
-                map.put("reason", "");
+                List<Keyword> keywordForSearch = userService.searchKeyword(keyword);
+                if(keywordForSearch.isEmpty()) {
+                    System.out.println("Add result= " + userService.addKeyword(keyword));
+                    map.put("status", true);
+                    map.put("reason", "");
+                }
+                else {
+                    map.put("status",false);
+                    map.put("reason", "关键词已存在");
+                    System.out.println("key err");
+                }
             }
             else {
                 System.out.println("reject");
@@ -193,10 +199,6 @@ public class UserController {
                 map.put("reason", "用户身份验证失败");
             }
 
-        } catch (DuplicateKeyException e) {
-            map.put("status",false);
-            map.put("reason", "关键词已存在");
-            System.out.println("key err");
         } catch (Exception e) {
             map.put("status",false);
             map.put("reason", "未知错误");
@@ -227,9 +229,16 @@ public class UserController {
             User user = verifyUser(id, token);
             if(null!=user) {
                 Keyword keyword = new Keyword(null,user.getId(),name,null);
-                userService.delKeyword(keyword);
-                map.put("status", true);
-                map.put("reason", "");
+                List<Keyword> keywordForSearch = userService.searchKeyword(keyword);
+                if(!keywordForSearch.isEmpty()) {
+                    System.out.println("Del result= " + userService.delKeyword(keyword));
+                    map.put("status", true);
+                    map.put("reason", "");
+                }
+                else {
+                    map.put("status", false);
+                    map.put("reason", "不存在该条目");
+                }
             }
             else {
                 System.out.println("reject");

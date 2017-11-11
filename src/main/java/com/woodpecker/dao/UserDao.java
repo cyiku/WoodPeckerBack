@@ -10,7 +10,8 @@ public interface UserDao {
 
 	public User getUser(User user);
 	public List<Keyword> getKeyword(User user);
-	public void addKeyword(Keyword keyword);
-	public void delKeyword(Keyword keyword);
-	public void updateKeyword(Keyword keyword);
+	public Integer addKeyword(Keyword keyword);
+	public List<Keyword> searchKeyword(Keyword keyword);
+	public Integer delKeyword(Keyword keyword);
+	public Integer updateKeyword(Keyword keyword);
 }
