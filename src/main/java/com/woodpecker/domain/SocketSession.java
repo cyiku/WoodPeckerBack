@@ -45,7 +45,7 @@ public class SocketSession {
         timer.schedule(timerTick, 1000, 2500);
     }
 
-    public void Stop() {
+    public void Pause() {
         if(null==timer)return;
         timer.cancel();
     }

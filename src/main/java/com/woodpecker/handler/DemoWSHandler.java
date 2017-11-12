@@ -25,18 +25,19 @@ public class DemoWSHandler implements WebSocketHandler {
     private UserService userService;
 
     @Override
+    //建立连接
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
         System.out.println("connect to the websocket success......");
         session.sendMessage(new TextMessage("Server:connected OK!"));
     }
 
     @Override
+    //接收到消息
     public void handleMessage(WebSocketSession wss, WebSocketMessage<?> wsm) throws Exception {
         TextMessage returnMessage;
         JSONObject jsonObject = new JSONObject(wsm.getPayload().toString());
 
-        System.out.println(jsonObject.toString());
+        //System.out.println(jsonObject.toString());
 
         Integer id = (Integer)jsonObject.get("id");
         String token = (String)jsonObject.get("token");
@@ -49,9 +50,10 @@ public class DemoWSHandler implements WebSocketHandler {
             SocketSession socketSession;
             switch(type) {
                 case "play":
+                    //开始定时发送数据
                     System.out.println("play get");
                     socketSession = sessionManager.get(wss);
-                    if(null==socketSession) {
+                    if(null==socketSession) { //Manager中没找到，添加
                         System.out.println("Creating a new socketSession");
                         socketSession = new SocketSession(wss, keywordName);
                         sessionManager.put(wss, socketSession);
@@ -60,14 +62,15 @@ public class DemoWSHandler implements WebSocketHandler {
                     returnMessage = new TextMessage("Play success");
                     break;
                 case "pause":
+                    //暂停定时发送数据
                     System.out.println("pause get");
                     socketSession = sessionManager.get(wss);
-                    if(null==socketSession) {
+                    if(null==socketSession) { //Manager中没找到，添加
                         System.out.println("Creating a new socketSession");
                         socketSession = new SocketSession(wss, keywordName);
                         sessionManager.put(wss, socketSession);
                     }
-                    socketSession.Stop();
+                    socketSession.Pause();
                     returnMessage = new TextMessage("Pause success");
                     break;
                 default:
@@ -88,7 +91,7 @@ public class DemoWSHandler implements WebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession wss, Throwable thrwbl) throws Exception {
-        sessionManager.get(wss).Stop();
+        sessionManager.get(wss).Pause();
         sessionManager.remove(wss);
         if(wss.isOpen()){
             wss.close();
@@ -99,7 +102,7 @@ public class DemoWSHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession wss, CloseStatus cs) throws Exception {
         System.out.println("Removing session...");
-        sessionManager.get(wss).Stop();
+        sessionManager.get(wss).Pause();
         sessionManager.remove(wss);
         System.out.println("websocket connection closed...");
     }
