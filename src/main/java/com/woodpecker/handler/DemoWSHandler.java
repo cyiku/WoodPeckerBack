@@ -1,5 +1,6 @@
 package com.woodpecker.handler;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import com.woodpecker.utils.JWT;
 import com.woodpecker.domain.User;
 import com.woodpecker.domain.SocketSession;
@@ -37,16 +38,43 @@ public class DemoWSHandler implements WebSocketHandler {
 
         System.out.println(jsonObject.toString());
 
-        Integer id = jsonObject.getInt("id");
-        String token = jsonObject.getString("token");
-        String keywordName = jsonObject.getString("name");
+        Integer id = (Integer)jsonObject.get("id");
+        String token = (String)jsonObject.get("token");
+        String type = (String)jsonObject.get("type");
+        String keywordName = (String)jsonObject.get("name");
 
         User user = JWT.unsign(token, User.class);
         if (user != null && userService.getUser(user).getId().equals(id)) {
             //验证通过
-            returnMessage = new TextMessage(userService.getUser(user).getUsername());
-            SocketSession socketSession = new SocketSession(wss,keywordName);
-            sessionManager.put(wss,socketSession);
+            SocketSession socketSession;
+            switch(type) {
+                case "play":
+                    System.out.println("play get");
+                    socketSession = sessionManager.get(wss);
+                    if(null==socketSession) {
+                        System.out.println("Creating a new socketSession");
+                        socketSession = new SocketSession(wss, keywordName);
+                        sessionManager.put(wss, socketSession);
+                    }
+                    socketSession.Play();
+                    returnMessage = new TextMessage("Play success");
+                    break;
+                case "pause":
+                    System.out.println("pause get");
+                    socketSession = sessionManager.get(wss);
+                    if(null==socketSession) {
+                        System.out.println("Creating a new socketSession");
+                        socketSession = new SocketSession(wss, keywordName);
+                        sessionManager.put(wss, socketSession);
+                    }
+                    socketSession.Stop();
+                    returnMessage = new TextMessage("Pause success");
+                    break;
+                default:
+                    System.out.println("Unknown type");
+                    returnMessage = new TextMessage("Unknown type");
+                    break;
+            }
         }
         else {
             returnMessage = new TextMessage("Verification failed");

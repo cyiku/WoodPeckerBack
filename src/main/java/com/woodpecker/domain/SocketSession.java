@@ -11,29 +11,42 @@ public class SocketSession {
     private Timer timer;
     private WebSocketSession session;
     private String keywordName;
-    private TimerTask timerTick= new TimerTask() {
+    Integer pkgId;
+    private class SessionTimerTask extends TimerTask {
+        @Override
         public void run() {
             if(null == session)
             {
                 System.out.println("Error: null session");
                 return;
             }
-            TextMessage message = new TextMessage(keywordName);
+            pkgId++;
+            TextMessage message = new TextMessage( pkgId + ":" + keywordName);
             try {
                 session.sendMessage(message);
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
         }
-    };
+    }
     public SocketSession (WebSocketSession session,String keywordName) {
-        timer = new Timer(true);
+        timer = null;
+        pkgId=0;
         this.session=session;
         this.keywordName=keywordName;
-        timer.schedule(timerTick,1000,5000);
+    }
+
+    public void Play() {
+        if(null!=timer) {
+            timer.cancel();
+        }
+        timer = new Timer();
+        SessionTimerTask timerTick = new SessionTimerTask();
+        timer.schedule(timerTick, 1000, 2500);
     }
 
     public void Stop() {
+        if(null==timer)return;
         timer.cancel();
     }
 }
