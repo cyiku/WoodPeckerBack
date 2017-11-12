@@ -1,8 +1,8 @@
 package com.woodpecker.handler;
 
-import com.woodpecker.controller.UserController;
 import com.woodpecker.utils.JWT;
 import com.woodpecker.domain.User;
+import com.woodpecker.domain.SocketSession;
 import com.woodpecker.service.UserService;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -14,26 +14,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.json.JSONObject;
 
 import javax.annotation.Resource;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class DemoWSHandler implements WebSocketHandler {
-    private List<Timer> timer_list;
     private boolean token_checked = false;
-    private WebSocketSession socketSession = null;
-    private TimerTask timerTick= new TimerTask() {
-        public void run() {
-            if(null == socketSession)return;
-            TextMessage message = new TextMessage("Tick!");
-            try {
-                socketSession.sendMessage(message);
-            } catch (Exception e) {
-                System.out.println(e.toString());
-            }
-        }
-    };
-
+    Map<WebSocketSession, SocketSession> sessionManager = new HashMap<WebSocketSession, SocketSession>();
     @Resource
     private UserService userService;
 
@@ -53,19 +39,14 @@ public class DemoWSHandler implements WebSocketHandler {
 
         Integer id = jsonObject.getInt("id");
         String token = jsonObject.getString("token");
+        String keywordName = jsonObject.getString("name");
 
         User user = JWT.unsign(token, User.class);
         if (user != null && userService.getUser(user).getId().equals(id)) {
             //验证通过
             returnMessage = new TextMessage(userService.getUser(user).getUsername());
-            try {
-                Timer timer = new Timer(true);
-                timer.schedule(timerTick, 1000, 1000);
-                timer_list.add(timer);
-            } catch (Exception e) {
-                System.out.println(e.toString());
-            }
-            socketSession = wss;
+            SocketSession socketSession = new SocketSession(wss,keywordName);
+            sessionManager.put(wss,socketSession);
         }
         else {
             returnMessage = new TextMessage("Verification failed");
@@ -79,19 +60,19 @@ public class DemoWSHandler implements WebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession wss, Throwable thrwbl) throws Exception {
+        sessionManager.get(wss).Stop();
+        sessionManager.remove(wss);
         if(wss.isOpen()){
-            socketSession = null;
             wss.close();
-        }
-        for(Timer timer:timer_list){
-            timer.cancel();
         }
         System.out.println("websocket connection closed due to error...");
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession wss, CloseStatus cs) throws Exception {
-        socketSession = null;
+        System.out.println("Removing session...");
+        sessionManager.get(wss).Stop();
+        sessionManager.remove(wss);
         System.out.println("websocket connection closed...");
     }
 
