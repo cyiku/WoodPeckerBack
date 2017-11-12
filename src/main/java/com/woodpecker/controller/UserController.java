@@ -42,7 +42,7 @@ public class UserController {
     private static final Logger error_info = LoggerFactory.getLogger(UserController.class);
 
     //验证用户id与token是否对应
-    private User verifyUser(Integer id, String token){
+    public User verifyUser(Integer id, String token){
         System.out.println("Verifying user id = "+ id + " with token " + token);
 
         // 从token获取user信息
@@ -58,7 +58,6 @@ public class UserController {
             System.out.println("Verification failed.");
             return null;
         }
-
     }
 
     public void initializeLoggers(){
@@ -238,7 +237,7 @@ public class UserController {
             String token = (String) jsonObject.get("token");
             String name = (String) jsonObject.get("name");
 
-            System.out.println(id + " is deleting keyword");
+            System.out.println(id + " is deleting keyword, name = " + name);
             out = resp.getWriter();
 
             User user = verifyUser(id, token);
