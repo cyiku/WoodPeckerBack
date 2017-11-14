@@ -13,7 +13,6 @@
 
     <!-- 自动扫描 -->
     <context:component-scan base-package="com.woodpecker.service" />
-    <context:component-scan base-package="com.woodpecker.mongodb" />
 
     <!-- 配置连接池 -->
     <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}">
@@ -38,10 +37,10 @@
         <constructor-arg name="mongoDbFactory" ref="mongo_Weibo"/>
     </bean>
 
+    <!-- 添加第二个数据库，使用不同的id，并在MongoServiceImpl中使用时将变量命名为bean id-->
     <mongo:db-factory id="mongo_userCollection" dbname="${mongo.db.userCollection}" mongo-ref="mongo" />
     <bean id="mongoUserCollection" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongo_userCollection"/>
     </bean>
-
 
 </beans>
