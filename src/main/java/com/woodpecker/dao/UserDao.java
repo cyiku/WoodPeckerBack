@@ -7,7 +7,6 @@ import java.util.List;
 
 @Repository
 public interface UserDao {
-
 	public User getUser(User user);
 	public List<Keyword> getKeyword(User user);
 	public Integer addKeyword(Keyword keyword);

@@ -6,7 +6,6 @@ import com.woodpecker.domain.Keyword;
 import java.util.List;
 
 public interface UserService {
-
     User getUser(User user);
     List<Keyword> getKeyword(User user);
     Integer addKeyword(Keyword keyword);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/context
@@ -8,6 +9,18 @@
                         ">
 
     <import resource="spring-mybatis.xml"/>
+    <import resource="spring-mongodb.xml"/>
     <context:component-scan base-package="com.woodpecker.service"/>
     <context:component-scan base-package="com.woodpecker.dao"/>
+
+    <!-- 引入配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:properties/jdbc.properties</value>
+                <value>classpath:properties/mongodb.properties</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

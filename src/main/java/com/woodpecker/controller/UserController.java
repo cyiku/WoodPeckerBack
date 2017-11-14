@@ -3,7 +3,6 @@ package com.woodpecker.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import java.awt.print.PrinterGraphics;
 import java.io.PrintWriter;
 
 import com.woodpecker.domain.User;
@@ -27,7 +25,6 @@ import com.woodpecker.utils.JWT;
 import java.util.HashMap;
 import java.util.Map;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -66,7 +63,6 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public void login(@RequestBody String info, HttpServletResponse resp){
-
         try {
             Map<String, Object> map = new HashMap<String, Object>();
 
@@ -319,4 +315,19 @@ public class UserController {
         out.write(returnJson.toString());
     }
 
+    @RequestMapping(value = "/testPage", method = RequestMethod.POST)
+    public void testFunc(@RequestBody String info, HttpServletResponse resp) {
+        System.out.println("testFunc: " + info);
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        String outstr = "success";
+        try {
+            out = resp.getWriter();
+        } catch(Exception e) {
+            //System.out.println(e);
+            outstr = e.toString();
+        }
+        out.write(outstr);
+    }
 }
