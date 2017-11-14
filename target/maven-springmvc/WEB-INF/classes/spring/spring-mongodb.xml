@@ -31,11 +31,16 @@
     </mongo:mongo>
 
     <!-- mongo的工厂，通过它来取得mongo实例,dbname为mongodb的数据库名，没有的话会自动创建 -->
-    <mongo:db-factory dbname="${mongo.dbname}" mongo-ref="mongo" />
+    <mongo:db-factory id="mongo_Weibo" dbname="${mongo.db.Weibo}" mongo-ref="mongo" />
 
     <!-- mongodb的主要操作对象，所有对mongodb的增删改查的操作都是通过它完成 -->
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    <bean id="mongoWeibo" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongo_Weibo"/>
+    </bean>
+
+    <mongo:db-factory id="mongo_userCollection" dbname="${mongo.db.userCollection}" mongo-ref="mongo" />
+    <bean id="mongoUserCollection" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongo_userCollection"/>
     </bean>
 
 

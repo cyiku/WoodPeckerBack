@@ -12,16 +12,17 @@ import org.springframework.stereotype.Service;
 @Service("MongoService")
 public class MongoServiceImpl implements MongoService{
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private MongoTemplate mongoWeibo;
+    private MongoTemplate mongoUserCollection;
 
     public void insert(WeiboInfo weiboInfo) {
-        mongoTemplate.save(weiboInfo);
+        mongoWeibo.save(weiboInfo);
     }
 
     public WeiboInfo findModel(String id) {
         System.out.println("finding model...");
         Query query = Query.query(Criteria.where("_id").is(id));
-        WeiboInfo weiboInfo=mongoTemplate.findOne(query,WeiboInfo.class);
+        WeiboInfo weiboInfo=mongoWeibo.findOne(query,WeiboInfo.class);
         return weiboInfo;
     }
 }
