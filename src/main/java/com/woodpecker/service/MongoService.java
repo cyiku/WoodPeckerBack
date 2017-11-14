@@ -1,6 +1,6 @@
 package com.woodpecker.service;
 
-import com.woodpecker.mongodb.WeiboInfo;
+import com.woodpecker.domain.WeiboInfo;
 
 public interface MongoService {
     public void insert(WeiboInfo weiboInfo);

@@ -18,7 +18,9 @@ import java.io.PrintWriter;
 
 import com.woodpecker.domain.User;
 import com.woodpecker.domain.Keyword;
+import com.woodpecker.domain.WeiboInfo;
 import com.woodpecker.service.UserService;
+import com.woodpecker.service.MongoService;
 
 import com.woodpecker.utils.JWT;
 
@@ -32,6 +34,8 @@ public class UserController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private MongoService mongoService;
 
     //添加一个日志器
     private static final Logger debug_info = LoggerFactory.getLogger(UserController.class);
@@ -321,11 +325,18 @@ public class UserController {
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
         PrintWriter out = null;
-        String outstr = "success";
+        String outstr = "failed";
         try {
+            Map<String, Object> map = new HashMap<String, Object>();
             out = resp.getWriter();
+            System.out.println("check1");
+            WeiboInfo weiboInfo = mongoService.findModel("4170677152095257");
+            System.out.println("check2");
+            map.put("result",weiboInfo);
+            JSONObject returnJSON = new JSONObject(map);
+            outstr=returnJSON.toString();
         } catch(Exception e) {
-            //System.out.println(e);
+            e.printStackTrace();
             outstr = e.toString();
         }
         out.write(outstr);

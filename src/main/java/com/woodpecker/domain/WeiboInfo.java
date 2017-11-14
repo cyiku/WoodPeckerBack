@@ -1,9 +1,9 @@
-package com.woodpecker.mongodb;
+package com.woodpecker.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "Weibo")
+@Document(collection = "2017_11_05")
 public class WeiboInfo{
     @Id
     private String id;
@@ -21,4 +21,11 @@ public class WeiboInfo{
     public void setUrl(String url){this.url=url;}
     public void setContent(String content){this.content=content;}
     public void setTime(String time){this.time=time;}
+    public WeiboInfo(String id, String keyword, String url, String content, String time) {
+        this.id=id;
+        this.keyword=keyword;
+        this.url=url;
+        this.content=content;
+        this.time=time;
+    }
 }
