@@ -24,6 +24,8 @@ public class SocketSession {
             TextMessage message = new TextMessage( pkgId + ":" + keywordName);
             try {
                 session.sendMessage(message);
+            } catch (IllegalArgumentException e) {
+                if(null!=timer) timer.cancel();
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
