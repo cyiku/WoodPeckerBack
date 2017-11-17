@@ -26,32 +26,36 @@ public class MongoServiceImpl implements MongoService{
     }
 
     public String insert(UserCollection userCollection) {
-        System.out.println(userCollection.getData().getString("content"));
         mongoUserCollection.save(userCollection);
         return userCollection.getId();
     }
 
-    public UserCollection findByContent(UserCollection userCollection) {
+    public UserCollection findByDataid(UserCollection userCollection) {
         Query query = Query.query(Criteria.where("dataid").is(userCollection.getDataid()).and("data").is(userCollection.getData()));
         UserCollection result=mongoUserCollection.findOne(query,UserCollection.class);
         return result;
     }
 
-    public void deleteByContent(UserCollection userCollection) {
+    public void deleteByDataid(UserCollection userCollection) {
         Query query = Query.query(Criteria.where("dataid").is(userCollection.getDataid()));
         mongoUserCollection.remove(query,UserCollection.class);
     }
 
-    public List<UserCollection> getByContent(UserCollection userCollection) {
+    public void deleteById(UserCollection userCollection) {
+        Query query = Query.query(Criteria.where("_id").is(userCollection.getId()));
+        mongoUserCollection.remove(query,UserCollection.class);
+    }
+
+    public List<UserCollection> getByDataid(UserCollection userCollection) {
         Query query = Query.query(Criteria.where("dataid").is(userCollection.getDataid()));
         List<UserCollection> result=mongoUserCollection.find(query,UserCollection.class);
         return result;
     }
 
-    public WeiboInfo findModel(String id) {
+    public List<WeiboInfo> getByKeyword(WeiboInfo weiboInfo) {
         System.out.println("finding model...");
-        Query query = Query.query(Criteria.where("_id").is(id));
-        WeiboInfo weiboInfo=mongoWeibo.findOne(query,WeiboInfo.class);
-        return weiboInfo;
+        Query query = Query.query(Criteria.where("keyword").is(weiboInfo.getKeyword()));
+        List<WeiboInfo> result=mongoWeibo.find(query,WeiboInfo.class);
+        return result;
     }
 }

@@ -335,6 +335,7 @@ public class UserController {
             String dataid = (String) jsonObject.get("dataid");
             String type = (String) jsonObject.get("type");
             JSONArray datalist = (JSONArray) jsonObject.get("data");
+            System.out.println(datalist.toString());
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
@@ -342,8 +343,8 @@ public class UserController {
                 for (Integer i = 0; i < datalist.length(); i++) {
                     JSONObject data = datalist.getJSONObject(i);
                     UserCollection userCollection = new UserCollection(null, userid, dataid, type, data);
-                    if (null == mongoService.findByContent(userCollection))
-                        System.out.println(mongoService.insert(userCollection));
+                    if (null == mongoService.findByDataid(userCollection))
+                        mongoService.insert(userCollection);
                 }
                 map.put("status", true);
                 map.put("reason", "");
@@ -380,7 +381,7 @@ public class UserController {
             if(null!=user) {
                 UserCollection userCollection = new UserCollection();
                 userCollection.setDataid(dataid);
-                mongoService.deleteByContent(userCollection);
+                mongoService.deleteByDataid(userCollection);
                 map.put("status", true);
                 map.put("reason", "");
             }
@@ -416,7 +417,7 @@ public class UserController {
             if(null!=user) {
                 UserCollection userCollection = new UserCollection();
                 userCollection.setDataid(dataid);
-                List<UserCollection> resultlist=mongoService.getByContent(userCollection);
+                List<UserCollection> resultlist=mongoService.getByDataid(userCollection);
                 JSONArray datalist=new JSONArray();
                 for(Integer i = 0; i < resultlist.size(); i++) {
                     datalist.put(resultlist.get(i).getData());
@@ -437,6 +438,7 @@ public class UserController {
         }
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
+        System.out.println(returnJson.toString());
     }
 
     @RequestMapping(value = "/testPage", method = RequestMethod.POST)
@@ -450,9 +452,11 @@ public class UserController {
             Map<String, Object> map = new HashMap<String, Object>();
             out = resp.getWriter();
             System.out.println("check1");
-            WeiboInfo weiboInfo = mongoService.findModel("4170677152095257");
+            UserCollection userCollection = new UserCollection();
+            userCollection.setId("5a0ad555a74fa73c1253ac04");
+            mongoService.deleteById(userCollection);
             System.out.println("check2");
-            map.put("result",weiboInfo);
+            map.put("result","success");
             JSONObject returnJSON = new JSONObject(map);
             outstr=returnJSON.toString();
         } catch(Exception e) {
