@@ -3,6 +3,7 @@ package com.woodpecker.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,7 @@ import java.io.PrintWriter;
 import com.woodpecker.domain.User;
 import com.woodpecker.domain.Keyword;
 import com.woodpecker.domain.WeiboInfo;
+import com.woodpecker.domain.UserCollection;
 import com.woodpecker.service.UserService;
 import com.woodpecker.service.MongoService;
 
@@ -271,7 +273,6 @@ public class UserController {
 
     @RequestMapping(value = "/updKws", method = RequestMethod.POST)
     public void updateKeyword(@RequestBody String info, HttpServletResponse resp) {
-
         Map<String, Object> map = new HashMap<String, Object>();
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -314,6 +315,125 @@ public class UserController {
             map.put("status",false);
             map.put("reason", "未知错误");
             System.out.println(e);
+        }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
+    }
+
+    @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
+    public void addCollection(@RequestBody String info, HttpServletResponse resp) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        try {
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer userid = (Integer) jsonObject.get("userid");
+            String token = (String) jsonObject.get("token");
+            String dataid = (String) jsonObject.get("dataid");
+            String type = (String) jsonObject.get("type");
+            JSONArray datalist = (JSONArray) jsonObject.get("data");
+            out = resp.getWriter();
+
+            User user=verifyUser(userid,token);
+            if(null!=user) {
+                for (Integer i = 0; i < datalist.length(); i++) {
+                    JSONObject data = datalist.getJSONObject(i);
+                    UserCollection userCollection = new UserCollection(null, userid, dataid, type, data);
+                    if (null == mongoService.findByContent(userCollection))
+                        System.out.println(mongoService.insert(userCollection));
+                }
+                map.put("status", true);
+                map.put("reason", "");
+            }
+            else {
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+            }
+        } catch (Exception e) {
+            map.put("status", false);
+            map.put("reason", "未知错误");
+            e.printStackTrace();
+        }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
+    }
+
+    @RequestMapping(value = "/delCollection", method = RequestMethod.POST)
+    public void delCollection(@RequestBody String info, HttpServletResponse resp) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        try {
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer userid = (Integer) jsonObject.get("userid");
+            String token = (String) jsonObject.get("token");
+            String dataid = (String) jsonObject.get("dataid");
+            out = resp.getWriter();
+
+            User user=verifyUser(userid,token);
+            if(null!=user) {
+                UserCollection userCollection = new UserCollection();
+                userCollection.setDataid(dataid);
+                mongoService.deleteByContent(userCollection);
+                map.put("status", true);
+                map.put("reason", "");
+            }
+            else {
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+            }
+        } catch (Exception e) {
+            map.put("status", false);
+            map.put("reason", "未知错误");
+            e.printStackTrace();
+        }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
+    }
+
+    @RequestMapping(value = "/getCollection", method = RequestMethod.POST)
+    public void getCollection(@RequestBody String info, HttpServletResponse resp) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        try {
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer userid = (Integer) jsonObject.get("userid");
+            String token = (String) jsonObject.get("token");
+            String dataid = (String) jsonObject.get("dataid");
+            out = resp.getWriter();
+
+            User user=verifyUser(userid,token);
+            if(null!=user) {
+                UserCollection userCollection = new UserCollection();
+                userCollection.setDataid(dataid);
+                List<UserCollection> resultlist=mongoService.getByContent(userCollection);
+                JSONArray datalist=new JSONArray();
+                for(Integer i = 0; i < resultlist.size(); i++) {
+                    datalist.put(resultlist.get(i).getData());
+                }
+                map.put("status", true);
+                map.put("reason", "");
+                map.put("data",datalist);
+            }
+            else {
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+                map.put("data", null);
+            }
+        } catch (Exception e) {
+            map.put("status", false);
+            map.put("reason", "未知错误");
+            e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
