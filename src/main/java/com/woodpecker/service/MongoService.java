@@ -8,10 +8,10 @@ import java.util.List;
 public interface MongoService {
     //UserCollection Services
     public String insert(UserCollection userCollection);
-    public UserCollection findByDataid(UserCollection userCollection);
-    public void deleteByDataid(UserCollection userCollection);
+    public UserCollection findByData(UserCollection userCollection);
     public void deleteById(UserCollection userCollection);
-    public List<UserCollection> getByDataid(UserCollection userCollection);
+    public List<UserCollection> getByUser(UserCollection userCollection);
+    public UserCollection getById(UserCollection userCollection);
 
     //WeiboInfo Services
     public String insert(WeiboInfo weiboInfo);

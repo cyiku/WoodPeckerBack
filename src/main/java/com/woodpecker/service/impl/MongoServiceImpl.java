@@ -30,15 +30,11 @@ public class MongoServiceImpl implements MongoService{
         return userCollection.getId();
     }
 
-    public UserCollection findByDataid(UserCollection userCollection) {
-        Query query = Query.query(Criteria.where("dataid").is(userCollection.getDataid()).and("data").is(userCollection.getData()));
+    public UserCollection findByData(UserCollection userCollection) {
+        Query query = Query.query(Criteria.where("data").is(userCollection.getData())
+                .and("userid").is(userCollection.getUserid()).and("type").is(userCollection.getType()));
         UserCollection result=mongoUserCollection.findOne(query,UserCollection.class);
         return result;
-    }
-
-    public void deleteByDataid(UserCollection userCollection) {
-        Query query = Query.query(Criteria.where("dataid").is(userCollection.getDataid()));
-        mongoUserCollection.remove(query,UserCollection.class);
     }
 
     public void deleteById(UserCollection userCollection) {
@@ -46,10 +42,15 @@ public class MongoServiceImpl implements MongoService{
         mongoUserCollection.remove(query,UserCollection.class);
     }
 
-    public List<UserCollection> getByDataid(UserCollection userCollection) {
-        Query query = Query.query(Criteria.where("dataid").is(userCollection.getDataid()));
-        List<UserCollection> result=mongoUserCollection.find(query,UserCollection.class);
-        return result;
+    public List<UserCollection> getByUser(UserCollection userCollection) {
+        Query query = Query.query(Criteria.where("userid").is(userCollection.getUserid())
+                .and("type").is(userCollection.getType()));
+        return mongoUserCollection.find(query,UserCollection.class);
+    }
+
+    public UserCollection getById(UserCollection userCollection) {
+        Query query = Query.query(Criteria.where("_id").is(userCollection.getId()));
+        return mongoUserCollection.findOne(query,UserCollection.class);
     }
 
     public List<WeiboInfo> getByKeyword(WeiboInfo weiboInfo) {

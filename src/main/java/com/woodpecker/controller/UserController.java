@@ -26,6 +26,7 @@ import com.woodpecker.service.MongoService;
 
 import com.woodpecker.utils.JWT;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -332,30 +333,34 @@ public class UserController {
 
             Integer userid = (Integer) jsonObject.get("userid");
             String token = (String) jsonObject.get("token");
-            String dataid = (String) jsonObject.get("dataid");
             String type = (String) jsonObject.get("type");
-            JSONArray datalist = (JSONArray) jsonObject.get("data");
-            System.out.println(datalist.toString());
+            JSONArray data = (JSONArray) jsonObject.get("data");
+            System.out.println(data.toString());
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
             if(null!=user) {
-                for (Integer i = 0; i < datalist.length(); i++) {
-                    JSONObject data = datalist.getJSONObject(i);
-                    UserCollection userCollection = new UserCollection(null, userid, dataid, type, data);
-                    if (null == mongoService.findByDataid(userCollection))
-                        mongoService.insert(userCollection);
-                }
                 map.put("status", true);
                 map.put("reason", "");
+                UserCollection userCollection = new UserCollection(null, userid, type, data);
+                    UserCollection findResult=mongoService.findByData(userCollection);
+                    if (null == findResult) {
+                        mongoService.insert(userCollection);
+                        map.put("dataid", userCollection.getId());
+                    }
+                    else {
+                        map.put("dataid", findResult.getId());
+                    }
             }
             else {
                 map.put("status", false);
                 map.put("reason", "用户身份验证失败");
+                map.put("dataid", "");
             }
         } catch (Exception e) {
             map.put("status", false);
             map.put("reason", "未知错误");
+            map.put("dataid", "");
             e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
@@ -374,14 +379,14 @@ public class UserController {
 
             Integer userid = (Integer) jsonObject.get("userid");
             String token = (String) jsonObject.get("token");
-            String dataid = (String) jsonObject.get("dataid");
+            String id = (String) jsonObject.get("dataid");
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
             if(null!=user) {
                 UserCollection userCollection = new UserCollection();
-                userCollection.setDataid(dataid);
-                mongoService.deleteByDataid(userCollection);
+                userCollection.setId(id);
+                mongoService.deleteById(userCollection);
                 map.put("status", true);
                 map.put("reason", "");
             }
@@ -410,21 +415,24 @@ public class UserController {
 
             Integer userid = (Integer) jsonObject.get("userid");
             String token = (String) jsonObject.get("token");
-            String dataid = (String) jsonObject.get("dataid");
+            String id = (String) jsonObject.get("dataid");
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
             if(null!=user) {
                 UserCollection userCollection = new UserCollection();
-                userCollection.setDataid(dataid);
-                List<UserCollection> resultlist=mongoService.getByDataid(userCollection);
-                JSONArray datalist=new JSONArray();
-                for(Integer i = 0; i < resultlist.size(); i++) {
-                    datalist.put(resultlist.get(i).getData());
+                userCollection.setId(id);
+                UserCollection result = mongoService.getById(userCollection);
+                if (null != result) {
+                    map.put("status", true);
+                    map.put("reason", "");
+                    map.put("data", result.getData());
                 }
-                map.put("status", true);
-                map.put("reason", "");
-                map.put("data",datalist);
+                else {
+                    map.put("status", false);
+                    map.put("reason", "条目不存在");
+                    map.put("data", null);
+                }
             }
             else {
                 map.put("status", false);
@@ -434,6 +442,7 @@ public class UserController {
         } catch (Exception e) {
             map.put("status", false);
             map.put("reason", "未知错误");
+            map.put("data", null);
             e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
@@ -453,7 +462,7 @@ public class UserController {
             out = resp.getWriter();
             System.out.println("check1");
             UserCollection userCollection = new UserCollection();
-            userCollection.setId("5a0ad555a74fa73c1253ac04");
+            userCollection.setId("5a0e9d94b64ad27358967e9e");
             mongoService.deleteById(userCollection);
             System.out.println("check2");
             map.put("result","success");
