@@ -9,9 +9,9 @@ public interface MongoService {
     //UserCollection Services
     public String insert(UserCollection userCollection);
     public UserCollection findByData(UserCollection userCollection);
-    public void deleteById(UserCollection userCollection);
+    public void deleteByDataid(UserCollection userCollection);
     public List<UserCollection> getByUser(UserCollection userCollection);
-    public UserCollection getById(UserCollection userCollection);
+    public UserCollection getByDataid(UserCollection userCollection);
 
     //WeiboInfo Services
     public String insert(WeiboInfo weiboInfo);

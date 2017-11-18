@@ -117,8 +117,7 @@ public class UserController {
         }
     }
 
-
-
+    //Keywords
     @RequestMapping(value = "/getKws", method = RequestMethod.POST)
     public void getKeyword(@RequestBody String info, HttpServletResponse resp) {
 
@@ -160,8 +159,6 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
-
-
     @RequestMapping(value = "/addKws", method = RequestMethod.POST)
     public void addKeyword(@RequestBody String info, HttpServletResponse resp) {
 
@@ -224,7 +221,6 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
-
     @RequestMapping(value = "/delKws", method = RequestMethod.POST)
     public void delKeyword(@RequestBody String info, HttpServletResponse resp) {
 
@@ -271,7 +267,6 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
-
     @RequestMapping(value = "/updKws", method = RequestMethod.POST)
     public void updateKeyword(@RequestBody String info, HttpServletResponse resp) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -321,6 +316,7 @@ public class UserController {
         out.write(returnJson.toString());
     }
 
+    //Collection
     @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
     public void addCollection(@RequestBody String info, HttpServletResponse resp) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -331,10 +327,10 @@ public class UserController {
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
-            Integer userid = (Integer) jsonObject.get("userid");
+            Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
             String type = (String) jsonObject.get("type");
-            JSONArray data = (JSONArray) jsonObject.get("data");
+            String data = ((JSONArray) jsonObject.get("data")).toString();
             System.out.println(data.toString());
             out = resp.getWriter();
 
@@ -346,10 +342,10 @@ public class UserController {
                     UserCollection findResult=mongoService.findByData(userCollection);
                     if (null == findResult) {
                         mongoService.insert(userCollection);
-                        map.put("dataid", userCollection.getId());
+                        map.put("dataid", userCollection.getDataid());
                     }
                     else {
-                        map.put("dataid", findResult.getId());
+                        map.put("dataid", findResult.getDataid());
                     }
             }
             else {
@@ -366,7 +362,6 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
-
     @RequestMapping(value = "/delCollection", method = RequestMethod.POST)
     public void delCollection(@RequestBody String info, HttpServletResponse resp) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -377,7 +372,7 @@ public class UserController {
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
-            Integer userid = (Integer) jsonObject.get("userid");
+            Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
             String id = (String) jsonObject.get("dataid");
             out = resp.getWriter();
@@ -385,8 +380,8 @@ public class UserController {
             User user=verifyUser(userid,token);
             if(null!=user) {
                 UserCollection userCollection = new UserCollection();
-                userCollection.setId(id);
-                mongoService.deleteById(userCollection);
+                userCollection.setDataid(id);
+                mongoService.deleteByDataid(userCollection);
                 map.put("status", true);
                 map.put("reason", "");
             }
@@ -402,10 +397,10 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
-
     @RequestMapping(value = "/getCollection", method = RequestMethod.POST)
     public void getCollection(@RequestBody String info, HttpServletResponse resp) {
         Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> innermap = new HashMap<String, Object>();
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
         PrintWriter out = null;
@@ -413,36 +408,38 @@ public class UserController {
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
-            Integer userid = (Integer) jsonObject.get("userid");
+            Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
-            String id = (String) jsonObject.get("dataid");
+            String type = (String) jsonObject.get("type");
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
             if(null!=user) {
                 UserCollection userCollection = new UserCollection();
-                userCollection.setId(id);
-                UserCollection result = mongoService.getById(userCollection);
-                if (null != result) {
-                    map.put("status", true);
-                    map.put("reason", "");
-                    map.put("data", result.getData());
+                userCollection.setUserid(userid);
+                userCollection.setType(type);
+                List<UserCollection> collections = mongoService.getByUser(userCollection);
+                JSONArray result = new JSONArray();
+                for(Integer i=0;i<collections.size();i++) {
+                    innermap.clear();
+                    innermap.put("data", new JSONArray(collections.get(i).getData()));
+                    innermap.put("dataid", collections.get(i).getDataid());
+                    JSONObject inner = new JSONObject(innermap);
+                    result.put(inner);
                 }
-                else {
-                    map.put("status", false);
-                    map.put("reason", "条目不存在");
-                    map.put("data", null);
-                }
+                map.put("status", true);
+                map.put("reason", "");
+                map.put("collection", result);
             }
             else {
                 map.put("status", false);
                 map.put("reason", "用户身份验证失败");
-                map.put("data", null);
+                map.put("collection", null);
             }
         } catch (Exception e) {
             map.put("status", false);
             map.put("reason", "未知错误");
-            map.put("data", null);
+            map.put("collection", null);
             e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
@@ -450,6 +447,7 @@ public class UserController {
         System.out.println(returnJson.toString());
     }
 
+    //test
     @RequestMapping(value = "/testPage", method = RequestMethod.POST)
     public void testFunc(@RequestBody String info, HttpServletResponse resp) {
         System.out.println("testFunc: " + info);
@@ -462,8 +460,8 @@ public class UserController {
             out = resp.getWriter();
             System.out.println("check1");
             UserCollection userCollection = new UserCollection();
-            userCollection.setId("5a0e9d94b64ad27358967e9e");
-            mongoService.deleteById(userCollection);
+            userCollection.setDataid("5a0e9d94b64ad27358967e9e");
+            mongoService.deleteByDataid(userCollection);
             System.out.println("check2");
             map.put("result","success");
             JSONObject returnJSON = new JSONObject(map);
