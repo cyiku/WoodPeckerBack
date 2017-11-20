@@ -146,14 +146,14 @@ public class UserController {
             } else {
                 System.out.println("reject");
                 map.put("status", false);
+                map.put("logout", true);
                 map.put("reason", "用户身份验证失败");
-                map.put("keyword", null);
             }
 
         } catch (Exception e) {
             map.put("status", false);
+            map.put("logout", true);
             map.put("reason", "未知错误");
-            map.put("keyword", null);
             System.out.println(e);
         }
         JSONObject returnJson = new JSONObject(map);
@@ -207,11 +207,13 @@ public class UserController {
             else {
                 System.out.println("reject");
                 map.put("status", false);
+                map.put("logout", true);
                 map.put("reason", "用户身份验证失败");
             }
 
         } catch (Exception e) {
-            map.put("status",false);
+            map.put("status", false);
+            map.put("logout", true);
             map.put("reason", "未知错误");
             System.out.println(e);
         }
@@ -247,17 +249,20 @@ public class UserController {
                 }
                 else {
                     map.put("status", false);
+                    map.put("logout", false);
                     map.put("reason", "不存在该条目");
                 }
             }
             else {
                 System.out.println("reject");
                 map.put("status", false);
+                map.put("logout", true);
                 map.put("reason", "用户身份验证失败");
             }
 
         } catch (Exception e) {
-            map.put("status",false);
+            map.put("status", false);
+            map.put("logout", true);
             map.put("reason", "未知错误");
             System.out.println(e);
         }
@@ -296,25 +301,32 @@ public class UserController {
                 System.out.println("Sites: "+sitesInDB);
                 Keyword keyword = new Keyword(keywordid,name,sitesInDB);
                 List<Keyword> keywordForSearch = userService.searchKeyword(user,keyword);
-                if(keywordForSearch.isEmpty()) {
+                Boolean canUpdate;
+                if(keywordForSearch.size()==0)canUpdate=true;
+                else if(keywordForSearch.get(0).getKeywordid()==keywordid)canUpdate=true;
+                else canUpdate=false;
+                if(canUpdate) {
                     System.out.println("upd result = " + userService.updateKeyword(user, keyword));
                     map.put("status", true);
                     map.put("reason", "");
                 }
                 else {
                     map.put("status",false);
+                    map.put("logout",false);
                     map.put("reason", "关键字已存在");
                 }
             }
             else {
                 System.out.println("reject");
                 map.put("status", false);
+                map.put("logout", true);
                 map.put("reason", "用户身份验证失败");
             }
         } catch (Exception e) {
             map.put("status",false);
+            map.put("logout", true);
             map.put("reason", "未知错误");
-            System.out.println(e);
+            e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
@@ -334,23 +346,25 @@ public class UserController {
             Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
             String type = (String) jsonObject.get("type");
-            String data = ((JSONArray) jsonObject.get("data")).toString();
+            JSONArray data = ((JSONArray) jsonObject.get("data"));
+            String data_str;
             System.out.println(data.toString());
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
             if(null!=user) {
+                UserCollection userCollection;
                 map.put("status", true);
                 map.put("reason", "");
-                UserCollection userCollection = new UserCollection(null, userid, type, data);
-                    UserCollection findResult=mongoService.findByData(userCollection);
-                    if (null == findResult) {
-                        mongoService.insert(userCollection);
-                        map.put("dataid", userCollection.getDataid());
-                    }
-                    else {
-                        map.put("dataid", findResult.getDataid());
-                    }
+                switch(type) {
+                    case "weibo":
+                       // userCollection = new UserCollection(data.getJSONObject(0).getString("id"),)
+                        break;
+                    case "tieba":
+                        break;
+                    case "table":
+                        break;
+                }
             }
             else {
                 map.put("status", false);

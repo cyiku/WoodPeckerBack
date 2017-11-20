@@ -33,9 +33,10 @@ public class UserServiceImpl implements UserService{
             userDao.createKeyword("keyword_" + userName);
     }
 
-    public List<Keyword> getKeyword(User user)
-    {return userDao.getKeyword("keyword_" + user.getId());}
-
+    //keyword
+    public List<Keyword> getKeyword(User user) {
+        return userDao.getKeyword("keyword_" + user.getId());
+    }
     public Integer addKeyword(User user,Keyword keyword) {
         return userDao.addKeyword("keyword_" + user.getId(), keyword);
     }
@@ -48,5 +49,7 @@ public class UserServiceImpl implements UserService{
     public Integer updateKeyword(User user,Keyword keyword) {
         return userDao.updateKeyword("keyword_" + user.getId(), keyword);
     }
+
+    //weibo
 }
 
