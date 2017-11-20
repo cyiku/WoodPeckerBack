@@ -189,22 +189,19 @@ public class UserController {
                         sitesInDB = sitesInDB + ";" + site;
                 }
                 System.out.println("Sites: "+sitesInDB);
-                Keyword keyword = new Keyword(null,user.getId(),name,sitesInDB);
-                List<Keyword> keywordForSearch = userService.searchKeyword(keyword);
+                Keyword keyword = new Keyword(null,name,sitesInDB);
+                List<Keyword> keywordForSearch = userService.searchKeyword(user,keyword);
                 if(keywordForSearch.isEmpty()) {
-                    System.out.println("Add result = " + userService.addKeyword(keyword));
-                    keywordForSearch = userService.searchKeyword(keyword);
+                    System.out.println("Add result = " + userService.addKeyword(user,keyword));
+                    keywordForSearch = userService.searchKeyword(user,keyword);
                     map.put("status", true);
                     map.put("reason", "");
                     map.put("keywordid", keywordForSearch.get(0).getKeywordid());
-                    map.put("userid", keywordForSearch.get(0).getUserid());
                 }
                 else {
+                    System.out.println("keyword exists");
                     map.put("status",false);
                     map.put("reason", "关键词已存在");
-                    map.put("keywordid", null);
-                    map.put("userid",null);
-                    System.out.println("key err");
                 }
             }
             else {
@@ -241,10 +238,10 @@ public class UserController {
 
             User user = verifyUser(id, token);
             if(null!=user) {
-                Keyword keyword = new Keyword(null,user.getId(),name,null);
-                List<Keyword> keywordForSearch = userService.searchKeyword(keyword);
+                Keyword keyword = new Keyword(null,name,null);
+                List<Keyword> keywordForSearch = userService.searchKeyword(user,keyword);
                 if(!keywordForSearch.isEmpty()) {
-                    System.out.println("Del result = " + userService.delKeyword(keyword));
+                    System.out.println("Del result = " + userService.delKeyword(user,keyword));
                     map.put("status", true);
                     map.put("reason", "");
                 }
@@ -297,10 +294,17 @@ public class UserController {
                         sitesInDB = sitesInDB + ";" + site;
                 }
                 System.out.println("Sites: "+sitesInDB);
-                Keyword keyword = new Keyword(keywordid,user.getId(),name,sitesInDB);
-                System.out.println("upd result = " + userService.updateKeyword(keyword));
-                map.put("status", true);
-                map.put("reason", "");
+                Keyword keyword = new Keyword(keywordid,name,sitesInDB);
+                List<Keyword> keywordForSearch = userService.searchKeyword(user,keyword);
+                if(keywordForSearch.isEmpty()) {
+                    System.out.println("upd result = " + userService.updateKeyword(user, keyword));
+                    map.put("status", true);
+                    map.put("reason", "");
+                }
+                else {
+                    map.put("status",false);
+                    map.put("reason", "关键字已存在");
+                }
             }
             else {
                 System.out.println("reject");
@@ -458,11 +462,9 @@ public class UserController {
         try {
             Map<String, Object> map = new HashMap<String, Object>();
             out = resp.getWriter();
-            System.out.println("check1");
-            UserCollection userCollection = new UserCollection();
-            userCollection.setDataid("5a0e9d94b64ad27358967e9e");
-            mongoService.deleteByDataid(userCollection);
-            System.out.println("check2");
+            //test code
+            userService.newUser(info);
+            //test code
             map.put("result","success");
             JSONObject returnJSON = new JSONObject(map);
             outstr=returnJSON.toString();

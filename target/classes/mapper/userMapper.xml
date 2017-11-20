@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>  
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.woodpecker.dao.UserDao">
@@ -10,35 +10,74 @@
 	</resultMap>
 
 	<resultMap id="KeywordMap" type="com.woodpecker.domain.Keyword">
-		<result column="id" property="keywordid" jdbcType="INTEGER" />
-		<result column="userid" property="userid" jdbcType="INTEGER" />
+		<result column="keywordid" property="keywordid" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="sites" property="sites" jdbcType="VARCHAR" />
 	</resultMap>
+
+	<!-- 建表相关 -->
+
+	<select id="existsTable" parameterType="String" resultType="Integer">
+		SHOW TABLES LIKE #{tableName}
+	</select>
+
+	<update id="createCollectionWeibo" parameterType="String">
+		CREATE TABLE ${_parameter} (
+			dataid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+			data VARCHAR(2047) NOT NULL,
+			iscollection INTEGER NOT NULL
+		)
+	</update>
+
+	<update id="createCollectionTieba" parameterType="String">
+		CREATE TABLE ${_parameter} (
+		dataid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		data VARCHAR(2047) NOT NULL,
+		iscollection INTEGER NOT NULL
+		)
+	</update>
+
+	<update id="createCollectionTable" parameterType="String">
+		CREATE TABLE ${_parameter} (
+		dataid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		data VARCHAR(2047) NOT NULL,
+		tableid INTEGER NOT NULL
+		)
+	</update>
+
+	<update id="createKeyword" parameterType="String">
+		CREATE TABLE ${_parameter} (
+		keywordid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		name VARCHAR(255) NOT NULL,
+		sites VARCHAR(255) NOT NULL
+		)
+	</update>
 
 	<!-- 登录 -->
 	<select id="getUser"  resultMap="BaseResultMap">
 		SELECT * FROM user_t WHERE username = #{username} AND password = #{password}
 	</select>
 
+	<!-- keyword相关 -->
 	<select id="getKeyword"  resultMap="KeywordMap">
-		SELECT * FROM keyword_t WHERE userid = #{id}
+		SELECT * FROM ${tableName}
 	</select>
 
-	<insert id="addKeyword"  >
-		INSERT INTO keyword_t(userid,name,sites) VALUES(#{userid}, #{name}, #{sites})
+	<insert id="addKeyword" >
+		INSERT INTO ${tableName}(name,sites) VALUES("${keyword.name}", "${keyword.sites}")
 	</insert>
 
 	<select id="searchKeyword" resultMap="KeywordMap">
-		SELECT * FROM keyword_t WHERE userid = #{userid} AND name = #{name}
+		SELECT * FROM ${tableName} WHERE name = "${keyword.name}"
 	</select>
 
 	<delete id="delKeyword" >
-		DELETE FROM keyword_t WHERE userid = #{userid} AND name = #{name}
+		DELETE FROM ${tableName} WHERE name = "${keyword.name}"
 	</delete>
 
 	<update id="updateKeyword" >
-		UPDATE keyword_t SET name = #{name}, sites = #{sites} WHERE id = #{keywordid}
+		UPDATE ${tableName} SET name = "${keyword.name}", sites = "${keyword.sites}"
+		WHERE keywordid = ${keyword.keywordid}
 	</update>
 
 </mapper>
