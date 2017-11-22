@@ -93,17 +93,16 @@ public class UserServiceImpl implements UserService{
     public List<TableCollection> getTableCollection(User user) {
         return userDao.getTableCollection("collectionTable_" + user.getId());
     }
-    public Integer addTableCollection(User user,TableCollection tableCollection) {
+    public Integer addTableCollection(User user,List<TableCollection> tableCollection) {
         return userDao.addTableCollection("collectionTable_" + user.getId(), tableCollection);
     }
-    public List<TableCollection> searchTableCollection(User user,TableCollection tableCollection) {
+    public List<TableCollection> searchTableCollection(User user,List<TableCollection> tableCollection) {
         return userDao.searchTableCollection("collectionTable_" + user.getId(), tableCollection);
     }
-    public Integer resetTableCollection(User user,TableCollection tableCollection) {
-        return null;
-        //return userDao.resetTableCollection("collectionTable_" + user.getId(), tableCollection);
+    public Integer resetTableCollection(User user,List<TableCollection> tableCollection) {
+        return userDao.resetTableCollection("collectionTable_" + user.getId(), tableCollection);
     }
-    public Integer delTableCollection(User user,TableCollection tableCollection) {
+    public Integer delTableCollection(User user,List<TableCollection> tableCollection) {
         return userDao.delTableCollection("collectionTable_" + user.getId(), tableCollection);
     }
     //endregion

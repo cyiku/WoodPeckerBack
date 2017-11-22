@@ -357,7 +357,6 @@ public class UserController {
                         List<NormalCollection> weiboList = userService.searchWeiboCollection(user,weiboCollection);
                         if(weiboList.isEmpty()) {
                             userService.addWeiboCollection(user,weiboCollection);
-                            weiboList = userService.searchWeiboCollection(user,weiboCollection);
                         }
                         else {
                             weiboCollection = weiboList.get(0);
@@ -370,7 +369,6 @@ public class UserController {
                         List<NormalCollection> tiebaList = userService.searchTiebaCollection(user,tiebaCollection);
                         if(tiebaList.isEmpty()) {
                             userService.addTiebaCollection(user,tiebaCollection);
-                            tiebaList = userService.searchTiebaCollection(user,tiebaCollection);
                         }
                         else {
                             tiebaCollection = tiebaList.get(0);
@@ -378,10 +376,17 @@ public class UserController {
                         }
                         break;
                     case "table":
+                        List<TableCollection> tableCollections = new ArrayList<TableCollection>();
                         for(Object o: data) {
                             data_str = ((JSONObject)o).toString();
-                            TableCollection tableCollection = new TableCollection(null,data_str,date.getTime());
-                            userService.addTableCollection(user,tableCollection);
+                            tableCollections.add(new TableCollection(null,data_str,date.getTime(),1));
+                        }
+                        List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
+                        if(tableList.isEmpty()) {
+                            userService.addTableCollection(user,tableCollections);
+                        }
+                        else {
+                            userService.resetTableCollection(user,tableList);
                         }
                         break;
                     default:
@@ -394,12 +399,10 @@ public class UserController {
             else {
                 map.put("status", false);
                 map.put("reason", "用户身份验证失败");
-                map.put("dataid", "");
             }
         } catch (Exception e) {
             map.put("status", false);
             map.put("reason", "未知错误");
-            map.put("dataid", "");
             e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
@@ -451,7 +454,34 @@ public class UserController {
                         map.put("collection", result);
                         break;
                     case "table":
-                        System.out.println("table unhandled");
+                        List<TableCollection> tableCollections = new ArrayList<TableCollection>();
+                        for(Object o: data) {
+                            data_str = ((JSONObject)o).toString();
+                            tableCollections.add(new TableCollection(null,data_str,null,null));
+                        }
+                        userService.delTableCollection(user,tableCollections);
+                        List<TableCollection> tableList = userService.getTableCollection(user);
+                        Long tableid = null;
+                        List<List> resultList = new ArrayList<List>();
+                        result = new ArrayList<JSONObject>();
+                        for(TableCollection table:tableList) {
+                            if(null == tableid) {
+                                tableid = table.getTableid();
+                                result = new ArrayList<JSONObject>();
+                                result.add(new JSONObject(table.getData()));
+                            }
+                            else if(tableid.equals(table.getTableid())) {
+                                result.add(new JSONObject(table.getData()));
+                            }
+                            else {
+                                tableid = table.getTableid();
+                                resultList.add(result);
+                                result = new ArrayList<JSONObject>();
+                                result.add(new JSONObject(table.getData()));
+                            }
+                        }
+                        resultList.add(result);
+                        map.put("collection", resultList);
                         break;
                     default:
                         System.out.println("default");
@@ -510,7 +540,28 @@ public class UserController {
                         map.put("collection", result);
                         break;
                     case "table":
-                        System.out.println("table unhandled");
+                        List<TableCollection> tableList = userService.getTableCollection(user);
+                        Long tableid = null;
+                        List<List> resultList = new ArrayList<List>();
+                        result = new ArrayList<JSONObject>();
+                        for(TableCollection table:tableList) {
+                            if(null == tableid) {
+                                tableid = table.getTableid();
+                                result = new ArrayList<JSONObject>();
+                                result.add(new JSONObject(table.getData()));
+                            }
+                            else if(tableid.equals(table.getTableid())) {
+                                result.add(new JSONObject(table.getData()));
+                            }
+                            else {
+                                tableid = table.getTableid();
+                                resultList.add(result);
+                                result = new ArrayList<JSONObject>();
+                                result.add(new JSONObject(table.getData()));
+                            }
+                        }
+                        resultList.add(result);
+                        map.put("collection", resultList);
                         break;
                     default:
                         System.out.println("default");

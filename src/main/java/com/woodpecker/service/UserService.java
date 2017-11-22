@@ -39,9 +39,9 @@ public interface UserService {
 
     //region table collection
     List<TableCollection> getTableCollection(User user);
-    Integer addTableCollection(User user,TableCollection tableCollection);
-    List<TableCollection> searchTableCollection(User user,TableCollection tableCollection);
-    Integer resetTableCollection(User user,TableCollection tableCollection);
-    Integer delTableCollection(User user,TableCollection tableCollection);
+    Integer addTableCollection(User user,List<TableCollection> tableCollection);
+    List<TableCollection> searchTableCollection(User user,List<TableCollection> tableCollection);
+    Integer resetTableCollection(User user,List<TableCollection> tableCollection);
+    Integer delTableCollection(User user,List<TableCollection> tableCollection);
     //endregion
 }

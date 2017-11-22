@@ -26,6 +26,7 @@
 		<result column="dataid" property="dataid" jdbcType="INTEGER" />
 		<result column="data" property="data" jdbcType="VARCHAR" />
 		<result column="tableid" property="tableid" jdbcType="BIGINT" />
+		<result column="iscollection" property="iscollection" jdbcType="INTEGER" />
 	</resultMap>
 	<!-- endregion -->
 
@@ -121,21 +122,47 @@
 	<!-- region TableCollection相关 -->
 	<select id="getTableCollection"  resultMap="TableCollectionMap">
 		SELECT * FROM ${tableName}
+		WHERE tableid != 0 AND iscollection = 1
+		ORDER BY tableid
 	</select>
 	<insert id="addTableCollection" >
-		INSERT INTO ${tableName}(data,tableid)
-		VALUES('${tableCollection.data}',${tableCollection.tableid})
+		INSERT INTO ${tableName}(data,tableid,iscollection) VALUES
+		<foreach item="item" index="" collection="tableCollection"
+				 open="" close="" separator=",">
+			('${item.data}',${item.tableid},${item.iscollection})
+		</foreach>
 	</insert>
 	<select id="searchTableCollection"  resultMap="TableCollectionMap">
-		SELECT * FROM ${tableName} WHERE dataid = ${tableCollection.dataid}
+		SELECT * FROM ${tableName} WHERE tableid IN (
+			SELECT tableid FROM ${tableName} WHERE tableid IN (
+				SELECT tableid FROM ${tableName}
+				WHERE data IN (
+					<foreach item="item" index="" collection="tableCollection"
+							 open="" close="" separator=",">'${item.data}'
+					</foreach>
+				) GROUP BY tableid HAVING COUNT(data) = ${tableCollection.size()}
+			) GROUP BY tableid HAVING COUNT(data) = ${tableCollection.size()}
+		)
 	</select>
 	<update id="resetTableCollection">
-		UPDATE ${tableName} SET tableid = 1
-		WHERE dataid=${tableCollection.dataid}
+		UPDATE ${tableName} SET iscollection = 1 WHERE dataid IN (
+			<foreach item="item" index="" collection="tableCollection"
+					 open="" close="" separator=",">
+				${item.dataid}
+			</foreach>
+		)
 	</update>
 	<update id="delTableCollection">
-		UPDATE ${tableName} SET tableid = 0
-		WHERE data='${tableCollection.data}'
+		UPDATE ${tableName} SET iscollection = 0 WHERE tableid IN (
+			SELECT tableid FROM (SELECT * FROM ${tableName}) AS temp WHERE tableid IN (
+				SELECT tableid FROM (SELECT * FROM ${tableName}) AS temp
+				WHERE data IN (
+					<foreach item="item" index="" collection="tableCollection"
+							 open="" close="" separator=",">'${item.data}'
+					</foreach>
+				) GROUP BY tableid HAVING COUNT(data) = ${tableCollection.size()}
+			) GROUP BY tableid HAVING COUNT(data) = ${tableCollection.size()}
+		)
 	</update>
 	<!-- endregion -->
 </mapper>

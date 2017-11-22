@@ -7,6 +7,7 @@ import com.woodpecker.domain.Keyword;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface UserDao {
@@ -47,16 +48,16 @@ public interface UserDao {
 	public List<TableCollection> getTableCollection(@Param("tableName")String tableName);
 	public Integer addTableCollection(
 			@Param("tableName")String tableName,
-			@Param("tableCollection")TableCollection tableCollection);
+			@Param("tableCollection")List<TableCollection> tableCollection);
 	public List<TableCollection> searchTableCollection(
 			@Param("tableName")String tableName,
-			@Param("tableCollection")TableCollection tableCollection);
+			@Param("tableCollection")List<TableCollection> tableCollection);
 	public Integer resetTableCollection(
 			@Param("tableName")String tableName,
-			@Param("tableCollection")TableCollection tableCollection);
+			@Param("tableCollection")List<TableCollection> tableCollection);
 	public Integer delTableCollection(
 			@Param("tableName")String tableName,
-			@Param("tableCollection")TableCollection tableCollection);
+			@Param("tableCollection")List<TableCollection> tableCollection);
 
 	//endregion
 }
