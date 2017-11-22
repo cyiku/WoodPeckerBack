@@ -25,7 +25,7 @@
 	<resultMap id="TableCollectionMap" type="com.woodpecker.domain.TableCollection">
 		<result column="dataid" property="dataid" jdbcType="INTEGER" />
 		<result column="data" property="data" jdbcType="VARCHAR" />
-		<result column="tableid" property="tableid" jdbcType="INTEGER" />
+		<result column="tableid" property="tableid" jdbcType="BIGINT" />
 	</resultMap>
 	<!-- endregion -->
 
@@ -55,7 +55,7 @@
 		CREATE TABLE ${_parameter} (
 		dataid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		data VARCHAR(2047) NOT NULL,
-		tableid INTEGER NOT NULL
+		tableid BIGINT NOT NULL
 		)
 	</update>
 
@@ -105,13 +105,17 @@
 		INSERT INTO ${tableName}(data,iscollection)
 		VALUES('${normalCollection.data}',${normalCollection.iscollection})
 	</insert>
-	<select id="searchNormalCollection">
-		SELECT * FROM ${tableName} WHERE dataid = ${normalCollection.dataid}
+	<select id="searchNormalCollection" resultMap="NormalCollectionMap">
+		SELECT * FROM ${tableName} WHERE data = '${normalCollection.data}'
 	</select>
-	<delete id="delNormalCollection">
-		UPDATE ${tableName} SET iscollection = 0
+	<update id="resetNormalCollection">
+		UPDATE ${tableName} SET iscollection = 1
 		WHERE dataid=${normalCollection.dataid}
-	</delete>
+	</update>
+	<update id="delNormalCollection">
+		UPDATE ${tableName} SET iscollection = 0
+		WHERE data='${normalCollection.data}'
+	</update>
 	<!-- endregion -->
 
 	<!-- region TableCollection相关 -->
@@ -122,12 +126,16 @@
 		INSERT INTO ${tableName}(data,tableid)
 		VALUES('${tableCollection.data}',${tableCollection.tableid})
 	</insert>
-	<select id="searchTableCollection">
+	<select id="searchTableCollection"  resultMap="TableCollectionMap">
 		SELECT * FROM ${tableName} WHERE dataid = ${tableCollection.dataid}
 	</select>
-	<delete id="delTableCollection">
-		UPDATE ${tableName} SET iscollection = 0
-		WHERE dataid=${normalCollection.dataid}
-	</delete>
+	<update id="resetTableCollection">
+		UPDATE ${tableName} SET tableid = 1
+		WHERE dataid=${tableCollection.dataid}
+	</update>
+	<update id="delTableCollection">
+		UPDATE ${tableName} SET tableid = 0
+		WHERE data='${tableCollection.data}'
+	</update>
 	<!-- endregion -->
 </mapper>

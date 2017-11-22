@@ -4,7 +4,6 @@ import com.woodpecker.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,11 +22,7 @@ import com.woodpecker.service.MongoService;
 
 import com.woodpecker.utils.JWT;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -346,26 +341,48 @@ public class UserController {
             Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
             String type = (String) jsonObject.get("type");
-            JSONArray data = ((JSONArray) jsonObject.get("data"));
+            JSONArray data =(JSONArray) jsonObject.get("data");
             String data_str;
             System.out.println(data.toString());
             out = resp.getWriter();
+
+            Date date = new Date(); //获取时间戳
 
             User user=verifyUser(userid,token);
             if(null!=user) {
                 switch(type) {
                     case "weibo":
-                        data_str = data.toString();
+                        data_str = data.getJSONObject(0).toString();
                         NormalCollection weiboCollection = new NormalCollection(null,data_str,1);
-                        userService.addWeiboCollection(user,weiboCollection);
+                        List<NormalCollection> weiboList = userService.searchWeiboCollection(user,weiboCollection);
+                        if(weiboList.isEmpty()) {
+                            userService.addWeiboCollection(user,weiboCollection);
+                            weiboList = userService.searchWeiboCollection(user,weiboCollection);
+                        }
+                        else {
+                            weiboCollection = weiboList.get(0);
+                            userService.resetWeiboCollection(user,weiboCollection);
+                        }
                         break;
                     case "tieba":
-                        data_str = data.toString();
+                        data_str = data.getJSONObject(0).toString();
                         NormalCollection tiebaCollection = new NormalCollection(null,data_str,1);
-                        userService.addTiebaCollection(user,tiebaCollection);
+                        List<NormalCollection> tiebaList = userService.searchTiebaCollection(user,tiebaCollection);
+                        if(tiebaList.isEmpty()) {
+                            userService.addTiebaCollection(user,tiebaCollection);
+                            tiebaList = userService.searchTiebaCollection(user,tiebaCollection);
+                        }
+                        else {
+                            tiebaCollection = tiebaList.get(0);
+                            userService.resetTiebaCollection(user,tiebaCollection);
+                        }
                         break;
                     case "table":
-                        System.out.println("table unhandled");
+                        for(Object o: data) {
+                            data_str = ((JSONObject)o).toString();
+                            TableCollection tableCollection = new TableCollection(null,data_str,date.getTime());
+                            userService.addTableCollection(user,tableCollection);
+                        }
                         break;
                     default:
                         System.out.println("default");
@@ -373,7 +390,6 @@ public class UserController {
                 }
                 map.put("status", true);
                 map.put("reason", "");
-                map.put("dataid", "TODO");
             }
             else {
                 map.put("status", false);
@@ -402,19 +418,37 @@ public class UserController {
             Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
             String type = (String) jsonObject.get("type");
-            Integer dataid = (Integer) jsonObject.get("dataid");
+            JSONArray data = ((JSONArray) jsonObject.get("data"));
+            String data_str;
             out = resp.getWriter();
+
+            Map<String, Object> resultMap = new HashMap<String, Object>();
+            List<JSONObject> result;
 
             User user=verifyUser(userid,token);
             if(null!=user) {
                 switch(type) {
                     case "weibo":
-                        NormalCollection weiboCollection = new NormalCollection(dataid,null,null);
+                        data_str = data.getJSONObject(0).toString();
+                        NormalCollection weiboCollection = new NormalCollection(null,data_str,null);
                         userService.delWeiboCollection(user,weiboCollection);
+                        List<NormalCollection> weiboList = userService.getWeiboCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection weibo:weiboList) {
+                            result.add(new JSONObject(weibo.getData()));
+                        }
+                        map.put("collection", result);
                         break;
                     case "tieba":
-                        NormalCollection tiebaCollection = new NormalCollection(dataid,null,null);
+                        data_str = data.getJSONObject(0).toString();
+                        NormalCollection tiebaCollection = new NormalCollection(null,data_str,null);
                         userService.delTiebaCollection(user,tiebaCollection);
+                        List<NormalCollection> tiebaList = userService.getTiebaCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection tieba:tiebaList) {
+                            result.add(new JSONObject(tieba.getData()));
+                        }
+                        map.put("collection", result);
                         break;
                     case "table":
                         System.out.println("table unhandled");
@@ -454,24 +488,26 @@ public class UserController {
             String type = (String) jsonObject.get("type");
             out = resp.getWriter();
 
+            List<JSONObject> result;
+
             User user=verifyUser(userid,token);
             if(null!=user) {
                 switch(type) {
                     case "weibo":
                         List<NormalCollection> weiboList = userService.getWeiboCollection(user);
-                        JSONArray result = new JSONArray();
-                        Map<String,Object> tmp = new HashMap<String,Object>();
+                        result = new ArrayList<JSONObject>();
                         for(NormalCollection weibo:weiboList) {
-                            tmp.clear();
-                            tmp.put("data",new JSONArray(weibo.getData()));
-                            tmp.put("dataid",weibo.getDataid());
-                            result.put(new JSONObject(tmp));
+                            result.add(new JSONObject(weibo.getData()));
                         }
                         map.put("collection", result);
                         break;
                     case "tieba":
-                        List<NormalCollection> tiebaCollection = userService.getTiebaCollection(user);
-                        map.put("collection", tiebaCollection);
+                        List<NormalCollection> tiebaList = userService.getTiebaCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection tieba:tiebaList) {
+                            result.add(new JSONObject(tieba.getData()));
+                        }
+                        map.put("collection", result);
                         break;
                     case "table":
                         System.out.println("table unhandled");

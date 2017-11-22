@@ -63,6 +63,9 @@ public class UserServiceImpl implements UserService{
     public List<NormalCollection> searchWeiboCollection(User user, NormalCollection weiboCollection) {
         return userDao.searchNormalCollection("collectionWeibo_" + user.getId(), weiboCollection);
     }
+    public Integer resetWeiboCollection(User user, NormalCollection weiboCollection) {
+        return userDao.resetNormalCollection("collectionWeibo_" + user.getId(), weiboCollection);
+    }
     public Integer delWeiboCollection(User user, NormalCollection weiboCollection) {
         return userDao.delNormalCollection("collectionWeibo_" + user.getId(), weiboCollection);
     }
@@ -78,6 +81,9 @@ public class UserServiceImpl implements UserService{
     public List<NormalCollection> searchTiebaCollection(User user, NormalCollection TiebaCollection) {
         return userDao.searchNormalCollection("collectionTieba_" + user.getId(), TiebaCollection);
     }
+    public Integer resetTiebaCollection(User user, NormalCollection TiebaCollection) {
+        return userDao.resetNormalCollection("collectionTieba_" + user.getId(), TiebaCollection);
+    }
     public Integer delTiebaCollection(User user, NormalCollection TiebaCollection) {
         return userDao.delNormalCollection("collectionTieba_" + user.getId(), TiebaCollection);
     }
@@ -92,6 +98,10 @@ public class UserServiceImpl implements UserService{
     }
     public List<TableCollection> searchTableCollection(User user,TableCollection tableCollection) {
         return userDao.searchTableCollection("collectionTable_" + user.getId(), tableCollection);
+    }
+    public Integer resetTableCollection(User user,TableCollection tableCollection) {
+        return null;
+        //return userDao.resetTableCollection("collectionTable_" + user.getId(), tableCollection);
     }
     public Integer delTableCollection(User user,TableCollection tableCollection) {
         return userDao.delTableCollection("collectionTable_" + user.getId(), tableCollection);

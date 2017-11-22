@@ -25,6 +25,7 @@ public interface UserService {
     List<NormalCollection> getWeiboCollection(User user);
     Integer addWeiboCollection(User user, NormalCollection normalCollection);
     List<NormalCollection> searchWeiboCollection(User user, NormalCollection normalCollection);
+    Integer resetWeiboCollection(User user, NormalCollection normalCollection);
     Integer delWeiboCollection(User user, NormalCollection normalCollection);
     //endregion
 
@@ -32,6 +33,7 @@ public interface UserService {
     List<NormalCollection> getTiebaCollection(User user);
     Integer addTiebaCollection(User user, NormalCollection normalCollection);
     List<NormalCollection> searchTiebaCollection(User user, NormalCollection normalCollection);
+    Integer resetTiebaCollection(User user, NormalCollection normalCollection);
     Integer delTiebaCollection(User user, NormalCollection normalCollection);
     //endregion
 
@@ -39,6 +41,7 @@ public interface UserService {
     List<TableCollection> getTableCollection(User user);
     Integer addTableCollection(User user,TableCollection tableCollection);
     List<TableCollection> searchTableCollection(User user,TableCollection tableCollection);
+    Integer resetTableCollection(User user,TableCollection tableCollection);
     Integer delTableCollection(User user,TableCollection tableCollection);
     //endregion
 }

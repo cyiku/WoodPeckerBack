@@ -37,14 +37,21 @@ public interface UserDao {
 	public List<NormalCollection> searchNormalCollection(
 			@Param("tableName")String tableName,
 			@Param("normalCollection")NormalCollection normalCollection);
+	public Integer resetNormalCollection(
+			@Param("tableName")String tableName,
+			@Param("normalCollection")NormalCollection normalCollection);
 	public Integer delNormalCollection(
 			@Param("tableName")String tableName,
 			@Param("normalCollection")NormalCollection normalCollection);
+
 	public List<TableCollection> getTableCollection(@Param("tableName")String tableName);
 	public Integer addTableCollection(
 			@Param("tableName")String tableName,
 			@Param("tableCollection")TableCollection tableCollection);
 	public List<TableCollection> searchTableCollection(
+			@Param("tableName")String tableName,
+			@Param("tableCollection")TableCollection tableCollection);
+	public Integer resetTableCollection(
 			@Param("tableName")String tableName,
 			@Param("tableCollection")TableCollection tableCollection);
 	public Integer delTableCollection(

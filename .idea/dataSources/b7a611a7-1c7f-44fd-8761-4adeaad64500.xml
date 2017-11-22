@@ -250,7 +250,7 @@
     </column>
     <column id="100" parent="8" name="tableid">
       <Position>3</Position>
-      <DataType>int(11)|0</DataType>
+      <DataType>bigint(20)|0</DataType>
       <NotNull>1</NotNull>
     </column>
     <key id="101" parent="8" name="PRIMARY">
