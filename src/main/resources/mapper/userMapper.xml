@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.woodpecker.dao.UserDao">
-<!--设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称一致-->
+
+	<!--region 设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称一致-->
 	<resultMap id="BaseResultMap" type="com.woodpecker.domain.User">
 		<result column="id" property="id" jdbcType="INTEGER"/>
 		<result column="username" property="username" jdbcType="VARCHAR" />
@@ -15,7 +16,20 @@
 		<result column="sites" property="sites" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<!-- 建表相关 -->
+	<resultMap id="NormalCollectionMap" type="com.woodpecker.domain.NormalCollection">
+		<result column="dataid" property="dataid" jdbcType="INTEGER" />
+		<result column="data" property="data" jdbcType="VARCHAR" />
+		<result column="iscollection" property="iscollection" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="TableCollectionMap" type="com.woodpecker.domain.TableCollection">
+		<result column="dataid" property="dataid" jdbcType="INTEGER" />
+		<result column="data" property="data" jdbcType="VARCHAR" />
+		<result column="tableid" property="tableid" jdbcType="INTEGER" />
+	</resultMap>
+	<!-- endregion -->
+
+	<!-- region 建表相关 -->
 
 	<select id="existsTable" parameterType="String" resultType="Integer">
 		SHOW TABLES LIKE #{tableName}
@@ -52,13 +66,15 @@
 		sites VARCHAR(255) NOT NULL
 		)
 	</update>
+	<!-- endregion -->
 
-	<!-- 登录 -->
+	<!-- region 登录 -->
 	<select id="getUser"  resultMap="BaseResultMap">
 		SELECT * FROM user_t WHERE username = #{username} AND password = #{password}
 	</select>
+	<!-- endregion -->
 
-	<!-- keyword相关 -->
+	<!-- region keyword相关 -->
 	<select id="getKeyword"  resultMap="KeywordMap">
 		SELECT * FROM ${tableName}
 	</select>
@@ -79,5 +95,39 @@
 		UPDATE ${tableName} SET name = "${keyword.name}", sites = "${keyword.sites}"
 		WHERE keywordid = ${keyword.keywordid}
 	</update>
+	<!-- endregion -->
 
+	<!-- region NormalCollection相关 -->
+	<select id="getNormalCollection"  resultMap="NormalCollectionMap">
+		SELECT * FROM ${tableName} WHERE iscollection = 1
+	</select>
+	<insert id="addNormalCollection" >
+		INSERT INTO ${tableName}(data,iscollection)
+		VALUES('${normalCollection.data}',${normalCollection.iscollection})
+	</insert>
+	<select id="searchNormalCollection">
+		SELECT * FROM ${tableName} WHERE dataid = ${normalCollection.dataid}
+	</select>
+	<delete id="delNormalCollection">
+		UPDATE ${tableName} SET iscollection = 0
+		WHERE dataid=${normalCollection.dataid}
+	</delete>
+	<!-- endregion -->
+
+	<!-- region TableCollection相关 -->
+	<select id="getTableCollection"  resultMap="TableCollectionMap">
+		SELECT * FROM ${tableName}
+	</select>
+	<insert id="addTableCollection" >
+		INSERT INTO ${tableName}(data,tableid)
+		VALUES('${tableCollection.data}',${tableCollection.tableid})
+	</insert>
+	<select id="searchTableCollection">
+		SELECT * FROM ${tableName} WHERE dataid = ${tableCollection.dataid}
+	</select>
+	<delete id="delTableCollection">
+		UPDATE ${tableName} SET iscollection = 0
+		WHERE dataid=${normalCollection.dataid}
+	</delete>
+	<!-- endregion -->
 </mapper>

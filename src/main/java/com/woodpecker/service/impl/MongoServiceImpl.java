@@ -21,7 +21,7 @@ public class MongoServiceImpl implements MongoService{
     private MongoTemplate mongoWeibo;
     @Autowired
     private MongoTemplate mongoUserCollection;
-
+/*
     //UserCollection
     public String insert(UserCollection userCollection) {
         mongoUserCollection.save(userCollection);
@@ -57,4 +57,5 @@ public class MongoServiceImpl implements MongoService{
         List<WeiboInfo> result=mongoWeibo.find(query,WeiboInfo.class);
         return result;
     }
+    */
 }

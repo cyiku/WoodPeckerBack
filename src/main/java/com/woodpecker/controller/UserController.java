@@ -1,5 +1,6 @@
 package com.woodpecker.controller;
 
+import com.woodpecker.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +18,6 @@ import org.json.JSONArray;
 
 import java.io.PrintWriter;
 
-import com.woodpecker.domain.User;
-import com.woodpecker.domain.Keyword;
-import com.woodpecker.domain.WeiboInfo;
-import com.woodpecker.domain.UserCollection;
 import com.woodpecker.service.UserService;
 import com.woodpecker.service.MongoService;
 
@@ -40,6 +37,7 @@ public class UserController {
     @Resource
     private MongoService mongoService;
 
+    //region Basic
     //添加一个日志器
     private static final Logger debug_info = LoggerFactory.getLogger(UserController.class);
     private static final Logger server_info = LoggerFactory.getLogger(UserController.class);
@@ -116,8 +114,9 @@ public class UserController {
             System.out.println(e);
         }
     }
+    //endregion
 
-    //Keywords
+    //region Keywords
     @RequestMapping(value = "/getKws", method = RequestMethod.POST)
     public void getKeyword(@RequestBody String info, HttpServletResponse resp) {
 
@@ -331,8 +330,9 @@ public class UserController {
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
     }
+    //endregion
 
-    //Collection
+    //region Collection
     @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
     public void addCollection(@RequestBody String info, HttpServletResponse resp) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -353,18 +353,27 @@ public class UserController {
 
             User user=verifyUser(userid,token);
             if(null!=user) {
-                UserCollection userCollection;
-                map.put("status", true);
-                map.put("reason", "");
                 switch(type) {
                     case "weibo":
-                       // userCollection = new UserCollection(data.getJSONObject(0).getString("id"),)
+                        data_str = data.toString();
+                        NormalCollection weiboCollection = new NormalCollection(null,data_str,1);
+                        userService.addWeiboCollection(user,weiboCollection);
                         break;
                     case "tieba":
+                        data_str = data.toString();
+                        NormalCollection tiebaCollection = new NormalCollection(null,data_str,1);
+                        userService.addTiebaCollection(user,tiebaCollection);
                         break;
                     case "table":
+                        System.out.println("table unhandled");
+                        break;
+                    default:
+                        System.out.println("default");
                         break;
                 }
+                map.put("status", true);
+                map.put("reason", "");
+                map.put("dataid", "TODO");
             }
             else {
                 map.put("status", false);
@@ -392,14 +401,28 @@ public class UserController {
 
             Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
-            String id = (String) jsonObject.get("dataid");
+            String type = (String) jsonObject.get("type");
+            Integer dataid = (Integer) jsonObject.get("dataid");
             out = resp.getWriter();
 
             User user=verifyUser(userid,token);
             if(null!=user) {
-                UserCollection userCollection = new UserCollection();
-                userCollection.setDataid(id);
-                mongoService.deleteByDataid(userCollection);
+                switch(type) {
+                    case "weibo":
+                        NormalCollection weiboCollection = new NormalCollection(dataid,null,null);
+                        userService.delWeiboCollection(user,weiboCollection);
+                        break;
+                    case "tieba":
+                        NormalCollection tiebaCollection = new NormalCollection(dataid,null,null);
+                        userService.delTiebaCollection(user,tiebaCollection);
+                        break;
+                    case "table":
+                        System.out.println("table unhandled");
+                        break;
+                    default:
+                        System.out.println("default");
+                        break;
+                }
                 map.put("status", true);
                 map.put("reason", "");
             }
@@ -433,21 +456,32 @@ public class UserController {
 
             User user=verifyUser(userid,token);
             if(null!=user) {
-                UserCollection userCollection = new UserCollection();
-                userCollection.setUserid(userid);
-                userCollection.setType(type);
-                List<UserCollection> collections = mongoService.getByUser(userCollection);
-                JSONArray result = new JSONArray();
-                for(Integer i=0;i<collections.size();i++) {
-                    innermap.clear();
-                    innermap.put("data", new JSONArray(collections.get(i).getData()));
-                    innermap.put("dataid", collections.get(i).getDataid());
-                    JSONObject inner = new JSONObject(innermap);
-                    result.put(inner);
+                switch(type) {
+                    case "weibo":
+                        List<NormalCollection> weiboList = userService.getWeiboCollection(user);
+                        JSONArray result = new JSONArray();
+                        Map<String,Object> tmp = new HashMap<String,Object>();
+                        for(NormalCollection weibo:weiboList) {
+                            tmp.clear();
+                            tmp.put("data",new JSONArray(weibo.getData()));
+                            tmp.put("dataid",weibo.getDataid());
+                            result.put(new JSONObject(tmp));
+                        }
+                        map.put("collection", result);
+                        break;
+                    case "tieba":
+                        List<NormalCollection> tiebaCollection = userService.getTiebaCollection(user);
+                        map.put("collection", tiebaCollection);
+                        break;
+                    case "table":
+                        System.out.println("table unhandled");
+                        break;
+                    default:
+                        System.out.println("default");
+                        break;
                 }
                 map.put("status", true);
                 map.put("reason", "");
-                map.put("collection", result);
             }
             else {
                 map.put("status", false);
@@ -464,8 +498,9 @@ public class UserController {
         out.write(returnJson.toString());
         System.out.println(returnJson.toString());
     }
+    //endregion
 
-    //test
+    //region test
     @RequestMapping(value = "/testPage", method = RequestMethod.POST)
     public void testFunc(@RequestBody String info, HttpServletResponse resp) {
         System.out.println("testFunc: " + info);
@@ -488,5 +523,5 @@ public class UserController {
         }
         out.write(outstr);
     }
-
+    //endregion
 }

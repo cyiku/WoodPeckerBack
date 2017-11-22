@@ -1,6 +1,8 @@
 package com.woodpecker.service.impl;
 
 import com.woodpecker.dao.UserDao;
+import com.woodpecker.domain.NormalCollection;
+import com.woodpecker.domain.TableCollection;
 import com.woodpecker.domain.User;
 import com.woodpecker.domain.Keyword;
 import com.woodpecker.service.UserService;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService{
             userDao.createKeyword("keyword_" + userName);
     }
 
-    //keyword
+    //region keyword
     public List<Keyword> getKeyword(User user) {
         return userDao.getKeyword("keyword_" + user.getId());
     }
@@ -49,7 +51,51 @@ public class UserServiceImpl implements UserService{
     public Integer updateKeyword(User user,Keyword keyword) {
         return userDao.updateKeyword("keyword_" + user.getId(), keyword);
     }
+    //endregion
 
-    //weibo
+    //region weibo collection
+    public List<NormalCollection> getWeiboCollection(User user) {
+        return userDao.getNormalCollection("collectionWeibo_" + user.getId());
+    }
+    public Integer addWeiboCollection(User user, NormalCollection weiboCollection) {
+        return userDao.addNormalCollection("collectionWeibo_" + user.getId(), weiboCollection);
+    }
+    public List<NormalCollection> searchWeiboCollection(User user, NormalCollection weiboCollection) {
+        return userDao.searchNormalCollection("collectionWeibo_" + user.getId(), weiboCollection);
+    }
+    public Integer delWeiboCollection(User user, NormalCollection weiboCollection) {
+        return userDao.delNormalCollection("collectionWeibo_" + user.getId(), weiboCollection);
+    }
+    //endregion
+
+    //region tieba collection
+    public List<NormalCollection> getTiebaCollection(User user) {
+        return userDao.getNormalCollection("collectionTieba_" + user.getId());
+    }
+    public Integer addTiebaCollection(User user, NormalCollection TiebaCollection) {
+        return userDao.addNormalCollection("collectionTieba_" + user.getId(), TiebaCollection);
+    }
+    public List<NormalCollection> searchTiebaCollection(User user, NormalCollection TiebaCollection) {
+        return userDao.searchNormalCollection("collectionTieba_" + user.getId(), TiebaCollection);
+    }
+    public Integer delTiebaCollection(User user, NormalCollection TiebaCollection) {
+        return userDao.delNormalCollection("collectionTieba_" + user.getId(), TiebaCollection);
+    }
+    //endregion
+
+    //region table collection
+    public List<TableCollection> getTableCollection(User user) {
+        return userDao.getTableCollection("collectionTable_" + user.getId());
+    }
+    public Integer addTableCollection(User user,TableCollection tableCollection) {
+        return userDao.addTableCollection("collectionTable_" + user.getId(), tableCollection);
+    }
+    public List<TableCollection> searchTableCollection(User user,TableCollection tableCollection) {
+        return userDao.searchTableCollection("collectionTable_" + user.getId(), tableCollection);
+    }
+    public Integer delTableCollection(User user,TableCollection tableCollection) {
+        return userDao.delTableCollection("collectionTable_" + user.getId(), tableCollection);
+    }
+    //endregion
 }
 
