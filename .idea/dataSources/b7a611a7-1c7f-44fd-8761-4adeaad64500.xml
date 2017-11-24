@@ -239,9 +239,8 @@
     <table id="97" parent="6" name="renmin_hsk"/>
     <column id="98" parent="8" name="dataid">
       <Position>1</Position>
-      <DataType>int(11)|0</DataType>
+      <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
     </column>
     <column id="99" parent="8" name="data">
       <Position>2</Position>
@@ -265,9 +264,8 @@
     </key>
     <column id="103" parent="9" name="dataid">
       <Position>1</Position>
-      <DataType>int(11)|0</DataType>
+      <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
     </column>
     <column id="104" parent="9" name="data">
       <Position>2</Position>
@@ -286,9 +284,8 @@
     </key>
     <column id="107" parent="10" name="dataid">
       <Position>1</Position>
-      <DataType>int(11)|0</DataType>
+      <DataType>varchar(255)|0</DataType>
       <NotNull>1</NotNull>
-      <SequenceIdentity>1</SequenceIdentity>
     </column>
     <column id="108" parent="10" name="data">
       <Position>2</Position>

@@ -34,9 +34,7 @@ public class UserController {
 
     //region Basic
     //添加一个日志器
-    private static final Logger debug_info = LoggerFactory.getLogger(UserController.class);
-    private static final Logger server_info = LoggerFactory.getLogger(UserController.class);
-    private static final Logger error_info = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     //验证用户id与token是否对应
     public User verifyUser(Integer id, String token){
@@ -330,6 +328,7 @@ public class UserController {
     //region Collection
     @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
     public void addCollection(@RequestBody String info, HttpServletResponse resp) {
+        System.out.println("Add collection");
         Map<String, Object> map = new HashMap<String, Object>();
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -342,6 +341,7 @@ public class UserController {
             String token = (String) jsonObject.get("token");
             String type = (String) jsonObject.get("type");
             JSONArray data =(JSONArray) jsonObject.get("data");
+            String dataid;
             String data_str;
             System.out.println(data.toString());
             out = resp.getWriter();
@@ -352,8 +352,9 @@ public class UserController {
             if(null!=user) {
                 switch(type) {
                     case "weibo":
+                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
                         data_str = data.getJSONObject(0).toString();
-                        NormalCollection weiboCollection = new NormalCollection(null,data_str,1);
+                        NormalCollection weiboCollection = new NormalCollection(dataid,data_str,1);
                         List<NormalCollection> weiboList = userService.searchWeiboCollection(user,weiboCollection);
                         if(weiboList.isEmpty()) {
                             userService.addWeiboCollection(user,weiboCollection);
@@ -364,8 +365,9 @@ public class UserController {
                         }
                         break;
                     case "tieba":
+                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
                         data_str = data.getJSONObject(0).toString();
-                        NormalCollection tiebaCollection = new NormalCollection(null,data_str,1);
+                        NormalCollection tiebaCollection = new NormalCollection(dataid,data_str,1);
                         List<NormalCollection> tiebaList = userService.searchTiebaCollection(user,tiebaCollection);
                         if(tiebaList.isEmpty()) {
                             userService.addTiebaCollection(user,tiebaCollection);
@@ -378,8 +380,9 @@ public class UserController {
                     case "table":
                         List<TableCollection> tableCollections = new ArrayList<TableCollection>();
                         for(Object o: data) {
+                            dataid = String.valueOf(((JSONObject)o).get("id"));
                             data_str = ((JSONObject)o).toString();
-                            tableCollections.add(new TableCollection(null,data_str,date.getTime(),1));
+                            tableCollections.add(new TableCollection(dataid,data_str,date.getTime(),1));
                         }
                         List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
                         if(tableList.isEmpty()) {
@@ -407,9 +410,11 @@ public class UserController {
         }
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
+        System.out.println(returnJson.toString());
     }
     @RequestMapping(value = "/delCollection", method = RequestMethod.POST)
     public void delCollection(@RequestBody String info, HttpServletResponse resp) {
+        System.out.println("Del collection");
         Map<String, Object> map = new HashMap<String, Object>();
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -421,8 +426,8 @@ public class UserController {
             Integer userid = (Integer) jsonObject.get("id");
             String token = (String) jsonObject.get("token");
             String type = (String) jsonObject.get("type");
-            JSONArray data = ((JSONArray) jsonObject.get("data"));
-            String data_str;
+            JSONArray dataidList = ((JSONArray) jsonObject.get("dataid"));
+            String dataid;
             out = resp.getWriter();
 
             Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -432,8 +437,8 @@ public class UserController {
             if(null!=user) {
                 switch(type) {
                     case "weibo":
-                        data_str = data.getJSONObject(0).toString();
-                        NormalCollection weiboCollection = new NormalCollection(null,data_str,null);
+                        dataid = String.valueOf(dataidList.get(0));
+                        NormalCollection weiboCollection = new NormalCollection(dataid,null,null);
                         userService.delWeiboCollection(user,weiboCollection);
                         List<NormalCollection> weiboList = userService.getWeiboCollection(user);
                         result = new ArrayList<JSONObject>();
@@ -443,8 +448,8 @@ public class UserController {
                         map.put("collection", result);
                         break;
                     case "tieba":
-                        data_str = data.getJSONObject(0).toString();
-                        NormalCollection tiebaCollection = new NormalCollection(null,data_str,null);
+                        dataid = String.valueOf(dataidList.get(0));
+                        NormalCollection tiebaCollection = new NormalCollection(dataid,null,null);
                         userService.delTiebaCollection(user,tiebaCollection);
                         List<NormalCollection> tiebaList = userService.getTiebaCollection(user);
                         result = new ArrayList<JSONObject>();
@@ -455,15 +460,15 @@ public class UserController {
                         break;
                     case "table":
                         List<TableCollection> tableCollections = new ArrayList<TableCollection>();
-                        for(Object o: data) {
-                            data_str = ((JSONObject)o).toString();
-                            tableCollections.add(new TableCollection(null,data_str,null,null));
+                        for(Object o: dataidList) {
+                            dataid = String.valueOf(o);
+                            tableCollections.add(new TableCollection(dataid,null,null,null));
                         }
                         userService.delTableCollection(user,tableCollections);
                         List<TableCollection> tableList = userService.getTableCollection(user);
                         Long tableid = null;
                         List<List> resultList = new ArrayList<List>();
-                        result = new ArrayList<JSONObject>();
+                        result = null;
                         for(TableCollection table:tableList) {
                             if(null == tableid) {
                                 tableid = table.getTableid();
@@ -480,7 +485,7 @@ public class UserController {
                                 result.add(new JSONObject(table.getData()));
                             }
                         }
-                        resultList.add(result);
+                        if(null!=result)resultList.add(result);
                         map.put("collection", resultList);
                         break;
                     default:
@@ -501,9 +506,11 @@ public class UserController {
         }
         JSONObject returnJson = new JSONObject(map);
         out.write(returnJson.toString());
+        System.out.println(returnJson.toString());
     }
     @RequestMapping(value = "/getCollection", method = RequestMethod.POST)
     public void getCollection(@RequestBody String info, HttpServletResponse resp) {
+        System.out.println("Get collection");
         Map<String, Object> map = new HashMap<String, Object>();
         Map<String, Object> innermap = new HashMap<String, Object>();
         // 解决乱码
@@ -543,7 +550,7 @@ public class UserController {
                         List<TableCollection> tableList = userService.getTableCollection(user);
                         Long tableid = null;
                         List<List> resultList = new ArrayList<List>();
-                        result = new ArrayList<JSONObject>();
+                        result = null;
                         for(TableCollection table:tableList) {
                             if(null == tableid) {
                                 tableid = table.getTableid();
@@ -560,7 +567,7 @@ public class UserController {
                                 result.add(new JSONObject(table.getData()));
                             }
                         }
-                        resultList.add(result);
+                        if(null!=result)resultList.add(result);
                         map.put("collection", resultList);
                         break;
                     default:
@@ -599,7 +606,8 @@ public class UserController {
             Map<String, Object> map = new HashMap<String, Object>();
             out = resp.getWriter();
             //test code
-            userService.newUser(info);
+            //userService.newUser(info);
+            logger.info("!!");
             //test code
             map.put("result","success");
             JSONObject returnJSON = new JSONObject(map);
