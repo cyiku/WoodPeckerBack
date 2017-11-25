@@ -56,7 +56,8 @@
 		CREATE TABLE ${_parameter} (
 			dataid VARCHAR(255) NOT NULL PRIMARY KEY,
 			data VARCHAR(2047) NOT NULL,
-			tableid BIGINT NOT NULL
+			tableid BIGINT NOT NULL PRIMARY KEY,
+			iscollection INTEGER NOT NULL
 		)
 	</update>
 
@@ -145,10 +146,10 @@
 		)
 	</select>
 	<update id="resetTableCollection">
-		UPDATE ${tableName} SET iscollection = 1 WHERE dataid IN (
+		UPDATE ${tableName} SET iscollection = 1 WHERE tableid IN (
 			<foreach item="item" index="" collection="tableCollection"
 					 open="" close="" separator=",">
-				${item.dataid}
+				${item.tableid}
 			</foreach>
 		)
 	</update>

@@ -259,7 +259,8 @@
     </column>
     <key id="102" parent="8" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
-      <ColNames>dataid</ColNames>
+      <ColNames>dataid
+tableid</ColNames>
       <Primary>1</Primary>
     </key>
     <column id="103" parent="9" name="dataid">
