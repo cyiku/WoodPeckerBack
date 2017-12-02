@@ -21,20 +21,37 @@ public interface UserService {
     Integer updateKeyword(User user,Keyword keyword);
     //endregion
 
-    //region weibo collection
+    //region normal collection
+    //weibo
+    List<NormalCollection> getAgencyCollection(User user);
+    Integer addAgencyCollection(User user, NormalCollection normalCollection);
+    List<NormalCollection> searchAgencyCollection(User user, NormalCollection normalCollection);
+    Integer resetAgencyCollection(User user, NormalCollection normalCollection);
+    Integer delAgencyCollection(User user, NormalCollection normalCollection);
+
+    List<NormalCollection> getChartCollection(User user);
+    Integer addChartCollection(User user, NormalCollection normalCollection);
+    List<NormalCollection> searchChartCollection(User user, NormalCollection normalCollection);
+    Integer resetChartCollection(User user, NormalCollection normalCollection);
+    Integer delChartCollection(User user, NormalCollection normalCollection);
+
+    List<NormalCollection> getForumCollection(User user);
+    Integer addForumCollection(User user, NormalCollection normalCollection);
+    List<NormalCollection> searchForumCollection(User user, NormalCollection normalCollection);
+    Integer resetForumCollection(User user, NormalCollection normalCollection);
+    Integer delForumCollection(User user, NormalCollection normalCollection);
+
+    List<NormalCollection> getPortalCollection(User user);
+    Integer addPortalCollection(User user, NormalCollection normalCollection);
+    List<NormalCollection> searchPortalCollection(User user, NormalCollection normalCollection);
+    Integer resetPortalCollection(User user, NormalCollection normalCollection);
+    Integer delPortalCollection(User user, NormalCollection normalCollection);
+
     List<NormalCollection> getWeiboCollection(User user);
     Integer addWeiboCollection(User user, NormalCollection normalCollection);
     List<NormalCollection> searchWeiboCollection(User user, NormalCollection normalCollection);
     Integer resetWeiboCollection(User user, NormalCollection normalCollection);
     Integer delWeiboCollection(User user, NormalCollection normalCollection);
-    //endregion
-
-    //region tieba collection
-    List<NormalCollection> getTiebaCollection(User user);
-    Integer addTiebaCollection(User user, NormalCollection normalCollection);
-    List<NormalCollection> searchTiebaCollection(User user, NormalCollection normalCollection);
-    Integer resetTiebaCollection(User user, NormalCollection normalCollection);
-    Integer delTiebaCollection(User user, NormalCollection normalCollection);
     //endregion
 
     //region table collection

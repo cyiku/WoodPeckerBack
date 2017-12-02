@@ -351,6 +351,58 @@ public class UserController {
             User user=verifyUser(userid,token);
             if(null!=user) {
                 switch(type) {
+                    case "agency":
+                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
+                        data_str = data.getJSONObject(0).toString();
+                        NormalCollection agencyCollection = new NormalCollection(dataid,data_str,1);
+                        List<NormalCollection> agencyList = userService.searchAgencyCollection(user,agencyCollection);
+                        if(agencyList.isEmpty()) {
+                            userService.addAgencyCollection(user,agencyCollection);
+                        }
+                        else {
+                            agencyCollection = agencyList.get(0);
+                            userService.resetAgencyCollection(user,agencyCollection);
+                        }
+                        break;
+                    case "chart":
+                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
+                        data_str = data.getJSONObject(0).toString();
+                        NormalCollection chartCollection = new NormalCollection(dataid,data_str,1);
+                        List<NormalCollection> chartList = userService.searchChartCollection(user,chartCollection);
+                        if(chartList.isEmpty()) {
+                            userService.addChartCollection(user,chartCollection);
+                        }
+                        else {
+                            chartCollection = chartList.get(0);
+                            userService.resetChartCollection(user,chartCollection);
+                        }
+                        break;
+                    case "forum":
+                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
+                        data_str = data.getJSONObject(0).toString();
+                        NormalCollection forumCollection = new NormalCollection(dataid,data_str,1);
+                        List<NormalCollection> forumList = userService.searchForumCollection(user,forumCollection);
+                        if(forumList.isEmpty()) {
+                            userService.addForumCollection(user,forumCollection);
+                        }
+                        else {
+                            forumCollection = forumList.get(0);
+                            userService.resetForumCollection(user,forumCollection);
+                        }
+                        break;
+                    case "portal":
+                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
+                        data_str = data.getJSONObject(0).toString();
+                        NormalCollection portalCollection = new NormalCollection(dataid,data_str,1);
+                        List<NormalCollection> portalList = userService.searchPortalCollection(user,portalCollection);
+                        if(portalList.isEmpty()) {
+                            userService.addPortalCollection(user,portalCollection);
+                        }
+                        else {
+                            portalCollection = portalList.get(0);
+                            userService.resetPortalCollection(user,portalCollection);
+                        }
+                        break;
                     case "weibo":
                         dataid = String.valueOf(data.getJSONObject(0).get("id"));
                         data_str = data.getJSONObject(0).toString();
@@ -364,19 +416,7 @@ public class UserController {
                             userService.resetWeiboCollection(user,weiboCollection);
                         }
                         break;
-                    case "tieba":
-                        dataid = String.valueOf(data.getJSONObject(0).get("id"));
-                        data_str = data.getJSONObject(0).toString();
-                        NormalCollection tiebaCollection = new NormalCollection(dataid,data_str,1);
-                        List<NormalCollection> tiebaList = userService.searchTiebaCollection(user,tiebaCollection);
-                        if(tiebaList.isEmpty()) {
-                            userService.addTiebaCollection(user,tiebaCollection);
-                        }
-                        else {
-                            tiebaCollection = tiebaList.get(0);
-                            userService.resetTiebaCollection(user,tiebaCollection);
-                        }
-                        break;
+
                     case "table":
                         List<TableCollection> tableCollections = new ArrayList<TableCollection>();
                         for(Object o: data) {
@@ -402,10 +442,12 @@ public class UserController {
             else {
                 map.put("status", false);
                 map.put("reason", "用户身份验证失败");
+                map.put("logout", true);
             }
         } catch (Exception e) {
             map.put("status", false);
             map.put("reason", "未知错误");
+            map.put("logout", true);
             e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
@@ -436,6 +478,50 @@ public class UserController {
             User user=verifyUser(userid,token);
             if(null!=user) {
                 switch(type) {
+                    case "agency":
+                        dataid = String.valueOf(dataidList.get(0));
+                        NormalCollection agencyCollection = new NormalCollection(dataid,null,null);
+                        userService.delAgencyCollection(user,agencyCollection);
+                        List<NormalCollection> agencyList = userService.getAgencyCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection agency:agencyList) {
+                            result.add(new JSONObject(agency.getData()));
+                        }
+                        map.put("collection", result);
+                        break;
+                    case "chart":
+                        dataid = String.valueOf(dataidList.get(0));
+                        NormalCollection chartCollection = new NormalCollection(dataid,null,null);
+                        userService.delChartCollection(user,chartCollection);
+                        List<NormalCollection> chartList = userService.getChartCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection chart:chartList) {
+                            result.add(new JSONObject(chart.getData()));
+                        }
+                        map.put("collection", result);
+                        break;
+                    case "forum":
+                        dataid = String.valueOf(dataidList.get(0));
+                        NormalCollection forumCollection = new NormalCollection(dataid,null,null);
+                        userService.delForumCollection(user,forumCollection);
+                        List<NormalCollection> forumList = userService.getForumCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection forum:forumList) {
+                            result.add(new JSONObject(forum.getData()));
+                        }
+                        map.put("collection", result);
+                        break;
+                    case "portal":
+                        dataid = String.valueOf(dataidList.get(0));
+                        NormalCollection portalCollection = new NormalCollection(dataid,null,null);
+                        userService.delPortalCollection(user,portalCollection);
+                        List<NormalCollection> portalList = userService.getPortalCollection(user);
+                        result = new ArrayList<JSONObject>();
+                        for(NormalCollection portal:portalList) {
+                            result.add(new JSONObject(portal.getData()));
+                        }
+                        map.put("collection", result);
+                        break;
                     case "weibo":
                         dataid = String.valueOf(dataidList.get(0));
                         NormalCollection weiboCollection = new NormalCollection(dataid,null,null);
@@ -444,17 +530,6 @@ public class UserController {
                         result = new ArrayList<JSONObject>();
                         for(NormalCollection weibo:weiboList) {
                             result.add(new JSONObject(weibo.getData()));
-                        }
-                        map.put("collection", result);
-                        break;
-                    case "tieba":
-                        dataid = String.valueOf(dataidList.get(0));
-                        NormalCollection tiebaCollection = new NormalCollection(dataid,null,null);
-                        userService.delTiebaCollection(user,tiebaCollection);
-                        List<NormalCollection> tiebaList = userService.getTiebaCollection(user);
-                        result = new ArrayList<JSONObject>();
-                        for(NormalCollection tieba:tiebaList) {
-                            result.add(new JSONObject(tieba.getData()));
                         }
                         map.put("collection", result);
                         break;
@@ -498,10 +573,12 @@ public class UserController {
             else {
                 map.put("status", false);
                 map.put("reason", "用户身份验证失败");
+                map.put("logout", true);
             }
         } catch (Exception e) {
             map.put("status", false);
             map.put("reason", "未知错误");
+            map.put("logout", true);
             e.printStackTrace();
         }
         JSONObject returnJson = new JSONObject(map);
@@ -512,7 +589,6 @@ public class UserController {
     public void getCollection(@RequestBody String info, HttpServletResponse resp) {
         System.out.println("Get collection");
         Map<String, Object> map = new HashMap<String, Object>();
-        Map<String, Object> innermap = new HashMap<String, Object>();
         // 解决乱码
         resp.setHeader("Content-Type", "application/json;charset=UTF-8");
         PrintWriter out = null;
@@ -529,50 +605,57 @@ public class UserController {
 
             User user=verifyUser(userid,token);
             if(null!=user) {
-                switch(type) {
-                    case "weibo":
-                        List<NormalCollection> weiboList = userService.getWeiboCollection(user);
-                        result = new ArrayList<JSONObject>();
-                        for(NormalCollection weibo:weiboList) {
-                            result.add(new JSONObject(weibo.getData()));
+                if(type=="table") {
+                    List<TableCollection> tableList = userService.getTableCollection(user);
+                    Long tableid = null;
+                    List<List> resultList = new ArrayList<List>();
+                    result = null;
+                    for(TableCollection table:tableList) {
+                        if(null == tableid) {
+                            tableid = table.getTableid();
+                            result = new ArrayList<JSONObject>();
+                            result.add(new JSONObject(table.getData()));
                         }
-                        map.put("collection", result);
-                        break;
-                    case "tieba":
-                        List<NormalCollection> tiebaList = userService.getTiebaCollection(user);
-                        result = new ArrayList<JSONObject>();
-                        for(NormalCollection tieba:tiebaList) {
-                            result.add(new JSONObject(tieba.getData()));
+                        else if(tableid.equals(table.getTableid())) {
+                            result.add(new JSONObject(table.getData()));
                         }
-                        map.put("collection", result);
-                        break;
-                    case "table":
-                        List<TableCollection> tableList = userService.getTableCollection(user);
-                        Long tableid = null;
-                        List<List> resultList = new ArrayList<List>();
-                        result = null;
-                        for(TableCollection table:tableList) {
-                            if(null == tableid) {
-                                tableid = table.getTableid();
-                                result = new ArrayList<JSONObject>();
-                                result.add(new JSONObject(table.getData()));
-                            }
-                            else if(tableid.equals(table.getTableid())) {
-                                result.add(new JSONObject(table.getData()));
-                            }
-                            else {
-                                tableid = table.getTableid();
-                                resultList.add(result);
-                                result = new ArrayList<JSONObject>();
-                                result.add(new JSONObject(table.getData()));
-                            }
+                        else {
+                            tableid = table.getTableid();
+                            resultList.add(result);
+                            result = new ArrayList<JSONObject>();
+                            result.add(new JSONObject(table.getData()));
                         }
-                        if(null!=result)resultList.add(result);
-                        map.put("collection", resultList);
-                        break;
-                    default:
-                        System.out.println("default");
-                        break;
+                    }
+                    if(null!=result)resultList.add(result);
+                    map.put("collection", resultList);
+                }
+                else {
+                    List<NormalCollection> normalCollectionList;
+                    switch(type) {
+                        case "agency":
+                            normalCollectionList = userService.getAgencyCollection(user);
+                            break;
+                        case "chart":
+                            normalCollectionList = userService.getChartCollection(user);
+                            break;
+                        case "forum":
+                            normalCollectionList = userService.getForumCollection(user);
+                            break;
+                        case "portal":
+                            normalCollectionList = userService.getPortalCollection(user);
+                            break;
+                        case "weibo":
+                            normalCollectionList = userService.getWeiboCollection(user);
+                            break;
+                        default:
+                            normalCollectionList = new ArrayList<>();
+                            System.out.println("default");
+                    }
+                    result = new ArrayList<JSONObject>();
+                    for(NormalCollection normalCollection:normalCollectionList) {
+                        result.add(new JSONObject(normalCollection.getData()));
+                    }
+                    map.put("collection",result);
                 }
                 map.put("status", true);
                 map.put("reason", "");
@@ -592,6 +675,96 @@ public class UserController {
         out.write(returnJson.toString());
         System.out.println(returnJson.toString());
     }
+
+    @RequestMapping(value = "/isCollection", method = RequestMethod.POST)
+    public void isCollection(@RequestBody String info, HttpServletResponse resp) {
+        System.out.println("Verify collection");
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 解决乱码
+        resp.setHeader("Content-Type", "application/json;charset=UTF-8");
+        PrintWriter out = null;
+        try {
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+
+            Integer userid = (Integer) jsonObject.get("id");
+            String token = (String) jsonObject.get("token");
+            String type = (String) jsonObject.get("type");
+            JSONArray dataidList = ((JSONArray) jsonObject.get("dataid"));
+            String dataid;
+            out = resp.getWriter();
+
+            User user=verifyUser(userid,token);
+            if(null!=user) {
+                NormalCollection normalCollection;
+                List<NormalCollection> normalCollectionList;
+                if(type=="table") {
+                    List<TableCollection> tableCollections = new ArrayList<TableCollection>();
+                    for(Object o: dataidList) {
+                        dataid = String.valueOf(o);
+                        tableCollections.add(new TableCollection(dataid,null,null,null));
+                    }
+                    List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
+                    if(tableList.isEmpty()) {
+                        map.put("iscollection",false);
+                    }
+                    else {
+                        map.put("iscollection",true);
+                    }
+                }
+                else {
+                    dataid = String.valueOf(dataidList.get(0));
+                    normalCollection = new NormalCollection(dataid,null,null);
+                    switch(type) {
+                        case "agency":
+                            normalCollectionList = userService.searchAgencyCollection(user, normalCollection);
+                            break;
+                        case "chart":
+                            normalCollectionList = userService.searchChartCollection(user, normalCollection);
+                            break;
+                        case "forum":
+                            normalCollectionList = userService.searchForumCollection(user, normalCollection);
+                            break;
+                        case "portal":
+                            normalCollectionList = userService.searchPortalCollection(user, normalCollection);
+                            break;
+                        case "weibo":
+                            normalCollectionList = userService.searchWeiboCollection(user, normalCollection);
+                            break;
+                        default:
+                            normalCollectionList = new ArrayList<>();
+                            System.out.println("unknown type " + type);
+                            break;
+                    }
+                    if(normalCollectionList.isEmpty()) {
+                        map.put("iscollection",false);
+                    }
+                    else if(normalCollectionList.get(0).getIscollection()==0) {
+                        map.put("iscollection",false);
+                    }
+                    else {
+                        map.put("iscollection",true);
+                    }
+                }
+                map.put("status", true);
+                map.put("reason", "");
+            }
+            else {
+                map.put("status", false);
+                map.put("reason", "用户身份验证失败");
+                map.put("logout", true);
+            }
+        } catch (Exception e) {
+            map.put("status", false);
+            map.put("reason", "未知错误");
+            map.put("logout", true);
+            e.printStackTrace();
+        }
+        JSONObject returnJson = new JSONObject(map);
+        out.write(returnJson.toString());
+        System.out.println(returnJson.toString());
+    }
+
     //endregion
 
     //region test
