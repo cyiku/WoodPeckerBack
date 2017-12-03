@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.dao.UserDao">
+<mapper namespace="com.woodpecker.dao.UserDao">
 
 	<!--region 设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称一致-->
-	<resultMap id="BaseResultMap" type="com.example.demo.domain.User">
+	<resultMap id="BaseResultMap" type="com.woodpecker.domain.User">
 		<result column="id" property="id" jdbcType="INTEGER"/>
 		<result column="username" property="username" jdbcType="VARCHAR" />
 		<result column="password" property="password" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="userMap" type="com.example.demo.domain.User">
+	<resultMap id="userMap" type="com.woodpecker.domain.User">
 		<id property="id" column="ID"/>
 		<result property="username" column="username"/>
 		<result property="password" column="password"/>
@@ -19,19 +19,19 @@
 		</collection>
 	</resultMap>
 
-	<resultMap id="KeywordMap" type="com.example.demo.domain.Keyword">
+	<resultMap id="KeywordMap" type="com.woodpecker.domain.Keyword">
 		<result column="keywordid" property="keywordid" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="sites" property="sites" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="NormalCollectionMap" type="com.example.demo.domain.NormalCollection">
+	<resultMap id="NormalCollectionMap" type="com.woodpecker.domain.NormalCollection">
 		<result column="dataid" property="dataid" jdbcType="INTEGER" />
 		<result column="data" property="data" jdbcType="VARCHAR" />
 		<result column="iscollection" property="iscollection" jdbcType="INTEGER" />
 	</resultMap>
 
-	<resultMap id="TableCollectionMap" type="com.example.demo.domain.TableCollection">
+	<resultMap id="TableCollectionMap" type="com.woodpecker.domain.TableCollection">
 		<result column="dataid" property="dataid" jdbcType="INTEGER" />
 		<result column="data" property="data" jdbcType="VARCHAR" />
 		<result column="tableid" property="tableid" jdbcType="BIGINT" />
