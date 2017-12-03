@@ -1,33 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.woodpecker.dao.UserDao">
+<mapper namespace="com.example.demo.dao.UserDao">
 
 	<!--region 设置domain类和数据库中表的字段一一对应，注意数据库字段和domain类中的字段名称一致-->
-	<resultMap id="BaseResultMap" type="com.woodpecker.domain.User">
+	<resultMap id="BaseResultMap" type="com.example.demo.domain.User">
 		<result column="id" property="id" jdbcType="INTEGER"/>
 		<result column="username" property="username" jdbcType="VARCHAR" />
 		<result column="password" property="password" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="KeywordMap" type="com.woodpecker.domain.Keyword">
+	<resultMap id="userMap" type="com.example.demo.domain.User">
+		<id property="id" column="ID"/>
+		<result property="username" column="username"/>
+		<result property="password" column="password"/>
+		<collection property="roles" ofType="string">
+			<result column="name" property="name"/>
+		</collection>
+	</resultMap>
+
+	<resultMap id="KeywordMap" type="com.example.demo.domain.Keyword">
 		<result column="keywordid" property="keywordid" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="sites" property="sites" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="NormalCollectionMap" type="com.woodpecker.domain.NormalCollection">
+	<resultMap id="NormalCollectionMap" type="com.example.demo.domain.NormalCollection">
 		<result column="dataid" property="dataid" jdbcType="INTEGER" />
 		<result column="data" property="data" jdbcType="VARCHAR" />
 		<result column="iscollection" property="iscollection" jdbcType="INTEGER" />
 	</resultMap>
 
-	<resultMap id="TableCollectionMap" type="com.woodpecker.domain.TableCollection">
+	<resultMap id="TableCollectionMap" type="com.example.demo.domain.TableCollection">
 		<result column="dataid" property="dataid" jdbcType="INTEGER" />
 		<result column="data" property="data" jdbcType="VARCHAR" />
 		<result column="tableid" property="tableid" jdbcType="BIGINT" />
 		<result column="iscollection" property="iscollection" jdbcType="INTEGER" />
 	</resultMap>
+	<!-- endregion -->
+
+	<!-- region 登录注册相关-->
+	<select id="getUser"  resultMap="BaseResultMap">
+		SELECT * FROM user_t WHERE username = #{username}
+	</select>
+
+	<select id="findByUserName" parameterType="String" resultMap="userMap">
+		select u.*
+		,r.name
+		from user_t u
+		LEFT JOIN role_user ru on u.id= ru.user_id
+		LEFT JOIN role_t r on ru.role_id=r.id
+		where username= #{username}
+	</select>
+
+	<insert id="insert" >
+		INSERT INTO user_t(username,password) VALUES("${username}", "${password}");
+		insert into role_user(role_id, user_id) select r.id, u.id from role_t r, user_t u where r.name in
+			<foreach item="item" index="" collection="roles"
+					 open="(" close=")" separator=",">"${item}"
+			</foreach> and u.username="${username}";
+	</insert>
 	<!-- endregion -->
 
 	<!-- region 建表相关 -->
@@ -38,42 +70,36 @@
 
 	<update id="createCollectionWeibo" parameterType="String">
 		CREATE TABLE ${_parameter} (
-			dataid VARCHAR(255) NOT NULL PRIMARY KEY,
-			data VARCHAR(2047) NOT NULL,
-			iscollection INTEGER NOT NULL
+		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
+		data VARCHAR(2047) NOT NULL,
+		iscollection INTEGER NOT NULL
 		)
 	</update>
 
 	<update id="createCollectionTieba" parameterType="String">
 		CREATE TABLE ${_parameter} (
-			dataid VARCHAR(255) NOT NULL PRIMARY KEY,
-			data VARCHAR(2047) NOT NULL,
-			iscollection INTEGER NOT NULL
+		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
+		data VARCHAR(2047) NOT NULL,
+		iscollection INTEGER NOT NULL
 		)
 	</update>
 
 	<update id="createCollectionTable" parameterType="String">
 		CREATE TABLE ${_parameter} (
-			dataid VARCHAR(255) NOT NULL PRIMARY KEY,
-			data VARCHAR(2047) NOT NULL,
-			tableid BIGINT NOT NULL PRIMARY KEY,
-			iscollection INTEGER NOT NULL
+		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
+		data VARCHAR(2047) NOT NULL,
+		tableid BIGINT NOT NULL PRIMARY KEY,
+		iscollection INTEGER NOT NULL
 		)
 	</update>
 
 	<update id="createKeyword" parameterType="String">
 		CREATE TABLE ${_parameter} (
-			dataid VARCHAR(255) NOT NULL PRIMARY KEY,
-			name VARCHAR(255) NOT NULL,
-			sites VARCHAR(255) NOT NULL
+		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		sites VARCHAR(255) NOT NULL
 		)
 	</update>
-	<!-- endregion -->
-
-	<!-- region 登录 -->
-	<select id="getUser"  resultMap="BaseResultMap">
-		SELECT * FROM user_t WHERE username = #{username} AND password = #{password}
-	</select>
 	<!-- endregion -->
 
 	<!-- region keyword相关 -->
@@ -83,6 +109,7 @@
 
 	<insert id="addKeyword" >
 		INSERT INTO ${tableName}(name,sites) VALUES("${keyword.name}", "${keyword.sites}")
+
 	</insert>
 
 	<select id="searchKeyword" resultMap="KeywordMap">
@@ -135,35 +162,36 @@
 	</insert>
 	<select id="searchTableCollection"  resultMap="TableCollectionMap">
 		SELECT * FROM ${tableName} WHERE tableid IN (
-			SELECT tableid FROM ${tableName} WHERE tableid IN (
-				SELECT tableid FROM ${tableName}
-				WHERE dataid IN (
-					<foreach item="item" index="" collection="tableCollection"
-							 open="" close="" separator=",">'${item.dataid}'
-					</foreach>
-				) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
-			) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
+		SELECT tableid FROM ${tableName} WHERE tableid IN (
+		SELECT tableid FROM ${tableName}
+		WHERE dataid IN (
+		<foreach item="item" index="" collection="tableCollection"
+				 open="" close="" separator=",">'${item.dataid}'
+		</foreach>
+		) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
+		) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
 		)
 	</select>
 	<update id="resetTableCollection">
 		UPDATE ${tableName} SET iscollection = 1 WHERE tableid IN (
-			<foreach item="item" index="" collection="tableCollection"
-					 open="" close="" separator=",">
-				${item.tableid}
-			</foreach>
+		<foreach item="item" index="" collection="tableCollection"
+				 open="" close="" separator=",">
+			${item.tableid}
+		</foreach>
 		)
 	</update>
 	<update id="delTableCollection">
 		UPDATE ${tableName} SET iscollection = 0 WHERE tableid IN (
-			SELECT tableid FROM (SELECT * FROM ${tableName}) AS temp WHERE tableid IN (
-				SELECT tableid FROM (SELECT * FROM ${tableName}) AS temp
-				WHERE dataid IN (
-					<foreach item="item" index="" collection="tableCollection"
-							 open="" close="" separator=",">'${item.dataid}'
-					</foreach>
-				) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
-			) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
+		SELECT tableid FROM (SELECT * FROM ${tableName}) AS temp WHERE tableid IN (
+		SELECT tableid FROM (SELECT * FROM ${tableName}) AS temp
+		WHERE dataid IN (
+		<foreach item="item" index="" collection="tableCollection"
+				 open="" close="" separator=",">'${item.dataid}'
+		</foreach>
+		) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
+		) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
 		)
 	</update>
 	<!-- endregion -->
+
 </mapper>

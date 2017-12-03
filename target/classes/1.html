@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    const requestOptions = {
+        method: 'POST',
+        headers: new Headers({ 'X-Platform-Version': 1,'Content-Type': 'application/json'}),
+        body: JSON.stringify({'token': "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyIiwiY3JlYXRlZCI6MTUxMjI5MTYyMDE5MywiZXhwIjoxNTEyODk2NDIwfQ.3R55cLzln1z2PPkOia69ByqIvVEHQHvhQi5G4YfV13_53r-RfXwEx2OsM2Ea3HgA1tQkpuIqqfjoOBmyV6t5Fw"})
+    };
+    console.log(requestOptions);
+    fetch('http://localhost:8080/getKws', requestOptions);
+
+</script>
+
+</body>
+</html>
