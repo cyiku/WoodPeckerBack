@@ -1,5 +1,6 @@
 package com.woodpecker.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.woodpecker.domain.NormalCollection;
 import com.woodpecker.domain.TableCollection;
 import com.woodpecker.domain.User;
@@ -333,7 +334,14 @@ public class CollectionController {
                     map.put("iscollection",false);
                 }
                 else {
-                    map.put("iscollection",true);
+                    Boolean result = true;
+                    for(TableCollection tableCollection: tableList) {
+                        if(tableCollection.getIscollection() == 0) {
+                            result=false;
+                            break;
+                        }
+                    }
+                    map.put("iscollection",result);
                 }
             }
             else {
@@ -369,9 +377,8 @@ public class CollectionController {
                 }
             }
         } catch (Exception e) {
-            map.put("status", false);
-            map.put("reason", "未知错误");
-            map.put("logout", true);
+            status=-1;
+            message="未知错误";
             e.printStackTrace();
         }
         return JSONResult.fillResultString(status, message, map);
