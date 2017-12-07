@@ -65,6 +65,8 @@ public interface UserDao {
 	//region stats
 	public Integer tableCount(@Param("tableName")String tableName);
 	public Integer timeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
+	public Integer posTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
+	public Integer negTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
 	//endregion
 
 	//region utils

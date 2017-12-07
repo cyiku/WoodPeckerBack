@@ -210,5 +210,11 @@ public class UserServiceImpl implements UserService {
     public Integer timeCount(String tableName, String dateStr) {
         return userDao.timeCount(tableName,dateStr);
     }
+    public Integer posTimeCount(String tableName, String dateStr) {
+        return userDao.posTimeCount(tableName,dateStr);
+    }
+    public Integer negTimeCount(String tableName, String dateStr) {
+        return userDao.negTimeCount(tableName,dateStr);
+    }
     //endregion
 }

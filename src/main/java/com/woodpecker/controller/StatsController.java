@@ -1,6 +1,5 @@
 package com.woodpecker.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
 import org.json.JSONObject;
@@ -81,6 +80,50 @@ public class StatsController {
                     List<Integer> numList = (List<Integer>)num.get(append);
                     numList.add(userService.timeCount(tableName,date));
                 }
+            }
+            result.put("date",dateList);
+            result.put("num",num);
+        } catch (Exception e) {
+            status = -1;
+            message = "未知错误";
+            e.printStackTrace();
+        }
+        return JSONResult.fillResultString(status, message, result);
+    }
+    @RequestMapping(value = "/getPolarity", method = RequestMethod.POST)
+    public String getPor(@RequestBody String info) {
+        Integer status = 1;
+        String message = "";
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
+        try {
+            String date;
+            JSONObject jsonObject = new JSONObject(info);
+            String keywordName = (String) jsonObject.get("keyword");
+            List<String> dateList = new ArrayList<>();
+            List<Integer> posList = new ArrayList<>();
+            List<Integer> negList = new ArrayList<>();
+            Map<String, Object> num = new HashMap<>();
+
+            Calendar calender = new GregorianCalendar();
+            calender.add(Calendar.DATE, -10);
+            num.put("positive",posList);
+            num.put("negative",negList);
+
+            for(int i=0;i<10;i++) {
+                calender.add(Calendar.DATE, 1);
+                date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
+                        1+calender.get(Calendar.MONTH),calender.get(Calendar.DATE));//month starts with 1
+                dateList.add(date.replaceAll("_","-"));
+                int posCount=0,negCount=0;
+                for(String append:appendList) {
+                    String tableName = keywordName + "_" + append;
+                    if (null == userService.existsTable(tableName)) continue;
+                    posCount+=userService.posTimeCount(tableName,date);
+                    negCount+=userService.negTimeCount(tableName,date);
+                }
+                posList.add(posCount);
+                negList.add(negCount);
             }
             result.put("date",dateList);
             result.put("num",num);

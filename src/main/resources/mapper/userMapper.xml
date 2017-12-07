@@ -194,6 +194,14 @@
 	<select id="timeCount" resultType="Integer">
 		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%'
 	</select>
+
+	<select id="posTimeCount" resultType="Integer">
+		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%' AND content LIKE '%"sentiment" : "1"%'
+	</select>
+
+	<select id="negTimeCount" resultType="Integer">
+		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%' AND content LIKE '%"sentiment" : "0"%'
+	</select>
 	<!-- endregion -->
 
 	<!-- region 杂项 utils -->

@@ -24,5 +24,7 @@ logging:
     org.springframework:
       data: DEBUG
       security: DEBUG
-
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg%n'
+    #%logger{15} -
 #spring.boot.admin.url: http://localhost:8080
