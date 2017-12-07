@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface UserService {
     String existsTable(String tableName);
+
+    //region stats
     public Integer tableCount(String tableName);
+    public Integer timeCount(String tableName, String dateStr);
+    //endregion
 
     void newUser(String userName);//为新用户创建表
 

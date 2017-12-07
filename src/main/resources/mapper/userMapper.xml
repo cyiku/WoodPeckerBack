@@ -186,13 +186,19 @@
 
 	<!-- endregion -->
 
+	<!-- region stats -->
+	<select id="tableCount" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM ${tableName}
+	</select>
+
+	<select id="timeCount" resultType="Integer">
+		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%'
+	</select>
+	<!-- endregion -->
+
 	<!-- region 杂项 utils -->
 	<select id="existsTable" parameterType="String" resultType="String">
 		SHOW TABLES LIKE #{tableName}
-	</select>
-
-	<select id="tableCount" parameterType="String" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName}
 	</select>
 	<!-- endregion -->
 

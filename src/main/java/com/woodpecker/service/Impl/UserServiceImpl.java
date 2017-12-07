@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     public void newUser(String userName) {
         List<String> nameList = Arrays.asList("collectionForum_","collectionWeibo_","collectionPortal_",
-                "collectionAgency_");
+                "collectionAgency_","collectionChart_");
         for(String name:nameList) {
             if(null == userDao.existsTable(name + userName))
                 userDao.createCollectionNormal(name + userName);
@@ -201,9 +201,14 @@ public class UserServiceImpl implements UserService {
     public String existsTable(String tableName) {
         return userDao.existsTable(tableName);
     }
+    //endregion
 
+    //region stats
     public Integer tableCount(String tableName) {
         return userDao.tableCount(tableName);
+    }
+    public Integer timeCount(String tableName, String dateStr) {
+        return userDao.timeCount(tableName,dateStr);
     }
     //endregion
 }

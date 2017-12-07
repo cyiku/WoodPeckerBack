@@ -62,9 +62,13 @@ public interface UserDao {
 	public List<Site> getSite();
 	//endregion
 
+	//region stats
+	public Integer tableCount(@Param("tableName")String tableName);
+	public Integer timeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
+	//endregion
+
 	//region utils
 	public String existsTable(String tableName);
-	public Integer tableCount(@Param("tableName")String tableName);
 	//endregion
 
 
