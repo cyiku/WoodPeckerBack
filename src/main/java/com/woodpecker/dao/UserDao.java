@@ -1,8 +1,5 @@
 package com.woodpecker.dao;
-import com.woodpecker.domain.Keyword;
-import com.woodpecker.domain.NormalCollection;
-import com.woodpecker.domain.TableCollection;
-import com.woodpecker.domain.User;
+import com.woodpecker.domain.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -26,11 +23,11 @@ public interface UserDao {
 
 	//region user, keyword相关
 	public User getUser(User user);
-	public List<Keyword> getKeyword(@Param("tableName") String tableName);
-	public Integer addKeyword(@Param("tableName") String tableName, @Param("keyword") Keyword keyword);
-	public List<Keyword> searchKeyword(@Param("tableName") String tableName, @Param("keyword") Keyword keyword);
-	public Integer delKeyword(@Param("tableName") String tableName, @Param("keyword") Keyword keyword);
-	public Integer updateKeyword(@Param("tableName") String tableName, @Param("keyword") Keyword keyword);
+	public List<Keyword> getKeyword(@Param("user")User user);
+	public Integer addKeyword(@Param("user")User user, @Param("keyword") Keyword keyword);
+	public List<Keyword> searchKeyword(@Param("user")User user, @Param("keyword") Keyword keyword);
+	public Integer delKeyword(@Param("user")User user, @Param("keyword") Keyword keyword);
+	public Integer updateKeyword(@Param("user")User user, @Param("keyword") Keyword keyword);
 	//endregion
 
 	//region collection相关
@@ -63,4 +60,6 @@ public interface UserDao {
 			@Param("tableCollection")List<TableCollection> tableCollection);
 
 	//endregion
+
+	public List<Site> getSite();
 }

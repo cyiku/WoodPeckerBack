@@ -1,9 +1,6 @@
 package com.woodpecker.service;
 
-import com.woodpecker.domain.Keyword;
-import com.woodpecker.domain.NormalCollection;
-import com.woodpecker.domain.TableCollection;
-import com.woodpecker.domain.User;
+import com.woodpecker.domain.*;
 
 import java.util.List;
 
@@ -61,5 +58,9 @@ public interface UserService {
     List<TableCollection> searchTableCollection(User user,List<TableCollection> tableCollection);
     Integer resetTableCollection(User user,List<TableCollection> tableCollection);
     Integer delTableCollection(User user,List<TableCollection> tableCollection);
+    //endregion
+
+    //region sites
+    List<Site> getSite();
     //endregion
 }

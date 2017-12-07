@@ -20,7 +20,7 @@
 	</resultMap>
 
 	<resultMap id="KeywordMap" type="com.woodpecker.domain.Keyword">
-		<result column="keywordid" property="keywordid" jdbcType="INTEGER" />
+		<result column="id" property="keywordid" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="sites" property="sites" jdbcType="VARCHAR" />
 	</resultMap>
@@ -36,6 +36,11 @@
 		<result column="data" property="data" jdbcType="VARCHAR" />
 		<result column="tableid" property="tableid" jdbcType="BIGINT" />
 		<result column="iscollection" property="iscollection" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="SiteMap" type="com.woodpecker.domain.Site">
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
 	</resultMap>
 	<!-- endregion -->
 
@@ -104,25 +109,24 @@
 
 	<!-- region keyword相关 -->
 	<select id="getKeyword"  resultMap="KeywordMap">
-		SELECT * FROM ${tableName}
+		SELECT * FROM keyword_t WHERE userid = ${user.id}
 	</select>
 
 	<insert id="addKeyword" >
-		INSERT INTO ${tableName}(name,sites) VALUES("${keyword.name}", "${keyword.sites}")
-
+		INSERT INTO keyword_t(userid,name,sites) VALUES(${user.id},"${keyword.name}", "${keyword.sites}")
 	</insert>
 
 	<select id="searchKeyword" resultMap="KeywordMap">
-		SELECT * FROM ${tableName} WHERE name = "${keyword.name}"
+		SELECT * FROM keyword_t WHERE userid = ${user.id} AND name = "${keyword.name}"
 	</select>
 
 	<delete id="delKeyword" >
-		DELETE FROM ${tableName} WHERE name = "${keyword.name}"
+		DELETE FROM keyword_t WHERE userid = ${user.id} AND name = "${keyword.name}"
 	</delete>
 
 	<update id="updateKeyword" >
-		UPDATE ${tableName} SET name = "${keyword.name}", sites = "${keyword.sites}"
-		WHERE keywordid = ${keyword.keywordid}
+		UPDATE keyword_t SET name = "${keyword.name}", sites = "${keyword.sites}"
+		WHERE userid = ${user.id} AND keywordid = ${keyword.keywordid}
 	</update>
 	<!-- endregion -->
 
@@ -192,6 +196,14 @@
 		) GROUP BY tableid HAVING COUNT(dataid) = ${tableCollection.size()}
 		)
 	</update>
+	<!-- endregion -->
+
+	<!-- region sites -->
+
+	<select id="getSite" resultMap="SiteMap">
+		SELECT * from site_t
+	</select>
+
 	<!-- endregion -->
 
 </mapper>
