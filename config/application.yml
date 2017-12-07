@@ -3,6 +3,18 @@ spring:
   jackson:
     serialization:
       INDENT_OUTPUT: true
+  redis:
+    database: 0
+    host: 114.212.87.73
+    password:
+    port: 6379
+    pool:
+      max-idle: 8
+      min-idle: 0
+      max-active: 8
+      max-wait: -1
+    timeout: 0
+
 
 # JWT
 jwt:
@@ -27,4 +39,5 @@ logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg%n'
     #%logger{15} -
+
 #spring.boot.admin.url: http://localhost:8080
