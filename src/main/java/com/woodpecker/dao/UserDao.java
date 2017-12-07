@@ -13,12 +13,9 @@ public interface UserDao {
 	public Integer insert(User user);
 
 	//region 创建表相关
-	public String existsTable(String tableName);
 
-	public void createCollectionWeibo(String tableName);
-	public void createCollectionTieba(String tableName);
+	public void createCollectionNormal(String tableName);
 	public void createCollectionTable(String tableName);
-	public void createKeyword(String tableName);
 	//endregion
 
 	//region user, keyword相关
@@ -61,5 +58,14 @@ public interface UserDao {
 
 	//endregion
 
+	//region sites
 	public List<Site> getSite();
+	//endregion
+
+	//region utils
+	public String existsTable(String tableName);
+	public Integer tableCount(@Param("tableName")String tableName);
+	//endregion
+
+
 }

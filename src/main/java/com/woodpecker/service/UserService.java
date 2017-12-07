@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface UserService {
     String existsTable(String tableName);
-    void newUser(String userName);
+    public Integer tableCount(String tableName);
+
+    void newUser(String userName);//为新用户创建表
 
     User getUser(User user);
     User findByUserName(String username);

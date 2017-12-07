@@ -69,19 +69,7 @@
 
 	<!-- region 建表相关 -->
 
-	<select id="existsTable" parameterType="String" resultType="Integer">
-		SHOW TABLES LIKE #{tableName}
-	</select>
-
-	<update id="createCollectionWeibo" parameterType="String">
-		CREATE TABLE ${_parameter} (
-		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
-		data VARCHAR(2047) NOT NULL,
-		iscollection INTEGER NOT NULL
-		)
-	</update>
-
-	<update id="createCollectionTieba" parameterType="String">
+	<update id="createCollectionNormal" parameterType="String">
 		CREATE TABLE ${_parameter} (
 		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
 		data VARCHAR(2047) NOT NULL,
@@ -95,14 +83,6 @@
 		data VARCHAR(2047) NOT NULL,
 		tableid BIGINT NOT NULL PRIMARY KEY,
 		iscollection INTEGER NOT NULL
-		)
-	</update>
-
-	<update id="createKeyword" parameterType="String">
-		CREATE TABLE ${_parameter} (
-		dataid VARCHAR(255) NOT NULL PRIMARY KEY,
-		name VARCHAR(255) NOT NULL,
-		sites VARCHAR(255) NOT NULL
 		)
 	</update>
 	<!-- endregion -->
@@ -204,6 +184,16 @@
 		SELECT * from site_t
 	</select>
 
+	<!-- endregion -->
+
+	<!-- region 杂项 utils -->
+	<select id="existsTable" parameterType="String" resultType="String">
+		SHOW TABLES LIKE #{tableName}
+	</select>
+
+	<select id="tableCount" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM ${tableName}
+	</select>
 	<!-- endregion -->
 
 </mapper>

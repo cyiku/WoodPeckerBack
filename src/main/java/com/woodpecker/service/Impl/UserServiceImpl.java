@@ -6,6 +6,7 @@ import com.woodpecker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -23,21 +24,15 @@ public class UserServiceImpl implements UserService {
         return userDao.findByUserName(username);
     }
 
-
-    //returns null if no such table exists
-    public String existsTable(String tableName) {
-        return userDao.existsTable(tableName);
-    }
-
     public void newUser(String userName) {
-        if (null == userDao.existsTable("collectionWeibo_" + userName))
-            userDao.createCollectionWeibo("collectionWeibo_" + userName);
-        if (null == userDao.existsTable("collectionTieba_" + userName))
-            userDao.createCollectionTieba("collectionTieba_" + userName);
+        List<String> nameList = Arrays.asList("collectionForum_","collectionWeibo_","collectionPortal_",
+                "collectionAgency_");
+        for(String name:nameList) {
+            if(null == userDao.existsTable(name + userName))
+                userDao.createCollectionNormal(name + userName);
+        }
         if (null == userDao.existsTable("collectionTable_" + userName))
             userDao.createCollectionTable("collectionTable_" + userName);
-        if (null == userDao.existsTable("keyword_" + userName))
-            userDao.createKeyword("keyword_" + userName);
     }
 
     //region keyword
@@ -61,7 +56,6 @@ public class UserServiceImpl implements UserService {
         return userDao.updateKeyword(user, keyword);
     }
     //endregion
-
 
     //region agency collection
     public List<NormalCollection> getAgencyCollection(User user) {
@@ -198,6 +192,18 @@ public class UserServiceImpl implements UserService {
     //region sites
     public List<Site> getSite() {
         return userDao.getSite();
+    }
+    //endregion
+
+    //region utils
+
+    //returns null if no such table exists
+    public String existsTable(String tableName) {
+        return userDao.existsTable(tableName);
+    }
+
+    public Integer tableCount(String tableName) {
+        return userDao.tableCount(tableName);
     }
     //endregion
 }
