@@ -15,36 +15,26 @@ public class RedisInterface {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    public void showAll() {
+    public String showAll() {
+        String result = "";
         try {
             Set<String> keys = redisTemplate.keys("*");
-            for(String o:keys) {
-                String val = redisTemplate.opsForValue().get(o);
-                System.out.println(o + " " + val);
-            }
+            System.out.println(keys.size());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return result;
     }
 
-    public void showAndDeleteAll() {
-        try {
-            Set<String> keys = redisTemplate.keys("*");
-            for(String o:keys) {
-                String val = redisTemplate.opsForValue().get(o);
-                System.out.println(o + " " + val);
-                redisTemplate.delete(o);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public List<JSONObject> getData(String tableName,Double startTime,Double endTime) {
         List<JSONObject> result = new ArrayList<>();
         ZSetOperations<String, String> zOps = redisTemplate.opsForZSet();
         Set<String> stringSet = zOps.rangeByScore(tableName,startTime,endTime);
         for(String str: stringSet) {
-            result.add(new JSONObject(str));
+            JSONObject outer = new JSONObject(str);
+            JSONObject inner = new JSONObject(outer.getString("content"));
+            inner.put("contentType",outer.getString("type"));
+            result.add(inner);
         }
         return result;
     }

@@ -23,7 +23,7 @@ public class MonitorController {
 
     @RequestMapping(value = "/monitor", method = RequestMethod.POST)
     public String monitor(@RequestBody String info) {
-
+        System.out.println("MONITOR!!");
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
@@ -35,14 +35,14 @@ public class MonitorController {
 
             Calendar curTime = new GregorianCalendar();
             Calendar startTime = (Calendar)curTime.clone();
-            startTime.add(Calendar.SECOND,-monitorInterval);
+            //startTime.add(Calendar.SECOND,-monitorInterval);
+            startTime.add(Calendar.DATE, -1);
 
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
             Double score1 = Double.parseDouble(format.format(startTime.getTime()));
             Double score2 = Double.parseDouble(format.format(curTime.getTime()));
 
-            List<JSONObject> data = redisInterface.getData(tableName,score1,score2);
-            result.put("data",data);
+            result.put("data",redisInterface.getData(tableName,score1,score2));
         } catch (Exception e) {
             status = -1;
             message = "未知错误";
