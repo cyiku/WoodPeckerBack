@@ -17,7 +17,6 @@ import java.util.Map;
 @RestController
 @PreAuthorize("hasRole('USER')")
 public class SiteController {
-
     @Resource
     private UserService userService;
 
