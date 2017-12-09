@@ -66,7 +66,7 @@ public class CollectionController {
                 }
             }
             else {
-                dataid = String.valueOf(data.getJSONObject(0).get("id"));
+                dataid = String.valueOf(data.getJSONObject(0).get("_id"));
                 data_str = data.getJSONObject(0).toString();
                 NormalCollection normalCollection = new NormalCollection(dataid, data_str, 1);
                 List<NormalCollection> normalCollectionList;
