@@ -73,5 +73,8 @@ public interface UserDao {
 	public String existsTable(String tableName);
 	//endregion
 
+	//topic clustering
+	public List<Topic> getCluserting();
+	//endregion
 
 }

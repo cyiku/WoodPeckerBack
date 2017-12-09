@@ -1,5 +1,6 @@
 package com.woodpecker.controller;
 
+import com.woodpecker.domain.Topic;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -90,6 +92,7 @@ public class StatsController {
         }
         return JSONResult.fillResultString(status, message, result);
     }
+
     @RequestMapping(value = "/getPolarity", method = RequestMethod.POST)
     public String getPor(@RequestBody String info) {
         Integer status = 1;
@@ -127,6 +130,22 @@ public class StatsController {
             }
             result.put("date",dateList);
             result.put("num",num);
+        } catch (Exception e) {
+            status = -1;
+            message = "未知错误";
+            e.printStackTrace();
+        }
+        return JSONResult.fillResultString(status, message, result);
+    }
+
+    @RequestMapping(value = "/getClustering", method = RequestMethod.POST)
+    public String getClustering(@RequestBody String info) {
+        Integer status = 1;
+        String message = "";
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            List<Topic> topicCollection = userService.getCluserting();
+            result.put("topic", topicCollection);
         } catch (Exception e) {
             status = -1;
             message = "未知错误";

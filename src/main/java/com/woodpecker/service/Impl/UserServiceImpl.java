@@ -217,4 +217,6 @@ public class UserServiceImpl implements UserService {
         return userDao.negTimeCount(tableName,dateStr);
     }
     //endregion
+
+    public List<Topic> getCluserting() { return userDao.getCluserting(); }
 }
