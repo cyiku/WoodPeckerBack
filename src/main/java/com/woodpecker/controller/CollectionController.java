@@ -54,7 +54,8 @@ public class CollectionController {
                 for(int i=0;i<data.length();i++) {
                     JSONObject o=(JSONObject)data.get(i);
                     dataid = String.valueOf(o.get("id"));
-                    data_str = o.toString();
+                    System.out.println(o.toString());
+                    data_str = o.toString().replaceAll("'","''").replaceAll("\\\\","\\\\\\\\");
                     tableCollections.add(new TableCollection(dataid,data_str,date.getTime(),1));
                 }
                 List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
@@ -66,8 +67,12 @@ public class CollectionController {
                 }
             }
             else {
-                dataid = String.valueOf(data.getJSONObject(0).get("_id"));
-                data_str = data.getJSONObject(0).toString();
+                if(data.getJSONObject(0).has("_id")) {
+                    dataid = String.valueOf(data.getJSONObject(0).get("_id"));
+                } else {
+                    dataid = String.valueOf(date.getTime()) + String.valueOf(data.getJSONObject(0).hashCode());
+                }
+                data_str = data.getJSONObject(0).toString().replaceAll("'","''").replaceAll("\\\\","\\\\\\\\");
                 NormalCollection normalCollection = new NormalCollection(dataid, data_str, 1);
                 List<NormalCollection> normalCollectionList;
                 switch(type) {
@@ -88,6 +93,7 @@ public class CollectionController {
                             normalCollection = normalCollectionList.get(0);
                             userService.resetChartCollection(user, normalCollection);
                         }
+                        //map.put("_id",dataid);
                         break;
                     case "forum":
                         normalCollectionList = userService.searchForumCollection(user, normalCollection);
@@ -212,6 +218,7 @@ public class CollectionController {
                 }
                 result = new ArrayList<JSONObject>();
                 for (NormalCollection normal : normalCollectionList) {
+                    System.out.println(normal.getData());
                     result.add(new JSONObject(normal.getData()));
                 }
                 map.put("collection",result);
@@ -290,6 +297,7 @@ public class CollectionController {
                 }
                 result = new ArrayList<JSONObject>();
                 for(NormalCollection normalCollection:normalCollectionList) {
+                    System.out.println(normalCollection.getData());
                     result.add(new JSONObject(normalCollection.getData()));
                 }
                 map.put("collection",result);

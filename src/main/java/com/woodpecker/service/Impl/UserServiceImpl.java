@@ -218,5 +218,13 @@ public class UserServiceImpl implements UserService {
     }
     //endregion
 
-    public List<Topic> getCluserting() { return userDao.getCluserting(); }
+    public List<Topic> getClustering() { return userDao.getClustering(); }
+
+    //region info
+    public List<String> getInfo (String keywordName, String src) {
+        String tableName = keywordName + "_" + src;
+        System.out.println(tableName);
+        return userDao.getInfo(tableName);
+    }
+    //endregion
 }

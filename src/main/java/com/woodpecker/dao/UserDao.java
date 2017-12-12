@@ -67,14 +67,16 @@ public interface UserDao {
 	public Integer timeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
 	public Integer posTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
 	public Integer negTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
+
+	public List<Topic> getClustering();
 	//endregion
 
 	//region utils
 	public String existsTable(String tableName);
 	//endregion
 
-	//topic clustering
-	public List<Topic> getCluserting();
+	//region info
+	public List<String> getInfo(@Param("tableName")String tableName);
 	//endregion
 
 }

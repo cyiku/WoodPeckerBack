@@ -144,7 +144,7 @@ public class StatsController {
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
         try {
-            List<Topic> topicCollection = userService.getCluserting();
+            List<Topic> topicCollection = userService.getClustering();
             result.put("topic", topicCollection);
         } catch (Exception e) {
             status = -1;

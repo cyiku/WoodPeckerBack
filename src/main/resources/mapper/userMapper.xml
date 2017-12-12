@@ -217,10 +217,16 @@
 
 	<!-- region topic -->
 
-	<select id="getCluserting" resultMap="TopicMap">
+	<select id="getClustering" resultMap="TopicMap">
 		SELECT topicid, word from lda WHERE isNew=1
 	</select>
 
+	<!-- endregion -->
+
+	<!-- region info -->
+	<select id="getInfo" parameterType="String" resultType="String">
+		SELECT content FROM ${tableName}
+	</select>
 	<!-- endregion -->
 
 </mapper>

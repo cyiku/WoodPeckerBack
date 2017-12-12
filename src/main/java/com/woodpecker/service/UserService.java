@@ -73,6 +73,10 @@ public interface UserService {
     //endregion
 
     //region topic
-    List<Topic> getCluserting();
+    List<Topic> getClustering();
+    //endregion
+
+    //region info
+    List<String> getInfo (String keywordName, String src);
     //endregion
 }

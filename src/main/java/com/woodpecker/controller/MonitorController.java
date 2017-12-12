@@ -36,7 +36,7 @@ public class MonitorController {
             Calendar curTime = new GregorianCalendar();
             Calendar startTime = (Calendar)curTime.clone();
             //startTime.add(Calendar.SECOND,-monitorInterval);
-            startTime.add(Calendar.DATE, -1);
+            startTime.add(Calendar.DATE, -10);
 
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
             Double score1 = Double.parseDouble(format.format(startTime.getTime()));
