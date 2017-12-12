@@ -10,6 +10,7 @@ import com.woodpecker.util.GetUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +26,16 @@ public class CollectionController {
 
     @Resource
     private UserService userService;
+
+    public String HandleString(String str) {
+        if(StringUtils.isEmpty(str)) {
+            return str;
+        } else {
+            return str.replaceAll("[\\ud800\\udc00-\\udbff\\udfff\\ud800-\\udfff]","[emoji]")
+                    .replaceAll("'","''")
+                    .replaceAll("\\\\","\\\\\\\\");
+        }
+    }
 
     //region Collection
     @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
@@ -55,7 +66,7 @@ public class CollectionController {
                     JSONObject o=(JSONObject)data.get(i);
                     dataid = String.valueOf(o.get("id"));
                     System.out.println(o.toString());
-                    data_str = o.toString().replaceAll("'","''").replaceAll("\\\\","\\\\\\\\");
+                    data_str = HandleString(o.toString());
                     tableCollections.add(new TableCollection(dataid,data_str,date.getTime(),1));
                 }
                 List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
@@ -72,7 +83,7 @@ public class CollectionController {
                 } else {
                     dataid = String.valueOf(date.getTime()) + String.valueOf(data.getJSONObject(0).hashCode());
                 }
-                data_str = data.getJSONObject(0).toString().replaceAll("'","''").replaceAll("\\\\","\\\\\\\\");
+                data_str = HandleString(data.getJSONObject(0).toString());
                 NormalCollection normalCollection = new NormalCollection(dataid, data_str, 1);
                 List<NormalCollection> normalCollectionList;
                 switch(type) {
@@ -93,7 +104,6 @@ public class CollectionController {
                             normalCollection = normalCollectionList.get(0);
                             userService.resetChartCollection(user, normalCollection);
                         }
-                        //map.put("_id",dataid);
                         break;
                     case "forum":
                         normalCollectionList = userService.searchForumCollection(user, normalCollection);
