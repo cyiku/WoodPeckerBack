@@ -30,9 +30,11 @@ public class InfoController {
         try {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String)jsonObject.get("keyword");
-            List<String> strings = userService.getInfo(keywordName,"weibo");
-            for(String str:strings) {
-                result.add(new JSONObject(str));
+            if (null != userService.existsTable(keywordName + "_weibo")) {
+                List<String> strings = userService.getInfo(keywordName,"weibo");
+                for(String str:strings) {
+                    result.add(new JSONObject(str));
+                }
             }
         } catch (Exception e) {
             status = -1;
@@ -50,9 +52,11 @@ public class InfoController {
         try {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String)jsonObject.get("keyword");
-            List<String> strings = userService.getInfo(keywordName,"agency");
-            for(String str:strings) {
-                result.add(new JSONObject(str));
+            if (null != userService.existsTable(keywordName + "_agency")) {
+                List<String> strings = userService.getInfo(keywordName,"agency");
+                for(String str:strings) {
+                    result.add(new JSONObject(str));
+                }
             }
         } catch (Exception e) {
             status = -1;
@@ -70,9 +74,11 @@ public class InfoController {
         try {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String)jsonObject.get("keyword");
-            List<String> strings = userService.getInfo(keywordName,"portal");
-            for(String str:strings) {
-                result.add(new JSONObject(str));
+            if (null != userService.existsTable(keywordName + "_portal")) {
+                List<String> strings = userService.getInfo(keywordName,"portal");
+                for(String str:strings) {
+                    result.add(new JSONObject(str));
+                }
             }
         } catch (Exception e) {
             status = -1;
@@ -90,9 +96,11 @@ public class InfoController {
         try {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String)jsonObject.get("keyword");
-            List<String> strings = userService.getInfo(keywordName,"forum");
-            for(String str:strings) {
-                result.add(new JSONObject(str));
+            if (null != userService.existsTable(keywordName + "_forum")) {
+                List<String> strings = userService.getInfo(keywordName,"forum");
+                for(String str:strings) {
+                    result.add(new JSONObject(str));
+                }
             }
         } catch (Exception e) {
             status = -1;

@@ -4,10 +4,12 @@ public class Topic {
 
     private Integer id;
     private String word;
+    private String time;
 
-    public Topic(Integer id, String word) {
+    public Topic(Integer id, String word, String time) {
         this.id = id;
         this.word = word;
+        this.time = time;
     }
 
     public Integer getId() {
@@ -25,4 +27,8 @@ public class Topic {
     public void setWord(String word) {
         this.word = word;
     }
+
+    public void setTime(String time) {this.time = time;}
+
+    public String getTime() {return this.time;}
 }

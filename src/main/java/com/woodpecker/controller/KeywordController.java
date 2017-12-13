@@ -37,6 +37,7 @@ public class KeywordController {
         try {
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
+            System.out.println(user.getId());
 
             List<Keyword> keyword = userService.getKeyword(user);
             result.put("keyword", keyword);

@@ -146,6 +146,7 @@ public class StatsController {
         try {
             List<Topic> topicCollection = userService.getClustering();
             result.put("topic", topicCollection);
+            result.put("time", topicCollection.get(0).getTime());
         } catch (Exception e) {
             status = -1;
             message = "未知错误";

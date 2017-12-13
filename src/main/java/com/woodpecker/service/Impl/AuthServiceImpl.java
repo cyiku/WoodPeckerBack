@@ -57,7 +57,14 @@ public class AuthServiceImpl implements AuthService {
         userToAdd.setRoles(asList("ROLE_USER"));
         userToAdd.setLastPasswordResetDate(new Date());
         userDao.insert(userToAdd);
-        return userDao.findByUserName(username);
+        User user = userDao.findByUserName(username);
+        Integer id = user.getId();
+        userDao.createCollectionNormal("collectionForum_" + Integer.toString(id));
+        userDao.createCollectionNormal("collectionAgency_" + Integer.toString(id));
+        userDao.createCollectionNormal("collectionPortal_" + Integer.toString(id));
+        userDao.createCollectionNormal("collectionWeibo_" + Integer.toString(id));
+
+        return user;
     }
 
     @Override
