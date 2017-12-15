@@ -5,11 +5,11 @@ spring:
       INDENT_OUTPUT: true
   redis:
     database: 0
-    # host: ${WP_REDIS_HOST}
-    host: 114.212.87.73
+    host: ${WP_REDIS_HOST}
+    #host: 114.212.87.73
     password:
-    # port: ${WP_REDIS_PORT}
-    port: 6379
+    port: ${WP_REDIS_PORT}
+    #port: 6379
     pool:
       max-idle: 8
       min-idle: 0
