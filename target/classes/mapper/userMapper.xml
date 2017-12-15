@@ -226,7 +226,7 @@
 
 	<!-- region info -->
 	<select id="getInfo" parameterType="String" resultType="String">
-		SELECT content FROM ${tableName}
+		SELECT content FROM ${tableName} LIMIT 100
 	</select>
 	<!-- endregion -->
 

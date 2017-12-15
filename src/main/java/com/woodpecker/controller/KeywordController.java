@@ -62,9 +62,17 @@ public class KeywordController {
             JSONObject jsonObject = new JSONObject(info);
 
             String name = (String) jsonObject.get("name");
+            if(name.equals("")) {
+                status = 0;
+                message = "关键字为空";
+                return JSONResult.fillResultString(status,message,result);
+            }
             JSONArray sites = (JSONArray) jsonObject.get("sites");
-
-
+            if(sites.length()==0) {
+                status = 0;
+                message = "爬取站点为空";
+                return JSONResult.fillResultString(status,message,result);
+            }
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
 
@@ -145,7 +153,17 @@ public class KeywordController {
 
             Integer keywordid = (Integer) jsonObject.get("keywordid");
             String name = (String) jsonObject.get("name");
+            if(name.equals("")) {
+                status = 0;
+                message = "关键字为空";
+                return JSONResult.fillResultString(status,message,result);
+            }
             JSONArray sites = (JSONArray) jsonObject.get("sites");
+            if(sites.length()==0) {
+                status = 0;
+                message = "爬取站点为空";
+                return JSONResult.fillResultString(status,message,result);
+            }
 
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
