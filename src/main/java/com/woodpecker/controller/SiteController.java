@@ -31,15 +31,15 @@ public class SiteController {
             List<Site> sites = userService.getSite();
 
             List<String> portal = new LinkedList<>();   //门户
-            List<String> tieba = new LinkedList<>();
+            List<String> forum = new LinkedList<>();
             List<String> weibo = new LinkedList<>();
             List<String> agency = new LinkedList<>();
             for (Site site: sites) {
                 String type = site.getType();
                 String name = site.getName();
                 switch (type) {
-                    case "贴吧":
-                        tieba.add(name);
+                    case "论坛":
+                        forum.add(name);
                         break;
                     case "门户网站":
                         portal.add(name);
@@ -52,7 +52,7 @@ public class SiteController {
                         break;
                 }
             }
-            result.put("tieba", tieba);
+            result.put("forum", forum);
             result.put("portal", portal);
             result.put("weibo", weibo);
             result.put("agency", agency);
