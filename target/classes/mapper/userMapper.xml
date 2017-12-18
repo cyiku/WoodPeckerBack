@@ -198,15 +198,15 @@
 	</select>
 
 	<select id="timeCount" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%'
+		SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%'
 	</select>
 
 	<select id="posTimeCount" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%' AND content LIKE '%"sentiment" : "1"%'
+		SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND sentiment > 0.5
 	</select>
 
 	<select id="negTimeCount" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName} WHERE content LIKE '%"time" : "${time}%' AND content LIKE '%"sentiment" : "0"%'
+		SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND NOT (sentiment > 0.5)
 	</select>
 	<!-- endregion -->
 
