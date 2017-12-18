@@ -226,7 +226,7 @@
 
 	<!-- region info -->
 	<select id="getInfo" parameterType="String" resultType="String">
-		SELECT content FROM ${tableName} LIMIT 100
+		SELECT content FROM (SELECT content, time FROM ${tableName} ORDER BY time DESC LIMIT 100) as tmp
 	</select>
 	<!-- endregion -->
 
