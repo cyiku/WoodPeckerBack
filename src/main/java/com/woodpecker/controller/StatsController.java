@@ -128,8 +128,33 @@ public class StatsController {
                 for(String append:appendList) {
                     String tableName = keywordName + "_" + append;
                     if (null == userService.existsTable(tableName)) continue;
-                    posCount+=userService.posTimeCount(tableName,date);
-                    negCount+=userService.negTimeCount(tableName,date);
+//                    posCount+=userService.posTimeCount(tableName,date);
+//                    negCount+=userService.negTimeCount(tableName,date);
+
+//                    Integer allCount = userService.timeCount(tableName, date);
+//                    System.out.println("tableName: "+ tableName);
+//                    System.out.println("date: " + date);
+//                    System.out.println("allCount: "+ allCount);
+//                    System.out.println("posCount: "+ posCount);
+//                    System.out.println("negCount: "+ negCount);
+                    List<Integer> count = userService.polarityCount(tableName, date);
+//                    System.out.println(count.size());
+//                    if (tableName.equals("英语_forum") && date.equals("2017_12_17")) {
+//                        for (int j = 0; j < 10; j++) {
+//                            System.out.println(count.get(j));
+//                        }
+//                    }
+//                    if (count.size() == 2) {
+//                        System.out.println(count.get(0));
+//                        System.out.println(count.get(1));
+//                    } else if (count.size() == 1)
+//                        System.out.println(count.get(0));
+                    for (int j = 0; j < count.size(); ++j) {
+                        if (count.get(j) == 0)
+                            negCount += 1;
+                        else
+                            posCount += 1;
+                    }
                 }
                 posList.add(posCount);
                 negList.add(negCount);

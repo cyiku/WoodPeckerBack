@@ -216,6 +216,7 @@ public class UserServiceImpl implements UserService {
     public Integer negTimeCount(String tableName, String dateStr) {
         return userDao.negTimeCount(tableName,dateStr);
     }
+    public List<Integer> polarityCount(String tableName,String dateStr) { return userDao.polarityCount(tableName, dateStr); }
     //endregion
 
     public List<Topic> getClustering() { return userDao.getClustering(); }

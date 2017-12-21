@@ -202,11 +202,15 @@
 	</select>
 
 	<select id="posTimeCount" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND sentiment > 0.5
+		<![CDATA[ SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND sentiment > 0.5 ]]>
 	</select>
 
 	<select id="negTimeCount" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND NOT (sentiment > 0.5)
+		<![CDATA[ SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND sentiment <= 0.5 ]]>
+	</select>
+
+	<select id="polarityCount" resultType="Integer">
+		select (sentiment > 0.5) FROM  ${tableName} WHERE time LIKE '${time}%'
 	</select>
 	<!-- endregion -->
 
