@@ -59,15 +59,19 @@ public class StatsController {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String) jsonObject.get("keyword");
             List<String> dateList = new ArrayList<>();
+            Boolean [] isExist = new Boolean[4];
             Map<String, Object> num = new HashMap<>();
             Calendar calender = new GregorianCalendar();
             calender.add(Calendar.DATE, -10);
+            Integer tmp = 0;
             for(String append:appendList) {
                 String tableName = keywordName + "_" + append;
                 if (null == userService.existsTable(tableName)) {
                     num.put(append, new ArrayList<Integer>(Collections.nCopies(10,0)));
+                    isExist[tmp++] = false;
                     continue;
                 }
+                isExist[tmp++] = true;
                 List<Integer> numList = new ArrayList<>();
                 num.put(append,numList);
             }
@@ -76,9 +80,11 @@ public class StatsController {
                 date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
                         1+calender.get(Calendar.MONTH),calender.get(Calendar.DATE));//month starts with 1
                 dateList.add(date.replaceAll("_","-"));
+                tmp = 0;
                 for(String append:appendList) {
                     String tableName = keywordName + "_" + append;
-                    if (null == userService.existsTable(tableName)) continue;
+                    //if (null == userService.existsTable(tableName)) continue;
+                    if (!isExist[tmp++]) continue;
                     List<Integer> numList = (List<Integer>)num.get(append);
                     numList.add(userService.timeCount(tableName,date));
                 }
