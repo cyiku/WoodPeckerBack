@@ -1,8 +1,16 @@
 package com.woodpecker.controller;
 
+import com.woodpecker.domain.Distribution;
+import com.woodpecker.domain.Sentiment;
+import com.woodpecker.domain.Statistic;
 import com.woodpecker.domain.Topic;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,9 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @RestController
 @PreAuthorize("hasRole('USER')")
@@ -25,19 +41,35 @@ public class StatsController {
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
-        List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
+//        List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
 
         try {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String) jsonObject.get("keyword");
             Map<String, Object> num = new HashMap<>();
-            for (String append : appendList) {
-                String tableName = keywordName + "_" + append;
-                Integer count = 0;
-                if (null != userService.existsTable(tableName)) {
-                    count = userService.tableCount(tableName);
+//            for (String append : appendList) {
+//                String tableName = keywordName + "_" + append;
+//                Integer count = 0;
+//                if (null != userService.existsTable(tableName)) {
+//                    count = userService.tableCount(tableName);
+//                }
+//
+//                num.put(append, count);
+//            }
+            if (null != userService.existsTable("distribution_t")) {
+                List<Distribution> distributions = userService.distributionCount(keywordName);
+                for(Distribution d: distributions) {
+                    String source = d.getSource();
+                    if (source.equals("培训机构")) {
+                        num.put("agency", d.getCount());
+                    } else if(source.equals("微博")) {
+                        num.put("weibo", d.getCount());
+                    } else if(source.equals("论坛")) {
+                        num.put("forum", d.getCount());
+                    }else if(source.equals("门户网站")) {
+                        num.put("portal", d.getCount());
+                    }
                 }
-                num.put(append, count);
             }
             result.put("num", num);
         } catch (Exception e) {
@@ -65,13 +97,13 @@ public class StatsController {
             calender.add(Calendar.DATE, -10);
             Integer tmp = 0;
             for(String append:appendList) {
-                String tableName = keywordName + "_" + append;
-                if (null == userService.existsTable(tableName)) {
-                    num.put(append, new ArrayList<Integer>(Collections.nCopies(10,0)));
-                    isExist[tmp++] = false;
-                    continue;
-                }
-                isExist[tmp++] = true;
+//                String tableName = keywordName + "_" + append;
+//                if (null == userService.existsTable(tableName)) {
+//                    num.put(append, new ArrayList<Integer>(Collections.nCopies(10,0)));
+//                    isExist[tmp++] = false;
+//                    continue;
+//                }
+//                isExist[tmp++] = true;
                 List<Integer> numList = new ArrayList<>();
                 num.put(append,numList);
             }
@@ -80,14 +112,30 @@ public class StatsController {
                 date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
                         1+calender.get(Calendar.MONTH),calender.get(Calendar.DATE));//month starts with 1
                 dateList.add(date.replaceAll("_","-"));
-                tmp = 0;
-                for(String append:appendList) {
-                    String tableName = keywordName + "_" + append;
-                    //if (null == userService.existsTable(tableName)) continue;
-                    if (!isExist[tmp++]) continue;
-                    List<Integer> numList = (List<Integer>)num.get(append);
-                    numList.add(userService.timeCount(tableName,date));
+//                tmp = 0;
+                List<Statistic> statistics = userService.timeCount(keywordName,date);
+                for (Statistic statistic: statistics) {
+                    if (statistic.getSource().equals("培训机构")){
+                        List<Integer> numList = (List<Integer>)num.get("agency");
+                        numList.add(statistic.getCount());
+                    } else if (statistic.getSource().equals("微博")){
+                        List<Integer> numList = (List<Integer>)num.get("weibo");
+                        numList.add(statistic.getCount());
+                    } else if (statistic.getSource().equals("论坛")){
+                        List<Integer> numList = (List<Integer>)num.get("forum");
+                        numList.add(statistic.getCount());
+                    } else if (statistic.getSource().equals("门户网站")){
+                        List<Integer> numList = (List<Integer>)num.get("portal");
+                        numList.add(statistic.getCount());
+                    }
                 }
+//                for(String append:appendList) {
+//                    String tableName = keywordName + "_" + append;
+//                    //if (null == userService.existsTable(tableName)) continue;
+////                    if (!isExist[tmp++]) continue;
+//                    List<Integer> numList = (List<Integer>)num.get(append);
+//                    numList.add(userService.timeCount(tableName,date));
+//                }
             }
             result.put("date",dateList);
             result.put("num",num);
@@ -112,52 +160,46 @@ public class StatsController {
             List<String> dateList = new ArrayList<>();
             List<Integer> posList = new ArrayList<>();
             List<Integer> negList = new ArrayList<>();
+            List<Integer> neuList = new ArrayList<>();
             Map<String, Object> num = new HashMap<>();
 
             Calendar calender = new GregorianCalendar();
             calender.add(Calendar.DATE, -10);
             num.put("positive",posList);
             num.put("negative",negList);
+            num.put("neutral",neuList);
 
             for(int i=0;i<10;i++) {
                 calender.add(Calendar.DATE, 1);
                 date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
                         1+calender.get(Calendar.MONTH),calender.get(Calendar.DATE));//month starts with 1
                 dateList.add(date.replaceAll("_","-"));
-                int posCount=0,negCount=0;
-                for(String append:appendList) {
-                    String tableName = keywordName + "_" + append;
-                    if (null == userService.existsTable(tableName)) continue;
-//                    posCount+=userService.posTimeCount(tableName,date);
-//                    negCount+=userService.negTimeCount(tableName,date);
-
-//                    Integer allCount = userService.timeCount(tableName, date);
-//                    System.out.println("tableName: "+ tableName);
-//                    System.out.println("date: " + date);
-//                    System.out.println("allCount: "+ allCount);
-//                    System.out.println("posCount: "+ posCount);
-//                    System.out.println("negCount: "+ negCount);
-                    List<Integer> count = userService.polarityCount(tableName, date);
-//                    System.out.println(count.size());
-//                    if (tableName.equals("英语_forum") && date.equals("2017_12_17")) {
-//                        for (int j = 0; j < 10; j++) {
-//                            System.out.println(count.get(j));
-//                        }
+                int posCount=0,negCount=0, neutralCount=0;
+//                for(String append:appendList) {
+//                    String tableName = keywordName + "_" + append;
+//                    if (null == userService.existsTable(tableName)) continue;
+//                    List<Integer> count = userService.polarityCount(tableName, date);
+//                    for (int j = 0; j < count.size(); ++j) {
+//                        if (count.get(j) == 0)
+//                            negCount += 1;
+//                        else
+//                            posCount += 1;
 //                    }
-//                    if (count.size() == 2) {
-//                        System.out.println(count.get(0));
-//                        System.out.println(count.get(1));
-//                    } else if (count.size() == 1)
-//                        System.out.println(count.get(0));
-                    for (int j = 0; j < count.size(); ++j) {
-                        if (count.get(j) == 0)
-                            negCount += 1;
-                        else
-                            posCount += 1;
+//                }
+                List<Sentiment> sentimentCount = userService.polarityCount(keywordName, date);
+                for(Sentiment oneSentiment: sentimentCount) {
+                    if (oneSentiment.getSentiment() == 3) {
+                        posCount = oneSentiment.getCount();
+                    } else if(oneSentiment.getSentiment() == 2) {
+                        negCount = oneSentiment.getCount();
+                    } else if(oneSentiment.getSentiment() == 1) {
+                        neutralCount = oneSentiment.getCount();
                     }
                 }
+
                 posList.add(posCount);
                 negList.add(negCount);
+                neuList.add(neutralCount);
             }
             result.put("date",dateList);
             result.put("num",num);
@@ -186,3 +228,27 @@ public class StatsController {
         return JSONResult.fillResultString(status, message, result);
     }
 }
+
+//        String host = "114.212.189.147";
+//        int port = 10095;
+//        try {
+//            Settings settings = Settings.builder()
+//                                .put("client.transport.sniff", true)
+//                                .build();
+//            TransportClient client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddresses(
+//                    new InetSocketTransportAddress(InetAddress.getByName(host),port));
+//            SearchResponse response = client.prepareSearch("crawler")
+//                                      .setTypes("ifeng_menhu")
+//                                      .setQuery(QueryBuilders.termQuery("content", "测试"))
+//                                      .addSort("time.keyword", SortOrder.DESC)
+//                                      .setFrom(0).setSize(100)
+//                                      .get();
+//
+//            for(SearchHit hit: response.getHits().getHits()) {
+//                Map<String, Object> source= hit.getSource();
+//            }
+//            client.prepareGet();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+

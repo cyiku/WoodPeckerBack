@@ -5,6 +5,7 @@ com/woodpecker/redis/CacheConfig$1.class
 com/woodpecker/service/Impl/AuthServiceImpl.class
 com/woodpecker/domain/Topic.class
 com/woodpecker/domain/Site.class
+com/woodpecker/controller/ModifyPolarityController.class
 com/woodpecker/util/CorsConfig.class
 com/woodpecker/controller/InfoController.class
 com/woodpecker/service/UserService.class
@@ -32,6 +33,9 @@ com/woodpecker/dao/UserDao.class
 com/woodpecker/config/WebSecurityConfig.class
 com/woodpecker/security/JwtUser.class
 com/woodpecker/security/JwtAuthenticationEntryPoint.class
+com/woodpecker/util/GenSpider.class
+com/woodpecker/domain/MsgPolarity.class
 com/woodpecker/service/Impl/UserServiceImpl.class
 com/woodpecker/security/JwtAuthenticationResponse.class
 com/woodpecker/service/AuthService.class
+com/woodpecker/controller/GenSpiderController.class

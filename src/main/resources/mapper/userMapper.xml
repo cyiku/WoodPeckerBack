@@ -48,11 +48,31 @@
 		<result column="word" property="word" jdbcType="VARCHAR"/>
 		<result column="time" property="time" jdbcType="VARCHAR"/>
 	</resultMap>
+
+	<resultMap id="Distribution" type="com.woodpecker.domain.Distribution">
+		<result column="keyword" property="keyword" jdbcType="VARCHAR"/>
+		<result column="source" property="source" jdbcType="VARCHAR"/>
+		<result column="count" property="count" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<resultMap id="Sentiment" type="com.woodpecker.domain.Sentiment">
+		<result column="keyword" property="keyword" jdbcType="VARCHAR"/>
+		<result column="date" property="date" jdbcType="VARCHAR"/>
+		<result column="sentiment" property="sentiment" jdbcType="INTEGER"/>
+		<result column="count" property="count" jdbcType="INTEGER"/>
+	</resultMap>
+
+	<resultMap id="Statistic" type="com.woodpecker.domain.Statistic">
+		<result column="keyword" property="keyword" jdbcType="VARCHAR"/>
+		<result column="source" property="source" jdbcType="VARCHAR"/>
+		<result column="date" property="date" jdbcType="VARCHAR"/>
+		<result column="count" property="count" jdbcType="INTEGER"/>
+	</resultMap>
 	<!-- endregion -->
 
 	<!-- region 登录注册相关-->
 	<select id="getUser"  resultMap="BaseResultMap">
-		SELECT * FROM user_t WHERE username = #{username}
+		SELECT * FROM `user_t` WHERE username = #{username}
 	</select>
 
 	<select id="findByUserName" parameterType="String" resultMap="userMap">
@@ -151,8 +171,8 @@
 		</foreach>
 	</insert>
 	<select id="searchTableCollection"  resultMap="TableCollectionMap">
-		SELECT * FROM ${tableName} WHERE tableid IN (
-		SELECT tableid FROM ${tableName} WHERE tableid IN (
+		SELECT * FROM  ${tableName}  WHERE tableid IN (
+		SELECT tableid FROM  ${tableName}  WHERE tableid IN (
 		SELECT tableid FROM ${tableName}
 		WHERE dataid IN (
 		<foreach item="item" index="" collection="tableCollection"
@@ -163,7 +183,7 @@
 		)
 	</select>
 	<update id="resetTableCollection">
-		UPDATE ${tableName} SET iscollection = 1 WHERE tableid IN (
+		UPDATE  ${tableName}  SET iscollection = 1 WHERE tableid IN (
 		<foreach item="item" index="" collection="tableCollection"
 				 open="" close="" separator=",">
 			${item.tableid}
@@ -192,25 +212,37 @@
 
 	<!-- endregion -->
 
-	<!-- region stats -->
-	<select id="tableCount" parameterType="String" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName}
+	<!-- region stats abandon-->
+	<!--<select id="tableCount" parameterType="String" resultType="Integer">-->
+		<!--SELECT COUNT(*) FROM `${tableName}`-->
+	<!--</select>-->
+
+	<select id="distributionCount" parameterType="String" resultMap="Distribution">
+		SELECT * FROM distribution_t WHERE keyword = "${keyword}"
 	</select>
 
-	<select id="timeCount" resultType="Integer">
-		SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%'
+	<!--<select id="timeCount" resultType="Integer">-->
+		<!--SELECT COUNT(*) FROM `${tableName}` WHERE time LIKE '${time}%'-->
+	<!--</select>-->
+
+	<select id="timeCount" resultMap="Statistic">
+		SELECT * FROM statistic_t WHERE keyword= "${keyword}" AND date LIKE '${time}%'
 	</select>
 
 	<select id="posTimeCount" resultType="Integer">
-		<![CDATA[ SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND sentiment > 0.5 ]]>
+		<![CDATA[ SELECT COUNT(*) FROM `${tableName}` WHERE time LIKE '${time}%' AND sentiment > 0.5 ]]>
 	</select>
 
 	<select id="negTimeCount" resultType="Integer">
-		<![CDATA[ SELECT COUNT(*) FROM ${tableName} WHERE time LIKE '${time}%' AND sentiment <= 0.5 ]]>
+		<![CDATA[ SELECT COUNT(*) FROM `${tableName}` WHERE time LIKE '${time}%' AND sentiment <= 0.5 ]]>
 	</select>
 
-	<select id="polarityCount" resultType="Integer">
-		select (sentiment > 0.5) FROM  ${tableName} WHERE time LIKE '${time}%'
+	<!--<select id="polarityCount" resultType="Integer">-->
+		<!--select (sentiment > 0.5) FROM  `${tableName}` WHERE time LIKE '${time}%'-->
+	<!--</select>-->
+
+	<select id="polarityCount" resultMap="Sentiment">
+		select * FROM  sentiment_t WHERE keyword = "${keyword}" AND date LIKE '${time}%'
 	</select>
 	<!-- endregion -->
 
@@ -230,8 +262,14 @@
 
 	<!-- region info -->
 	<select id="getInfo" parameterType="String" resultType="String">
-		SELECT content FROM (SELECT content, time FROM ${tableName} ORDER BY time DESC LIMIT 100) as tmp
+		SELECT content FROM (SELECT content, time FROM `${tableName}` ORDER BY time DESC LIMIT 100) as tmp
 	</select>
 	<!-- endregion -->
+	
+	<!-- region modifyPolarity-->
+	<insert id="addMsgPolarity">
+		INSERT INTO msgPolarity(source, id, polarity, user_id) VALUES ('${msgPolarity.source}', '${msgPolarity.id}', '${msgPolarity.polarity}', '${user.id}')
+	</insert>
+	<!-- endregion-->
 
 </mapper>

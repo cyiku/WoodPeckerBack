@@ -8,11 +8,12 @@ public interface UserService {
     String existsTable(String tableName);
 
     //region stats
-    public Integer tableCount(String tableName);
-    public Integer timeCount(String tableName, String dateStr);
+    //public Integer tableCount(String tableName); abandon
+    public List<Distribution> distributionCount(String keyword);
+    public List<Statistic> timeCount(String keyword, String dateStr);
     public Integer posTimeCount(String tableName, String dateStr);
     public Integer negTimeCount(String tableName, String dateStr);
-    public List<Integer> polarityCount(String tableName,String dateStr);
+    public List<Sentiment> polarityCount(String keyword,String dateStr);
     //endregion
 
     void newUser(String userName);//为新用户创建表
@@ -80,4 +81,8 @@ public interface UserService {
     //region info
     List<String> getInfo (String keywordName, String src);
     //endregion
+
+    // region modify polarity
+    Integer addMsgPolarity(User user, MsgPolarity msgPolarity);
+    // endregion
 }

@@ -204,11 +204,12 @@ public class UserServiceImpl implements UserService {
     //endregion
 
     //region stats
-    public Integer tableCount(String tableName) {
-        return userDao.tableCount(tableName);
-    }
-    public Integer timeCount(String tableName, String dateStr) {
-        return userDao.timeCount(tableName,dateStr);
+//    public Integer tableCount(String tableName) {
+//        return userDao.tableCount(tableName);
+//    }
+    public List<Distribution> distributionCount(String keyword) {return userDao.distributionCount(keyword);}
+    public List<Statistic> timeCount(String keyword, String dateStr) {
+        return userDao.timeCount(keyword,dateStr);
     }
     public Integer posTimeCount(String tableName, String dateStr) {
         return userDao.posTimeCount(tableName,dateStr);
@@ -216,7 +217,7 @@ public class UserServiceImpl implements UserService {
     public Integer negTimeCount(String tableName, String dateStr) {
         return userDao.negTimeCount(tableName,dateStr);
     }
-    public List<Integer> polarityCount(String tableName,String dateStr) { return userDao.polarityCount(tableName, dateStr); }
+    public List<Sentiment> polarityCount(String keyword,String dateStr) { return userDao.polarityCount(keyword, dateStr); }
     //endregion
 
     public List<Topic> getClustering() { return userDao.getClustering(); }
@@ -228,4 +229,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getInfo(tableName);
     }
     //endregion
+
+    // region modify polarity
+    public Integer addMsgPolarity(User user, MsgPolarity msgPolarity) {
+        return userDao.addMsgPolarity(user, msgPolarity);
+    }
+    // endregion
 }

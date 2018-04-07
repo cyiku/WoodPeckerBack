@@ -8,6 +8,7 @@
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/domain/User.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/controller/SiteController.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/dao/UserDao.java
+/Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/controller/ModifyPolarityController.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/domain/Keyword.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/util/GetUser.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/service/Impl/JwtUserDetailsServiceImpl.java
@@ -20,10 +21,13 @@
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/domain/UserCollection.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/service/Impl/UserServiceImpl.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/service/UserService.java
+/Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/domain/MsgPolarity.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/security/JwtAuthenticationRequest.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/domain/NormalCollection.java
+/Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/controller/GenSpiderController.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/controller/InfoController.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/service/Impl/AuthServiceImpl.java
+/Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/util/GenSpider.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/controller/MonitorController.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/config/WebSecurityConfig.java
 /Users/ouyangyawen/projects/IdeaProjects/WoodPeckerBack/src/main/java/com/woodpecker/security/JwtAuthenticationEntryPoint.java

@@ -63,11 +63,12 @@ public interface UserDao {
 	//endregion
 
 	//region stats
-	public Integer tableCount(@Param("tableName")String tableName);
-	public Integer timeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
+	//public Integer tableCount(@Param("tableName")String tableName);  abandon
+	public List<Distribution> distributionCount(@Param("keyword")String keyword);
+	public List<Statistic> timeCount(@Param("keyword")String keyword,@Param("time")String dateStr);
 	public Integer posTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
 	public Integer negTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
-	public List<Integer> polarityCount(@Param("tableName")String tableName,@Param("time")String dateStr);
+	public List<Sentiment> polarityCount(@Param("keyword")String keyword,@Param("time")String dateStr);
 
 	public List<Topic> getClustering();
 	//endregion
@@ -79,5 +80,9 @@ public interface UserDao {
 	//region info
 	public List<String> getInfo(@Param("tableName")String tableName);
 	//endregion
+
+	// region modify polarity
+	public Integer addMsgPolarity(@Param("user") User user, @Param("msgPolarity") MsgPolarity msgPolarity);
+	// endregion
 
 }

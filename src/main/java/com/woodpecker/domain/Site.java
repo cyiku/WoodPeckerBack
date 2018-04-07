@@ -6,7 +6,8 @@ public class Site {
     private String type;
 
     public Site() {
-    };
+    }
+
     public Site(String name,String type){
         this.name=name;
         this.type=type;
