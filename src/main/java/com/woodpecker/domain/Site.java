@@ -4,13 +4,19 @@ public class Site {
 
     private String name;
     private String type;
+    private String tableName;
 
     public Site() {
     }
 
-    public Site(String name,String type){
+    public Site(String name,String type, String tableName){
         this.name=name;
         this.type=type;
+        this.tableName = tableName;
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     public String getName() {
@@ -27,5 +33,9 @@ public class Site {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

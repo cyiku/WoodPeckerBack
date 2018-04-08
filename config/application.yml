@@ -16,6 +16,9 @@ spring:
       max-active: 8
       max-wait: -1
     timeout: 0
+  es:
+    host: ${ES_HOST:114.212.189.147}
+    port: ${ES_JAVA_PORT:10095}
 
 # JWT
 jwt:

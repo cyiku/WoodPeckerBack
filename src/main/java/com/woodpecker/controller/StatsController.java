@@ -6,11 +6,6 @@ import com.woodpecker.domain.Statistic;
 import com.woodpecker.domain.Topic;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,15 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+
 
 @RestController
 @PreAuthorize("hasRole('USER')")
@@ -225,30 +214,9 @@ public class StatsController {
             message = "未知错误";
             e.printStackTrace();
         }
+
         return JSONResult.fillResultString(status, message, result);
     }
 }
 
-//        String host = "114.212.189.147";
-//        int port = 10095;
-//        try {
-//            Settings settings = Settings.builder()
-//                                .put("client.transport.sniff", true)
-//                                .build();
-//            TransportClient client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddresses(
-//                    new InetSocketTransportAddress(InetAddress.getByName(host),port));
-//            SearchResponse response = client.prepareSearch("crawler")
-//                                      .setTypes("ifeng_menhu")
-//                                      .setQuery(QueryBuilders.termQuery("content", "测试"))
-//                                      .addSort("time.keyword", SortOrder.DESC)
-//                                      .setFrom(0).setSize(100)
-//                                      .get();
-//
-//            for(SearchHit hit: response.getHits().getHits()) {
-//                Map<String, Object> source= hit.getSource();
-//            }
-//            client.prepareGet();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 

@@ -41,6 +41,7 @@
 	<resultMap id="SiteMap" type="com.woodpecker.domain.Site">
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="tableName" property="tableName" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<resultMap id="TopicMap" type="com.woodpecker.domain.Topic">
