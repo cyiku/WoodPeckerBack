@@ -33,7 +33,7 @@
     <property name="java.class.version" value="53.0"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="10.13.1"/>
+    <property name="os.version" value="10.13.3"/>
     <property name="library.jansi.path" value="/Users/ouyangyawen/progTool/apache-maven-3.5.0/lib/jansi-native/osx64"/>
     <property name="user.home" value="/Users/ouyangyawen"/>
     <property name="user.timezone" value="Asia/Shanghai"/>

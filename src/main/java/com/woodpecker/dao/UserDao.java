@@ -85,4 +85,6 @@ public interface UserDao {
 	public Integer addMsgPolarity(@Param("user") User user, @Param("msgPolarity") MsgPolarity msgPolarity);
 	// endregion
 
+	public List<Sentiment> polarityAllCount(@Param("keyword")String keyword);
+
 }

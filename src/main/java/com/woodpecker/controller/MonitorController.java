@@ -34,6 +34,8 @@ public class MonitorController {
             String tableName = keywordName + "_cache";
 
             Calendar curTime = new GregorianCalendar();
+            TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
+            curTime.setTimeZone(timeZone);
             Calendar startTime = (Calendar)curTime.clone();
             startTime.add(Calendar.SECOND,-monitorInterval);
             //startTime.add(Calendar.DATE, -10);

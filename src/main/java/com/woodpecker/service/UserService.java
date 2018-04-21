@@ -14,6 +14,7 @@ public interface UserService {
     public Integer posTimeCount(String tableName, String dateStr);
     public Integer negTimeCount(String tableName, String dateStr);
     public List<Sentiment> polarityCount(String keyword,String dateStr);
+    public List<Sentiment> polarityAllCount(String keyword);
     //endregion
 
     void newUser(String userName);//为新用户创建表

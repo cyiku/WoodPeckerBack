@@ -245,6 +245,10 @@
 	<select id="polarityCount" resultMap="Sentiment">
 		select * FROM  sentiment_t WHERE keyword = "${keyword}" AND date LIKE '${time}%'
 	</select>
+
+	<select id="polarityAllCount" resultMap="Sentiment">
+		select * FROM  sentiment_t WHERE keyword = "${keyword}"
+	</select>
 	<!-- endregion -->
 
 	<!-- region 杂项 utils -->

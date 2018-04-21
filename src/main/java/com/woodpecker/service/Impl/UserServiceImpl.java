@@ -235,4 +235,8 @@ public class UserServiceImpl implements UserService {
         return userDao.addMsgPolarity(user, msgPolarity);
     }
     // endregion
+
+    public List<Sentiment> polarityAllCount(String keyword) {
+        return userDao.polarityAllCount(keyword);
+    }
 }

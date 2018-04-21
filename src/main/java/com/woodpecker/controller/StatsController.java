@@ -83,6 +83,8 @@ public class StatsController {
             Boolean [] isExist = new Boolean[4];
             Map<String, Object> num = new HashMap<>();
             Calendar calender = new GregorianCalendar();
+            TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
+            calender.setTimeZone(timeZone);
             calender.add(Calendar.DATE, -10);
             Integer tmp = 0;
             for(String append:appendList) {
@@ -153,6 +155,8 @@ public class StatsController {
             Map<String, Object> num = new HashMap<>();
 
             Calendar calender = new GregorianCalendar();
+            TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
+            calender.setTimeZone(timeZone);
             calender.add(Calendar.DATE, -10);
             num.put("positive",posList);
             num.put("negative",negList);

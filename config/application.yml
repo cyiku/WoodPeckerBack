@@ -8,8 +8,8 @@ spring:
     host: ${WP_REDIS_HOST:114.212.189.147}
     #host: 114.212.87.73
     password:
-    port: ${WP_REDIS_PORT:10099}
-    #port: 6379
+    port: ${WP_REDIS_PORT:10104}
+    #port: 10104
     pool:
       max-idle: 8
       min-idle: 0
