@@ -35,7 +35,7 @@ public class RedisInterface {
             //System.out.println(outer);
             //JSONObject inner = new JSONObject(outer.getString("content"));
             JSONObject inner = outer.getJSONObject("content");
-            System.out.println(inner);
+            //System.out.println(inner);
             inner.put("contentType",outer.getString("type"));
             inner.put("keyword", tableName);
             result.add(inner);
