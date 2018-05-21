@@ -28,7 +28,7 @@ public class BriefReportController {
     private UserService userService;
 
     @RequestMapping(value = "/briefReport", method = RequestMethod.POST)
-    public void addCollection(@RequestBody String info, HttpServletResponse resp) throws Exception{
+    public void briefReport(@RequestBody String info, HttpServletResponse resp){
         Map<String, Object> map = new HashMap<String, Object>();
 
         JwtUser jwtUser = GetUser.getPrincipal();
@@ -109,9 +109,13 @@ public class BriefReportController {
             e.printStackTrace();
         }
         finally {
-            if(fin != null) fin.close();
-            if(out != null) out.close();
-            if(file != null) file.delete(); // 删除临时文件
+            try {
+                if(fin != null) fin.close();
+                if(out != null) out.close();
+                if(file != null) file.delete(); // 删除临时文件
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

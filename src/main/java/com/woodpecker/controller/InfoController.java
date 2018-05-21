@@ -40,12 +40,12 @@ public class InfoController {
     @Value("${spring.es.port}")
     private String esPort;
 
-    private List<JSONObject> esSearch(String keyword, int count, List<String> type) {
+    private List<JSONObject> esSearch(String keyword, int count, List<String> type, Integer page) {
         String host = esHost;
         int port = Integer.parseInt(esPort);
         ObjectMapper mapper = new ObjectMapper();   //map to json
         List<JSONObject> result = new ArrayList<>();
-
+        Integer beginIndex = (page - 1) * 10;
         try {
             TransportClient client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddresses(
                     new InetSocketTransportAddress(InetAddress.getByName(host),port));
@@ -53,15 +53,13 @@ public class InfoController {
                     .setTypes(type.toArray(new String[type.size()]))
                     .setQuery(QueryBuilders.matchPhraseQuery("content", keyword))
                     .addSort("time.keyword", SortOrder.DESC)
-                    .setSize(count).setFrom(0)
+                    .setSize(count).setFrom(beginIndex)
                     .get();
             for(SearchHit hit: response.getHits().getHits()) {
                 Map<String, Object> source= hit.getSource();
                 JSONObject tmpJson = new JSONObject(mapper.writeValueAsString(source));
                 tmpJson.put("_id", hit.getId());
-                if (!tmpJson.has("keyword")) {
-                    tmpJson.put("keyword", keyword);
-                }
+                tmpJson.put("keyword", keyword);
                 result.add(tmpJson);
             }
             client.close();
@@ -71,6 +69,7 @@ public class InfoController {
         return result;
     }
 
+    /*
     @RequestMapping(value = "/getWeibo", method = RequestMethod.POST)
     public String getWeibo(@RequestBody String info) {
         Integer status = 1;
@@ -108,7 +107,7 @@ public class InfoController {
         String message = "";
         JSONObject jsonObject = new JSONObject(info);
         String keywordName = (String)jsonObject.get("keyword");
-        int count = 50;
+        int count = 10;
         if (jsonObject.has("search")) {
             count = 20;
         }
@@ -181,21 +180,6 @@ public class InfoController {
         int count = 50;
         if (jsonObject.has("search")) {
             count = 20;
-        }
-//        try {
-//            JSONObject jsonObject = new JSONObject(info);
-//            String keywordName = (String)jsonObject.get("keyword");
-//            if (null != userService.existsTable(keywordName + "_forum")) {
-//                List<String> strings = userService.getInfo(keywordName,"forum");
-//                for(String str:strings) {
-//                    result.add(new JSONObject(str));
-//                }
-//            }
-//        } catch (Exception e) {
-//            status = -1;
-//            message = "未知错误";
-//            e.printStackTrace();
-//        }
         List<Site> sites = userService.getSite();
         List<String> type = new LinkedList<>();
         for(Site site: sites){
@@ -206,4 +190,55 @@ public class InfoController {
         List<JSONObject> result = esSearch(keywordName, count, type);
         return JSONResult.fillResultString(status,message,result);
     }
+*/
+
+    @RequestMapping(value = "/getInfo", method = RequestMethod.POST)
+    public String getInfo(@RequestBody String info) {
+        Integer status = 1;
+        String message = "";
+        JSONObject jsonObject = new JSONObject(info);
+        String keywordName = (String)jsonObject.get("keyword");
+        Integer page = (Integer) jsonObject.get("page");
+        String webType = (String) jsonObject.get("type");
+        System.out.println(webType);
+
+        // int count = 50;
+        // if (jsonObject.has("search")) {
+        //     count = 20;
+        // }
+        int count = 10;
+
+        List<Site> sites = userService.getSite();
+        List<String> type = new LinkedList<>();
+        if (webType.equals("forum")) {
+            //System.out.println("In forum");
+            for(Site site: sites){
+                if (site.getType().equals("论坛")){
+                    type.add(site.getTableName());
+                }
+            }    
+        } else if (webType.equals("portal")) {
+            //System.out.println("In portal");
+            for(Site site: sites){
+                if (site.getType().equals("门户网站")){
+                    type.add(site.getTableName());
+                }
+            }
+        } else if (webType.equals("agency")) {
+            //System.out.println("In agency");
+            for(Site site: sites){
+                if (site.getType().equals("培训机构")){
+                    type.add(site.getTableName());
+                }
+            }
+            count = 5;  // 培训机构每条消息太特么长了...
+        } else if (webType.equals("weibo")) {
+            //System.out.println("In weibo");
+            type.add("weibo");
+        }
+        
+        List<JSONObject> result = esSearch(keywordName, count, type, page);
+        return JSONResult.fillResultString(status,message,result);
+    }
+
 }

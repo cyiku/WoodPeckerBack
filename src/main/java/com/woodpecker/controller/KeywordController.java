@@ -100,7 +100,7 @@ public class KeywordController {
         } catch (Exception e) {
             status = -1;
             message = "未知错误";
-            System.out.println(e);
+            e.printStackTrace();
         }
         return JSONResult.fillResultString(status, message, result);
     }
@@ -134,7 +134,7 @@ public class KeywordController {
         } catch (Exception e) {
             status=-1;
             message="未知错误";
-            System.out.println(e);
+            e.printStackTrace();
         }
         return JSONResult.fillResultString(status, message, result);
     }
@@ -194,7 +194,7 @@ public class KeywordController {
         } catch (Exception e) {
             status = -1;
             message = "未知错误";
-            System.out.println(e);
+            e.printStackTrace();
         }
         return JSONResult.fillResultString(status, message, result);
     }

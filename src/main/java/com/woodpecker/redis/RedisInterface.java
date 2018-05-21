@@ -31,6 +31,7 @@ public class RedisInterface {
         ZSetOperations<String, String> zOps = redisTemplate.opsForZSet();
         Set<String> stringSet = zOps.rangeByScore(tableName,startTime,endTime);
         for(String str: stringSet) {
+            //System.out.println(str);
             JSONObject outer = new JSONObject(str);
             //System.out.println(outer);
             //JSONObject inner = new JSONObject(outer.getString("content"));
