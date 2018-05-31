@@ -30,6 +30,7 @@ public class RedisInterface {
         List<JSONObject> result = new ArrayList<>();
         ZSetOperations<String, String> zOps = redisTemplate.opsForZSet();
         Set<String> stringSet = zOps.rangeByScore(tableName,startTime,endTime);
+        System.out.println(tableName + " 共有: " + stringSet.size() + "条消息");
         for(String str: stringSet) {
             //System.out.println(str);
             JSONObject outer = new JSONObject(str);

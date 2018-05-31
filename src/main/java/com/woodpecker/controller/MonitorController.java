@@ -85,7 +85,7 @@ public class MonitorController {
 
             int count = 10;
             List<String> type = new LinkedList<>();
-            type.add("baidusousuo");
+            type.add("weibo");
             result.put("data", EsSearch.esSearch(esHost, esPort, 0, count, keywordName, type, true));
             //result.put("data",searchLast5FromBaiduSearch(keywordName, count));
         } catch (Exception e) {

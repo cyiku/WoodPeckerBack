@@ -39,7 +39,7 @@ public class EsSearch {
                 tmpJson.put("_id", hit.getId());
                 tmpJson.put("keyword", keyword);
                 if (isMonitor) {  // 监控页面需要这个字段
-                    tmpJson.put("contentType", "portal");
+                    tmpJson.put("contentType", "weibo");
                 }
                 result.add(tmpJson);
             }
