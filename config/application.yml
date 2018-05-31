@@ -16,7 +16,7 @@ spring:
     timeout: 0
   es:
     host: ${ES_HOST:114.212.189.147}
-    port: ${ES_JAVA_PORT:10095}
+    port: ${ES_JAVA_PORT:10142}
 
 # JWT
 jwt:

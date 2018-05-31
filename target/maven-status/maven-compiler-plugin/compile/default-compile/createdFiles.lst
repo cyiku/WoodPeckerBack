@@ -37,6 +37,7 @@ com/woodpecker/domain/KwForReport.class
 com/woodpecker/domain/TableCollection.class
 com/woodpecker/controller/AuthController.class
 com/woodpecker/util/GetUser.class
+com/woodpecker/util/EsSearch.class
 com/woodpecker/domain/Distribution.class
 com/woodpecker/util/JSONResult.class
 com/woodpecker/redis/CacheConfig.class
