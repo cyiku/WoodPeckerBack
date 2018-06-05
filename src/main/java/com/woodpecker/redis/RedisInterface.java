@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+
 @Service
 public class RedisInterface {
     @Autowired
@@ -30,7 +35,20 @@ public class RedisInterface {
         List<JSONObject> result = new ArrayList<>();
         ZSetOperations<String, String> zOps = redisTemplate.opsForZSet();
         Set<String> stringSet = zOps.rangeByScore(tableName,startTime,endTime);
-        System.out.println(tableName + " 共有: " + stringSet.size() + "条消息");
+        // String s = tableName + " from: " + startTime + " to:" + endTime + " 共有: " + stringSet.size() + "条消息";
+        // try {
+        //     File file = new File("test.txt");  
+        //     FileWriter fw = new FileWriter(file, true);
+        //     PrintWriter pw = new PrintWriter(fw);
+        //     pw.println(s);// 在已有的基础上添加字符串  
+        //     pw.flush();
+        //     fw.flush();
+        //     pw.close();
+        //     fw.close();
+        // } catch (Exception e) {  
+        //     // TODO Auto-generated catch block  
+        //     e.printStackTrace();  
+        // }  
         for(String str: stringSet) {
             //System.out.println(str);
             JSONObject outer = new JSONObject(str);
