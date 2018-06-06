@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 
 public class EsSearch {
-    public static List<JSONObject> esSearch(String host, String stringPort, int beginIndex, int count, String keyword, List<String> type, boolean isMonitor) {
+    public static List<JSONObject> esSearch(String host, String stringPort, int beginIndex, int count, String keyword, List<String> type) {
         ObjectMapper mapper = new ObjectMapper();   //map to json
         List<JSONObject> result = new ArrayList<>();
         int port = Integer.parseInt(stringPort);
@@ -38,9 +38,6 @@ public class EsSearch {
                 JSONObject tmpJson = new JSONObject(mapper.writeValueAsString(source));
                 tmpJson.put("_id", hit.getId());
                 tmpJson.put("keyword", keyword);
-                if (isMonitor) {  // 监控页面需要这个字段
-                    tmpJson.put("contentType", "weibo");
-                }
                 result.add(tmpJson);
             }
             restClient.close();

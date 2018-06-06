@@ -30,7 +30,7 @@
 //         // type.add("kaidi");
 //         // type.add("tianqinluntan");
 //         // type.add("tianya");
-//         type.add("baidutiebaquanbasousuo");
+//         type.add("weibo");
 //         // type.add("DISCUZ");
 //         // type.add("DISCUZ");
 //         int port = Integer.parseInt(stringPort);
@@ -42,10 +42,10 @@
 //             SearchRequest searchRequest = new SearchRequest("crawler"); 
 //             searchRequest.types(type.toArray(new String[type.size()]));
 //             SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-//             sourceBuilder.query(QueryBuilders.matchPhraseQuery("content", keyword));
+//             sourceBuilder.query(QueryBuilders.matchQuery("content", keyword));
 //             sourceBuilder.from(beginIndex);
 //             sourceBuilder.size(count);
-//             sourceBuilder.sort("time.keyword", SortOrder.DESC);
+//             //sourceBuilder.sort("time.keyword", SortOrder.DESC);
 //             searchRequest.source(sourceBuilder);
 //             SearchResponse response = client.search(searchRequest);
 //             for(SearchHit hit: response.getHits().getHits()) {
@@ -68,8 +68,8 @@
 
 
 //     public static void main(String [] args) throws Exception{
-//         List<String> result = esSearch("114.212.189.147", "10142", 0, 1200, "高考", false);
-//         //System.out.println(result.size());
+//         List<String> result = esSearch("114.212.189.147", "10142", 0, 10, "全国高考葛军出山", false);
+//         System.out.println("size: " + result.size());
 //         File file = new File("esExtract.txt");  
 //         FileWriter fw = new FileWriter(file, true);
 //         PrintWriter pw = new PrintWriter(fw);

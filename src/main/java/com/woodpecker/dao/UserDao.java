@@ -87,4 +87,6 @@ public interface UserDao {
 
 	public List<Sentiment> polarityAllCount(@Param("keyword")String keyword);
 
+	public List<MsgPolarity> getModifyPolarity(@Param("user")User user);
+
 }

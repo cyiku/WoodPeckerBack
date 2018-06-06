@@ -2,11 +2,13 @@ package com.woodpecker.controller;
 
 import com.woodpecker.domain.Site;
 import com.woodpecker.domain.User;
+import com.woodpecker.domain.MsgPolarity;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
 import com.woodpecker.util.EsSearch;
+import com.woodpecker.util.GetUser;
+import com.woodpecker.security.JwtUser;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,11 +36,14 @@ public class InfoController {
     public String getInfo(@RequestBody String info) {
         Integer status = 1;
         String message = "";
+
+        JwtUser jwtUser = GetUser.getPrincipal();
+        User user = userService.findByUserName(jwtUser.getUsername());
+
         JSONObject jsonObject = new JSONObject(info);
         String keywordName = (String)jsonObject.get("keyword");
         Integer page = (Integer) jsonObject.get("page");
         String webType = (String) jsonObject.get("type");
-        System.out.println(webType);
 
         int count = 10;
 
@@ -72,7 +77,26 @@ public class InfoController {
         }
         
         int beginIndex = (page - 1) * 10;
-        List<JSONObject> result = EsSearch.esSearch(esHost, esPort, beginIndex, count, keywordName, type, false);
+        List<JSONObject> result = EsSearch.esSearch(esHost, esPort, beginIndex, count, keywordName, type);
+        List<MsgPolarity> modifyPolarity = userService.getModifyPolarity(user);
+        // Map<String, String> map = new HashMap<>();
+        // for(int i = 0; i < modifyPolarity.size(); ++i) {
+        //     map.put(modifyPolarity.get(i).getId(), modifyPolarity.get(i).getPolarity());
+        // }
+        for(int i = 0; i < result.size(); ++i) {
+            String oneResultId = (String)result.get(i).get("_id"); 
+            // if (map.get(oneResultId) != null) {
+            //     result.get(i).put("sentiment", map.get(oneResultId));
+            // }
+            for (int j = 0; j < modifyPolarity.size(); ++j) {
+                if (oneResultId.equals(modifyPolarity.get(j).getId())) {
+                    System.out.println("oneResultId: " + oneResultId);
+                    System.out.println("before modify: " + result.get(i).get("sentiment"));
+                    result.get(i).put("sentiment", modifyPolarity.get(j).getPolarity());
+                    System.out.println("after modify: " + result.get(i).get("sentiment"));
+                }
+            }
+        }
         return JSONResult.fillResultString(status,message,result);
     }
 

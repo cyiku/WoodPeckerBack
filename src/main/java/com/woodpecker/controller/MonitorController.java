@@ -31,7 +31,7 @@ public class MonitorController {
     @Value("${spring.es.port}")
     private String esPort;
 
-    private final int monitorInterval = 20;
+    private final int monitorInterval = 30;
 
     @RequestMapping(value = "/monitor", method = RequestMethod.POST)
     public String monitor(@RequestBody String info) {
@@ -86,8 +86,12 @@ public class MonitorController {
             int count = 10;
             List<String> type = new LinkedList<>();
             type.add("weibo");
-            result.put("data", EsSearch.esSearch(esHost, esPort, 0, count, keywordName, type, true));
-            //result.put("data",searchLast5FromBaiduSearch(keywordName, count));
+            //result.put("data", EsSearch.esSearch(esHost, esPort, 0, count, keywordName, type, true));
+            List<JSONObject> searchData = EsSearch.esSearch(esHost, esPort, 0, count, keywordName, type);
+            for(int i = 0; i < searchData.size(); ++i) {
+                searchData.get(i).put("contentType", "weibo");
+            }
+            result.put("data", searchData);
         } catch (Exception e) {
             status = -1;
             message = "未知错误";

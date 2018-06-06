@@ -86,4 +86,7 @@ public interface UserService {
     // region modify polarity
     Integer addMsgPolarity(User user, MsgPolarity msgPolarity);
     // endregion
+
+    //modify polarity
+    List<MsgPolarity> getModifyPolarity(User user);
 }

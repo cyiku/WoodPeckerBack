@@ -239,4 +239,8 @@ public class UserServiceImpl implements UserService {
     public List<Sentiment> polarityAllCount(String keyword) {
         return userDao.polarityAllCount(keyword);
     }
+
+    public List<MsgPolarity> getModifyPolarity(User user) {
+        return userDao.getModifyPolarity(user);
+    }
 }

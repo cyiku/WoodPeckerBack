@@ -69,6 +69,12 @@
 		<result column="date" property="date" jdbcType="VARCHAR"/>
 		<result column="count" property="count" jdbcType="INTEGER"/>
 	</resultMap>
+
+	<resultMap id="MsgPolarity" type="com.woodpecker.domain.MsgPolarity">
+		<result column="source" property="source" jdbcType="VARCHAR"/>
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="polarity" property="polarity" jdbcType="VARCHAR"/>
+	</resultMap>
 	<!-- endregion -->
 
 	<!-- region 登录注册相关-->
@@ -271,10 +277,16 @@
 	</select>
 	<!-- endregion -->
 	
-	<!-- region modifyPolarity-->
+	<!-- region modifyPolarity -->
 	<insert id="addMsgPolarity">
 		INSERT INTO msgPolarity(source, id, polarity, user_id) VALUES ('${msgPolarity.source}', '${msgPolarity.id}', '${msgPolarity.polarity}', '${user.id}')
 	</insert>
-	<!-- endregion-->
+	<!-- endregion -->
+
+	<!-- region getModifyPolarity -->
+	<select id="getModifyPolarity" resultMap="MsgPolarity">
+		SELECT * FROM msgPolarity WHERE user_id = ${user.id}
+	</select>
+	<!-- endregion -->
 
 </mapper>
