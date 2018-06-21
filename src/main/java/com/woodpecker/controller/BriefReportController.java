@@ -29,25 +29,39 @@ public class BriefReportController {
 
     @RequestMapping(value = "/briefReport", method = RequestMethod.POST)
     public void briefReport(@RequestBody String info, HttpServletResponse resp){
+        /**
+         * 为用户生成剪报夹
+         */
+
+        // map: 为剪报夹模板提供内容。
         Map<String, Object> map = new HashMap<String, Object>();
 
+        // 获取用户，为以后查询用户信息做准备
         JwtUser jwtUser = GetUser.getPrincipal();
         User user = userService.findByUserName(jwtUser.getUsername());
 
-        // keyword number
+        // 获取用户所有的关键字
         List<Keyword> keywords = userService.getKeyword(user);
+
+        // 获取关键字数量，放到map中
         int keywordNum = keywords.size();
         map.put("keywordNum", keywordNum);
 
-        // keywordList
-        List<KwForReport> keywordList = new ArrayList<> ();
+        // 获取当前的，东八区的时间：年月日
         TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(timeZone);
         String time = sdf.format(new Date());
+
+        // kwsReport: 保存每个关键字的报告
+        List<KwForReport> kwsReport = new ArrayList<> ();
+
+        // 遍历所有的关键字，得到每个关键字的报告
         for (Keyword keyword: keywords) {
+            // 关键字名
             String keywordName = keyword.getName();
 
+            // 获取关键字的每个来源的数量，共4个来源：培训机构，微博，论坛，门户网站
             List<Distribution> distributions = userService.distributionCount(keywordName);
             int weiboNum=0, forumNum=0, portalNum=0, agencyNum=0, allMsgNum=0;
             for(Distribution d: distributions) {
@@ -63,7 +77,8 @@ public class BriefReportController {
                 }
                 allMsgNum += d.getCount();
             }
-
+            
+            // 获取关键字的情感数量，共3个情感：正(3)，负(2)，中(1)
             List<Sentiment> sentiments = userService.polarityAllCount(keywordName);
             int posNum = 0, negNum=0, neuNum=0;
             for(Sentiment sentiment: sentiments) {
@@ -77,12 +92,15 @@ public class BriefReportController {
                 }
             }
 
+            // 根据以上得到的值生成KwForReport对象，并加入kwsReport中
             KwForReport kw = new KwForReport(keywordName, time, weiboNum,forumNum,portalNum,agencyNum,allMsgNum,posNum,negNum,neuNum);
-            keywordList.add(kw);
+            kwsReport.add(kw);
         }
-        map.put("keywordList", keywordList);
 
+        // 将kwsReport放入map中
+        map.put("keywordList", kwsReport);
 
+        // 以下为生成并传输文件
         File file = null;
         InputStream fin = null;
         ServletOutputStream out = null;
