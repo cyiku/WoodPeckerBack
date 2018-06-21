@@ -1,7 +1,7 @@
 package com.woodpecker.controller;
 
 import com.woodpecker.domain.NormalCollection;
-import com.woodpecker.domain.TableCollection;
+// import com.woodpecker.domain.TableCollection;
 import com.woodpecker.domain.User;
 import com.woodpecker.security.JwtUser;
 import com.woodpecker.service.UserService;
@@ -61,21 +61,21 @@ public class CollectionController {
             Date date = new Date(); //获取时间戳
 
             if(type.equals("table")) {
-                List<TableCollection> tableCollections = new ArrayList<>();
-                for(int i=0;i<data.length();i++) {
-                    JSONObject o=(JSONObject)data.get(i);
-                    dataid = String.valueOf(o.get("id"));
-                    System.out.println(o.toString());
-                    data_str = HandleString(o.toString());
-                    tableCollections.add(new TableCollection(dataid,data_str,date.getTime(),1));
-                }
-                List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
-                if(tableList.isEmpty()) {
-                    userService.addTableCollection(user,tableCollections);
-                }
-                else {
-                    userService.resetTableCollection(user,tableList);
-                }
+                // List<TableCollection> tableCollections = new ArrayList<>();
+                // for(int i=0;i<data.length();i++) {
+                //     JSONObject o=(JSONObject)data.get(i);
+                //     dataid = String.valueOf(o.get("id"));
+                //     System.out.println(o.toString());
+                //     data_str = HandleString(o.toString());
+                //     tableCollections.add(new TableCollection(dataid,data_str,date.getTime(),1));
+                // }
+                // List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
+                // if(tableList.isEmpty()) {
+                //     userService.addTableCollection(user,tableCollections);
+                // }
+                // else {
+                //     userService.resetTableCollection(user,tableList);
+                // }
             }
             else {
                 if(data.getJSONObject(0).has("_id")) {
@@ -162,39 +162,38 @@ public class CollectionController {
             String type = (String) jsonObject.get("type");
             JSONArray dataidList = ((JSONArray) jsonObject.get("dataid"));
             String dataid;
-
-            Map<String, Object> resultMap = new HashMap<String, Object>();
             List<JSONObject> result;
 
             if(type.equals("table")) {
-                List<TableCollection> tableCollections = new ArrayList<TableCollection>();
-                for(int i=0;i<dataidList.length();i++) {
-                    dataid=String.valueOf(dataidList.get(i));
-                    tableCollections.add(new TableCollection(dataid,null,null,null));
-                }
-                userService.delTableCollection(user,tableCollections);
-                List<TableCollection> tableList = userService.getTableCollection(user);
-                Long tableid = null;
-                List<List> resultList = new ArrayList<List>();
-                result = null;
-                for(TableCollection table:tableList) {
-                    if(null == tableid) {
-                        tableid = table.getTableid();
-                        result = new ArrayList<JSONObject>();
-                        result.add(new JSONObject(table.getData()));
-                    }
-                    else if(tableid.equals(table.getTableid())) {
-                        result.add(new JSONObject(table.getData()));
-                    }
-                    else {
-                        tableid = table.getTableid();
-                        resultList.add(result);
-                        result = new ArrayList<JSONObject>();
-                        result.add(new JSONObject(table.getData()));
-                    }
-                }
-                if(null!=result)resultList.add(result);
-                map.put("collection", resultList);
+                // 收藏或取消收藏表格
+                // List<TableCollection> tableCollections = new ArrayList<TableCollection>();
+                // for(int i=0;i<dataidList.length();i++) {
+                //     dataid=String.valueOf(dataidList.get(i));
+                //     tableCollections.add(new TableCollection(dataid,null,null,null));
+                // }
+                // userService.delTableCollection(user,tableCollections);
+                // List<TableCollection> tableList = userService.getTableCollection(user);
+                // Long tableid = null;
+                // List<List<JSONObject>> resultList = new ArrayList<List<JSONObject>>();
+                // result = null;
+                // for(TableCollection table:tableList) {
+                //     if(null == tableid) {
+                //         tableid = table.getTableid();
+                //         result = new ArrayList<JSONObject>();
+                //         result.add(new JSONObject(table.getData()));
+                //     }
+                //     else if(tableid.equals(table.getTableid())) {
+                //         result.add(new JSONObject(table.getData()));
+                //     }
+                //     else {
+                //         tableid = table.getTableid();
+                //         resultList.add(result);
+                //         result = new ArrayList<JSONObject>();
+                //         result.add(new JSONObject(table.getData()));
+                //     }
+                // }
+                // if(null!=result)resultList.add(result);
+                // map.put("collection", resultList);
             }
             else {
                 dataid = String.valueOf(dataidList.get(0));
@@ -259,29 +258,29 @@ public class CollectionController {
             List<JSONObject> result;
 
             if(type.equals("table")) {
-                List<TableCollection> tableList = userService.getTableCollection(user);
-                System.out.println(tableList.size());
-                Long tableid = null;
-                List<List> resultList = new ArrayList<List>();
-                result = null;
-                for(TableCollection table:tableList) {
-                    if(null == tableid) {
-                        tableid = table.getTableid();
-                        result = new ArrayList<JSONObject>();
-                        result.add(new JSONObject(table.getData()));
-                    }
-                    else if(tableid.equals(table.getTableid())) {
-                        result.add(new JSONObject(table.getData()));
-                    }
-                    else {
-                        tableid = table.getTableid();
-                        resultList.add(result);
-                        result = new ArrayList<JSONObject>();
-                        result.add(new JSONObject(table.getData()));
-                    }
-                }
-                if(null!=result)resultList.add(result);
-                map.put("collection", resultList);
+                // List<TableCollection> tableList = userService.getTableCollection(user);
+                // System.out.println(tableList.size());
+                // Long tableid = null;
+                // List<List> resultList = new ArrayList<List>();
+                // result = null;
+                // for(TableCollection table:tableList) {
+                //     if(null == tableid) {
+                //         tableid = table.getTableid();
+                //         result = new ArrayList<JSONObject>();
+                //         result.add(new JSONObject(table.getData()));
+                //     }
+                //     else if(tableid.equals(table.getTableid())) {
+                //         result.add(new JSONObject(table.getData()));
+                //     }
+                //     else {
+                //         tableid = table.getTableid();
+                //         resultList.add(result);
+                //         result = new ArrayList<JSONObject>();
+                //         result.add(new JSONObject(table.getData()));
+                //     }
+                // }
+                // if(null!=result)resultList.add(result);
+                // map.put("collection", resultList);
             }
             else {
                 List<NormalCollection> normalCollectionList;
@@ -341,25 +340,25 @@ public class CollectionController {
             NormalCollection normalCollection;
             List<NormalCollection> normalCollectionList;
             if(type.equals("table")) {
-                List<TableCollection> tableCollections = new ArrayList<TableCollection>();
-                for(int i=0;i<dataidList.length();i++) {
-                    dataid = String.valueOf(dataidList.get(i));
-                    tableCollections.add(new TableCollection(dataid,null,null,null));
-                }
-                List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
-                if(tableList.isEmpty()) {
-                    map.put("iscollection",false);
-                }
-                else {
-                    Boolean result = true;
-                    for(TableCollection tableCollection: tableList) {
-                        if(tableCollection.getIscollection() == 0) {
-                            result=false;
-                            break;
-                        }
-                    }
-                    map.put("iscollection",result);
-                }
+                // List<TableCollection> tableCollections = new ArrayList<TableCollection>();
+                // for(int i=0;i<dataidList.length();i++) {
+                //     dataid = String.valueOf(dataidList.get(i));
+                //     tableCollections.add(new TableCollection(dataid,null,null,null));
+                // }
+                // List<TableCollection> tableList = userService.searchTableCollection(user,tableCollections);
+                // if(tableList.isEmpty()) {
+                //     map.put("iscollection",false);
+                // }
+                // else {
+                //     Boolean result = true;
+                //     for(TableCollection tableCollection: tableList) {
+                //         if(tableCollection.getIscollection() == 0) {
+                //             result=false;
+                //             break;
+                //         }
+                //     }
+                //     map.put("iscollection",result);
+                // }
             }
             else {
                 dataid = String.valueOf(dataidList.get(0));

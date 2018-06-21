@@ -65,7 +65,7 @@ public class BriefReportController {
             }
 
             List<Sentiment> sentiments = userService.polarityAllCount(keywordName);
-            int posNum = 0, negNum=0, neuNum=0, sentimentNum=0;
+            int posNum = 0, negNum=0, neuNum=0;
             for(Sentiment sentiment: sentiments) {
                 int num = sentiment.getCount();
                 if (sentiment.getSentiment() == 3) {
@@ -75,9 +75,7 @@ public class BriefReportController {
                 } else if (sentiment.getSentiment() == 1) {
                     neuNum += num;
                 }
-                sentimentNum += num;
             }
-
 
             KwForReport kw = new KwForReport(keywordName, time, weiboNum,forumNum,portalNum,agencyNum,allMsgNum,posNum,negNum,neuNum);
             keywordList.add(kw);

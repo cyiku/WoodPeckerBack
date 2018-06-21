@@ -33,17 +33,17 @@ public class GenSpiderController {
             JSONObject jsonObject = new JSONObject(info);
 
             String dbName = (String) jsonObject.get("dbName");
-            String mongoCollection = (String) jsonObject.get("mongoCollection");
+            // String mongoCollection = (String) jsonObject.get("mongoCollection");
             String mongoHost = (String) jsonObject.get("mongoHost");
             String mongoPort = Integer.toString((int)jsonObject.get("mongoPort"));
             String projectName = (String) jsonObject.get("projectName");
             String spiderName = (String) jsonObject.get("spiderName");
-            String spiderType = (String) jsonObject.get("spiderType");
+            // String spiderType = (String) jsonObject.get("spiderType");
             String itemRule = (String) jsonObject.get("itemRule");
 
             String[] startURL = jsonArrayToStringArray((JSONArray) jsonObject.get("startURL"));
             String[] allowedDomains = jsonArrayToStringArray((JSONArray) jsonObject.get("allowedDomains"));
-            String[] defaultValue = jsonArrayToStringArray((JSONArray) jsonObject.get("default"));
+            // String[] defaultValue = jsonArrayToStringArray((JSONArray) jsonObject.get("default"));
             String[] property = jsonArrayToStringArray((JSONArray) jsonObject.get("property"));
             String[] rule = jsonArrayToStringArray((JSONArray) jsonObject.get("rule"));
             String downloadDelay = Integer.toString((int)jsonObject.get("downloadDelay"));

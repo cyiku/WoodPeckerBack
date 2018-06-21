@@ -79,21 +79,14 @@ public class InfoController {
         int beginIndex = (page - 1) * 10;
         List<JSONObject> result = EsSearch.esSearch(esHost, esPort, beginIndex, count, keywordName, type);
         List<MsgPolarity> modifyPolarity = userService.getModifyPolarity(user);
-        // Map<String, String> map = new HashMap<>();
-        // for(int i = 0; i < modifyPolarity.size(); ++i) {
-        //     map.put(modifyPolarity.get(i).getId(), modifyPolarity.get(i).getPolarity());
-        // }
         for(int i = 0; i < result.size(); ++i) {
             String oneResultId = (String)result.get(i).get("_id"); 
-            // if (map.get(oneResultId) != null) {
-            //     result.get(i).put("sentiment", map.get(oneResultId));
-            // }
             for (int j = 0; j < modifyPolarity.size(); ++j) {
                 if (oneResultId.equals(modifyPolarity.get(j).getId())) {
-                    System.out.println("oneResultId: " + oneResultId);
-                    System.out.println("before modify: " + result.get(i).get("sentiment"));
+                    //System.out.println("oneResultId: " + oneResultId);
+                    //System.out.println("before modify: " + result.get(i).get("sentiment"));
                     result.get(i).put("sentiment", modifyPolarity.get(j).getPolarity());
-                    System.out.println("after modify: " + result.get(i).get("sentiment"));
+                    //System.out.println("after modify: " + result.get(i).get("sentiment"));
                 }
             }
         }

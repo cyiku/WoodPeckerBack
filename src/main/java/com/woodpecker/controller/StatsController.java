@@ -80,13 +80,13 @@ public class StatsController {
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String) jsonObject.get("keyword");
             List<String> dateList = new ArrayList<>();
-            Boolean [] isExist = new Boolean[4];
+            // Boolean [] isExist = new Boolean[4];
             Map<String, Object> num = new HashMap<>();
             Calendar calender = new GregorianCalendar();
             TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
             calender.setTimeZone(timeZone);
             calender.add(Calendar.DATE, -10);
-            Integer tmp = 0;
+            // Integer tmp = 0;
             for(String append:appendList) {
 //                String tableName = keywordName + "_" + append;
 //                if (null == userService.existsTable(tableName)) {
@@ -143,7 +143,7 @@ public class StatsController {
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
-        List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
+        // List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
         try {
             String date;
             JSONObject jsonObject = new JSONObject(info);
