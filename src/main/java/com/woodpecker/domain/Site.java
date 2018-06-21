@@ -1,6 +1,12 @@
 package com.woodpecker.domain;
 
 public class Site {
+    /**
+     * 网站类：
+     * name：网站名称，如新浪微博，新浪网
+     * type：四大类中的一个
+     * tableName：mongo中表的名称，es的索引
+     */
 
     private String name;
     private String type;

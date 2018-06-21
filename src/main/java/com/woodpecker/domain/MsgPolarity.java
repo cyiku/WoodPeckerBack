@@ -1,6 +1,11 @@
 package com.woodpecker.domain;
 
 public class MsgPolarity {
+    /**
+     * source：消息的来源，小来源，不是四大类
+     * id：消息的id
+     * polarity：修改后的情感极性
+     */
 
     private String source;
     private String id;

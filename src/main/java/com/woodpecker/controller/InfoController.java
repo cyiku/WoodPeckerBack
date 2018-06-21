@@ -23,6 +23,9 @@ import java.util.*;
 @RestController
 @PreAuthorize("hasRole('USER')")
 public class InfoController {
+    /**
+     * 使用es为关键字提取指定来源，指定页数的消息
+     */
     @Resource
     UserService userService;
 
@@ -34,62 +37,79 @@ public class InfoController {
 
     @RequestMapping(value = "/getInfo", method = RequestMethod.POST)
     public String getInfo(@RequestBody String info) {
+
+        // status: 状态码，message: 存储错误信息
         Integer status = 1;
         String message = "";
 
+        // 获取用户，为以后查询用户信息做准备
         JwtUser jwtUser = GetUser.getPrincipal();
         User user = userService.findByUserName(jwtUser.getUsername());
 
+        // 获取request body中存储的信息：关键字，第几页，来源
         JSONObject jsonObject = new JSONObject(info);
         String keywordName = (String)jsonObject.get("keyword");
         Integer page = (Integer) jsonObject.get("page");
         String webType = (String) jsonObject.get("type");
 
+        // 每页的数目，这里count=10，若page=1，则返回第0-9条。
         int count = 10;
 
+        // 这里把培训机构这一大类的每页数量改成5，因为是培训机构每条太长了。
+        if (webType.equals("agency")) {
+            count = 5;
+        }
+
+        // 根据请求的页数和每页的数目，可以得到开始的下标，方便es查询。
+        int beginIndex = (page - 1) * count;
+
+        // 获取所有的网站，Site包括: type(四大类：论坛，门户...)，name（名称：新浪微博...），tableName(在mongo中的名称，es的索引)
         List<Site> sites = userService.getSite();
-        List<String> type = new LinkedList<>();
+        
+        // 根据指定的类型，得到所有的tableName，为以后es查询做准备
+        List<String> tableNames = new LinkedList<>();
         if (webType.equals("forum")) {
-            //System.out.println("In forum");
             for(Site site: sites){
                 if (site.getType().equals("论坛")){
-                    type.add(site.getTableName());
+                    tableNames.add(site.getTableName());
                 }
             }    
         } else if (webType.equals("portal")) {
-            //System.out.println("In portal");
             for(Site site: sites){
                 if (site.getType().equals("门户网站")){
-                    type.add(site.getTableName());
+                    tableNames.add(site.getTableName());
                 }
             }
         } else if (webType.equals("agency")) {
-            //System.out.println("In agency");
             for(Site site: sites){
                 if (site.getType().equals("培训机构")){
-                    type.add(site.getTableName());
+                    tableNames.add(site.getTableName());
                 }
             }
-            count = 5;  // 培训机构每条消息太特么长了...
         } else if (webType.equals("weibo")) {
-            //System.out.println("In weibo");
-            type.add("weibo");
+            tableNames.add("weibo");
         }
         
-        int beginIndex = (page - 1) * 10;
-        List<JSONObject> result = EsSearch.esSearch(esHost, esPort, beginIndex, count, keywordName, type);
+        // 使用es查到查询结果
+        List<JSONObject> result = EsSearch.esSearch(esHost, esPort, beginIndex, count, keywordName, tableNames);
+
+        // 得到查询结果后，逐条遍历每条结果，若该用户修改过该结果的情感极性，则把该结果的情感极性替换成用户修改过的。
+        // 先获取用户修改过情感极性的消息
         List<MsgPolarity> modifyPolarity = userService.getModifyPolarity(user);
+
+        // 遍历查询结果
         for(int i = 0; i < result.size(); ++i) {
+            // 获得第i个结果的id，查询是否在modifyPolarity里
             String oneResultId = (String)result.get(i).get("_id"); 
             for (int j = 0; j < modifyPolarity.size(); ++j) {
                 if (oneResultId.equals(modifyPolarity.get(j).getId())) {
-                    //System.out.println("oneResultId: " + oneResultId);
-                    //System.out.println("before modify: " + result.get(i).get("sentiment"));
+                    // 若在里面则替换情感极性
                     result.get(i).put("sentiment", modifyPolarity.get(j).getPolarity());
-                    //System.out.println("after modify: " + result.get(i).get("sentiment"));
                 }
             }
         }
+
+        // 返回result
         return JSONResult.fillResultString(status,message,result);
     }
 
