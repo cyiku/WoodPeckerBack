@@ -1,6 +1,7 @@
 package com.woodpecker.controller;
 
 import com.woodpecker.domain.NormalCollection;
+// 表格收藏，暂时没必要做
 // import com.woodpecker.domain.TableCollection;
 import com.woodpecker.domain.User;
 import com.woodpecker.security.JwtUser;
@@ -28,6 +29,7 @@ public class CollectionController {
     private UserService userService;
 
     public String HandleString(String str) {
+        // 去掉一些违规字符
         if(StringUtils.isEmpty(str)) {
             return str;
         } else {
@@ -37,30 +39,31 @@ public class CollectionController {
         }
     }
 
-    //region Collection
     @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
     public String addCollection(@RequestBody String info) {
-        System.out.println("Add collection");
+        
+        // status: 状态码，message: 存储错误信息，map: 存放返回结果
         Integer status=1;
         String message="";
         Map<String, Object> map = new HashMap<String, Object>();
         try {
-
+            // 获取用户信息，为以后查询用户信息做准备
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
 
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
+            // type:四大类，data:具体数据
             String type = (String) jsonObject.get("type");
             JSONArray data =(JSONArray) jsonObject.get("data");
             String dataid;
-            String data_str;
-            System.out.println(data.toString());
 
-            Date date = new Date(); //获取时间戳
+            //获取时间戳，生出数据的id
+            Date date = new Date(); 
 
             if(type.equals("table")) {
+                // 表格收藏，暂时没必要做
                 // List<TableCollection> tableCollections = new ArrayList<>();
                 // for(int i=0;i<data.length();i++) {
                 //     JSONObject o=(JSONObject)data.get(i);
@@ -78,20 +81,26 @@ public class CollectionController {
                 // }
             }
             else {
+                // 检查数据是否有Id
                 if(data.getJSONObject(0).has("_id")) {
                     dataid = String.valueOf(data.getJSONObject(0).get("_id"));
                 } else {
                     dataid = String.valueOf(date.getTime()) + String.valueOf(data.getJSONObject(0).hashCode());
                 }
-                data_str = HandleString(data.getJSONObject(0).toString());
+                String data_str = HandleString(data.getJSONObject(0).toString());
+                // 生成collection，为了以后查找是否存在该collection
                 NormalCollection normalCollection = new NormalCollection(dataid, data_str, 1);
                 List<NormalCollection> normalCollectionList;
                 switch(type) {
                     case "agency":
+                        // 检查是否存在该collection
                         normalCollectionList = userService.searchAgencyCollection(user, normalCollection);
                         if (normalCollectionList.isEmpty()) {
+                            // 不存在则插入
                             userService.addAgencyCollection(user, normalCollection);
                         } else {
+                            // 存在，此时是以前收藏过该消息，后来把取消收藏后，数据只是把iscollection置为0
+                            // 并没有真正删除该消息，此时把isCollection置为1即可
                             normalCollection = normalCollectionList.get(0);
                             userService.resetAgencyCollection(user, normalCollection);
                         }
@@ -147,25 +156,30 @@ public class CollectionController {
 
     @RequestMapping(value = "/delCollection", method = RequestMethod.POST)
     public String delCollection(@RequestBody String info, HttpServletResponse resp) {
-        System.out.println("Del collection");
+        
+        // status: 状态码，message: 存储错误信息，map: 存放返回结果
         Integer status=1;
         String message="";
         Map<String, Object> map = new HashMap<String, Object>();
         try {
 
+            // 获取用户信息，为以后查询用户信息做准备
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
 
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
+            // type:四大类，data:具体数据
             String type = (String) jsonObject.get("type");
+            
+            // 要删除的消息的id，考虑到表的情况，用Array存储
             JSONArray dataidList = ((JSONArray) jsonObject.get("dataid"));
             String dataid;
             List<JSONObject> result;
 
             if(type.equals("table")) {
-                // 收藏或取消收藏表格
+                // 表格收藏，暂时没必要做
                 // List<TableCollection> tableCollections = new ArrayList<TableCollection>();
                 // for(int i=0;i<dataidList.length();i++) {
                 //     dataid=String.valueOf(dataidList.get(i));
@@ -196,12 +210,17 @@ public class CollectionController {
                 // map.put("collection", resultList);
             }
             else {
+                // 不是表格的话，只需要取Array得第一个就好
                 dataid = String.valueOf(dataidList.get(0));
+
+                // 生成Collection，用于删除
                 NormalCollection normalCollection = new NormalCollection(dataid, null, null);
                 List<NormalCollection> normalCollectionList;
                 switch (type) {
                     case "agency":
+                        // 删除collection
                         userService.delAgencyCollection(user,normalCollection);
+                        // 这里为什么又重新获取了一遍新的collection用于返回
                         normalCollectionList = userService.getAgencyCollection(user);
                         break;
                     case "chart":
@@ -225,6 +244,8 @@ public class CollectionController {
                         System.out.println("unknown type " + type);
                         break;
                 }
+
+                // 将新的消息转化类型后返回
                 result = new ArrayList<JSONObject>();
                 for (NormalCollection normal : normalCollectionList) {
                     System.out.println(normal.getData());
@@ -239,25 +260,30 @@ public class CollectionController {
         }
         return JSONResult.fillResultString(status, message, map);
     }
+
     @RequestMapping(value = "/getCollection", method = RequestMethod.POST)
     public String getCollection(@RequestBody String info, HttpServletResponse resp) {
-        System.out.println("Get collection");
+        
+        // status: 状态码，message: 存储错误信息，map: 存放返回结果
         Integer status=1;
         String message="";
         Map<String, Object> map = new HashMap<>();
         try {
 
+            // 获取用户信息，为以后查询用户信息做准备
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
 
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
+            // type:四大类
             String type = (String) jsonObject.get("type");
 
             List<JSONObject> result;
 
             if(type.equals("table")) {
+                // 表格收藏，暂时没必要做
                 // List<TableCollection> tableList = userService.getTableCollection(user);
                 // System.out.println(tableList.size());
                 // Long tableid = null;
@@ -305,8 +331,8 @@ public class CollectionController {
                         System.out.println("default");
                 }
                 result = new ArrayList<JSONObject>();
+                // 转换格式后返回
                 for(NormalCollection normalCollection:normalCollectionList) {
-                    System.out.println(normalCollection.getData());
                     result.add(new JSONObject(normalCollection.getData()));
                 }
                 map.put("collection",result);
@@ -321,22 +347,28 @@ public class CollectionController {
 
     @RequestMapping(value = "/isCollection", method = RequestMethod.POST)
     public String isCollection(@RequestBody String info, HttpServletResponse resp) {
-        System.out.println("Verify collection");
+        
+        // status: 状态码，message: 存储错误信息，map: 存放返回结果
         Integer status=1;
         String message="";
         Map<String, Object> map = new HashMap<String, Object>();
         try {
 
+            // 获取用户信息，为以后查询用户信息做准备
             JwtUser jwtUser = GetUser.getPrincipal();
             User user = userService.findByUserName(jwtUser.getUsername());
 
             // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
 
+            // type:四大类
             String type = (String) jsonObject.get("type");
+
+            // 要删除的消息的id，考虑到表的情况，用Array存储
             JSONArray dataidList = ((JSONArray) jsonObject.get("dataid"));
             String dataid;
 
+            // 生成Collection，用于查询
             NormalCollection normalCollection;
             List<NormalCollection> normalCollectionList;
             if(type.equals("table")) {
@@ -361,6 +393,7 @@ public class CollectionController {
                 // }
             }
             else {
+                // 不是表格的话，只需要取Array得第一个就好
                 dataid = String.valueOf(dataidList.get(0));
                 normalCollection = new NormalCollection(dataid, null, null);
                 switch (type) {
@@ -385,8 +418,10 @@ public class CollectionController {
                         break;
                 }
                 if (normalCollectionList.isEmpty()) {
+                    // 没找到该Id则没收藏
                     map.put("iscollection", false);
                 } else if (normalCollectionList.get(0).getIscollection() == 0) {
+                    // 找到该id了但isCollection已经置位0了也是没收藏
                     map.put("iscollection", false);
                 } else {
                     map.put("iscollection", true);
@@ -399,8 +434,4 @@ public class CollectionController {
         }
         return JSONResult.fillResultString(status, message, map);
     }
-
-    //endregion
-
-
 }
