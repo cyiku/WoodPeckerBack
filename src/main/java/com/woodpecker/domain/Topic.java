@@ -1,7 +1,11 @@
 package com.woodpecker.domain;
 
 public class Topic {
-
+    /**
+     * id: 第几个topic(0-19)
+     * word: 每个topic下的关键词集合(补贴；汽车)
+     * time: 聚类时间
+     */
     private Integer id;
     private String word;
     private String time;

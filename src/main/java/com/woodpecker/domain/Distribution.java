@@ -1,6 +1,11 @@
 package com.woodpecker.domain;
 
 public class Distribution {
+    /**
+     * source：消息的来源，四大类中的一个
+     * keyword：关键字名称
+     * count：关键字数量
+     */
     public String keyword;
     public String source;
     public int count;

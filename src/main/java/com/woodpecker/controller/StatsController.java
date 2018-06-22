@@ -22,30 +22,35 @@ import java.util.*;
 @RestController
 @PreAuthorize("hasRole('USER')")
 public class StatsController {
+    /**
+     * 关键词分析页面的Controller
+     */
+
     @Resource
     private UserService userService;
 
     @RequestMapping(value = "/getDataSourceNum", method = RequestMethod.POST)
     public String getDataSrcNum(@RequestBody String info) {
+        /**
+         * 获取相关关键字中的四个大类的总数量
+         */
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
-//        List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
 
         try {
+            // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String) jsonObject.get("keyword");
+
+            // num存放四大类的消息数量
             Map<String, Object> num = new HashMap<>();
-//            for (String append : appendList) {
-//                String tableName = keywordName + "_" + append;
-//                Integer count = 0;
-//                if (null != userService.existsTable(tableName)) {
-//                    count = userService.tableCount(tableName);
-//                }
-//
-//                num.put(append, count);
-//            }
+            
+            // 查看数据分布表是否存在
             if (null != userService.existsTable("distribution_t")) {
+
+                // 获取四个大类的数量并放入num中
                 List<Distribution> distributions = userService.distributionCount(keywordName);
                 for(Distribution d: distributions) {
                     String source = d.getSource();
@@ -71,62 +76,60 @@ public class StatsController {
 
     @RequestMapping(value = "/getPublishNum", method = RequestMethod.POST)
     public String getPubNum(@RequestBody String info) {
+        /**
+         * 获取四个大类中的近10天每天的消息数量
+         */
+
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
         List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
         try {
-            String date;
+            // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String) jsonObject.get("keyword");
+
+            // dateList: 近10天日期
             List<String> dateList = new ArrayList<>();
-            // Boolean [] isExist = new Boolean[4];
-            Map<String, Object> num = new HashMap<>();
+
+            // num：key：四个大类(String)，value：近10天的每天的消息数目
+            Map<String, List<Integer>> num = new HashMap<>();
+
+            // append即四个大类中的一个
+            for(String append:appendList) {
+                List<Integer> numList = new ArrayList<>();
+                num.put(append,numList);
+            }
+
+            // 将时区设置成东八区，并把日期设置成10天前
             Calendar calender = new GregorianCalendar();
             TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
             calender.setTimeZone(timeZone);
             calender.add(Calendar.DATE, -10);
-            // Integer tmp = 0;
-            for(String append:appendList) {
-//                String tableName = keywordName + "_" + append;
-//                if (null == userService.existsTable(tableName)) {
-//                    num.put(append, new ArrayList<Integer>(Collections.nCopies(10,0)));
-//                    isExist[tmp++] = false;
-//                    continue;
-//                }
-//                isExist[tmp++] = true;
-                List<Integer> numList = new ArrayList<>();
-                num.put(append,numList);
-            }
+            
             for(int i=0;i<10;i++) {
+                // 日期+1天
                 calender.add(Calendar.DATE, 1);
-                date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
+                // 将日期由Calendar转为string并保存到dateList中
+                String date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
                         1+calender.get(Calendar.MONTH),calender.get(Calendar.DATE));//month starts with 1
                 dateList.add(date.replaceAll("_","-"));
-//                tmp = 0;
+
+                // 获取指定日期，关键字的四个来源的数量
                 List<Statistic> statistics = userService.timeCount(keywordName,date);
                 for (Statistic statistic: statistics) {
+                    Integer count = statistic.getCount();
                     if (statistic.getSource().equals("培训机构")){
-                        List<Integer> numList = (List<Integer>)num.get("agency");
-                        numList.add(statistic.getCount());
+                        num.get("agency").add(count);
                     } else if (statistic.getSource().equals("微博")){
-                        List<Integer> numList = (List<Integer>)num.get("weibo");
-                        numList.add(statistic.getCount());
+                        num.get("weibo").add(count);
                     } else if (statistic.getSource().equals("论坛")){
-                        List<Integer> numList = (List<Integer>)num.get("forum");
-                        numList.add(statistic.getCount());
+                        num.get("forum").add(count);
                     } else if (statistic.getSource().equals("门户网站")){
-                        List<Integer> numList = (List<Integer>)num.get("portal");
-                        numList.add(statistic.getCount());
+                        num.get("portal").add(count);
                     }
                 }
-//                for(String append:appendList) {
-//                    String tableName = keywordName + "_" + append;
-//                    //if (null == userService.existsTable(tableName)) continue;
-////                    if (!isExist[tmp++]) continue;
-//                    List<Integer> numList = (List<Integer>)num.get(append);
-//                    numList.add(userService.timeCount(tableName,date));
-//                }
             }
             result.put("date",dateList);
             result.put("num",num);
@@ -140,45 +143,48 @@ public class StatsController {
 
     @RequestMapping(value = "/getPolarity", method = RequestMethod.POST)
     public String getPor(@RequestBody String info) {
+        /**
+         * 获取四个大类中的近10天每天的情感分析数量
+         */
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
-        // List<String> appendList = Arrays.asList("forum", "weibo", "portal", "agency");
         try {
-            String date;
+            // 将info的格式由String转为jsonObject
             JSONObject jsonObject = new JSONObject(info);
             String keywordName = (String) jsonObject.get("keyword");
+
+            // dateList: 近10天日期，posList: 近10天情感极性为正的消息数目
             List<String> dateList = new ArrayList<>();
             List<Integer> posList = new ArrayList<>();
             List<Integer> negList = new ArrayList<>();
             List<Integer> neuList = new ArrayList<>();
-            Map<String, Object> num = new HashMap<>();
-
-            Calendar calender = new GregorianCalendar();
-            TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
-            calender.setTimeZone(timeZone);
-            calender.add(Calendar.DATE, -10);
+            
+            // 保存每个极性的数目
+            Map<String, List<Integer>> num = new HashMap<>();
             num.put("positive",posList);
             num.put("negative",negList);
             num.put("neutral",neuList);
 
+            // 将时区设置成东八区，并把日期设置成10天前
+            Calendar calender = new GregorianCalendar();
+            TimeZone timeZone = TimeZone.getTimeZone("GMT+8:00");  //东八区
+            calender.setTimeZone(timeZone);
+            calender.add(Calendar.DATE, -10);
+
             for(int i=0;i<10;i++) {
+                // 日期+1天
                 calender.add(Calendar.DATE, 1);
-                date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
+                // 将日期由Calendar转为string并保存到dateList中
+                String date=String.format("%04d_%02d_%02d",calender.get(Calendar.YEAR),
                         1+calender.get(Calendar.MONTH),calender.get(Calendar.DATE));//month starts with 1
                 dateList.add(date.replaceAll("_","-"));
+                
+                // 保存指定日期三个极性的数量
                 int posCount=0,negCount=0, neutralCount=0;
-//                for(String append:appendList) {
-//                    String tableName = keywordName + "_" + append;
-//                    if (null == userService.existsTable(tableName)) continue;
-//                    List<Integer> count = userService.polarityCount(tableName, date);
-//                    for (int j = 0; j < count.size(); ++j) {
-//                        if (count.get(j) == 0)
-//                            negCount += 1;
-//                        else
-//                            posCount += 1;
-//                    }
-//                }
+
+                // 获取指定日期三个极性的数量
                 List<Sentiment> sentimentCount = userService.polarityCount(keywordName, date);
                 for(Sentiment oneSentiment: sentimentCount) {
                     if (oneSentiment.getSentiment() == 3) {
@@ -206,10 +212,16 @@ public class StatsController {
 
     @RequestMapping(value = "/getClustering", method = RequestMethod.POST)
     public String getClustering(@RequestBody String info) {
+        /**
+         * 获取话题聚类
+         */
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
+        
         try {
+            // 获取聚类结果
             List<Topic> topicCollection = userService.getClustering();
             result.put("topic", topicCollection);
             result.put("time", topicCollection.get(0).getTime());
