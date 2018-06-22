@@ -75,6 +75,12 @@
 		<result column="id" property="id" jdbcType="VARCHAR"/>
 		<result column="polarity" property="polarity" jdbcType="VARCHAR"/>
 	</resultMap>
+
+	<resultMap id="Recommend" type="com.woodpecker.domain.Recommend">
+		<result column="uid" property="userid" jdbcType="INTEGER"/>
+		<result column="date" property="date" jdbcType="VARCHAR"/>
+		<result column="words" property="words" jdbcType="VARCHAR"/>
+	</resultMap>
 	<!-- endregion -->
 
 	<!-- region 登录注册相关-->
@@ -289,4 +295,9 @@
 	</select>
 	<!-- endregion -->
 
+	<!-- region getRecommend -->
+	<select id="getRecommend" resultMap="Recommend">
+		SELECT * FROM recommend_t WHERE uid = ${user.id}
+	</select>
+	<!-- endregion -->
 </mapper>

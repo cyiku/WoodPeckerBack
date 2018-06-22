@@ -1,11 +1,15 @@
 package com.woodpecker.controller;
 
 import com.woodpecker.domain.Distribution;
+import com.woodpecker.domain.Recommend;
 import com.woodpecker.domain.Sentiment;
 import com.woodpecker.domain.Statistic;
 import com.woodpecker.domain.Topic;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
+import com.woodpecker.security.JwtUser;
+import com.woodpecker.util.GetUser;
+import com.woodpecker.domain.User;
 import org.json.JSONObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -225,6 +229,43 @@ public class StatsController {
             List<Topic> topicCollection = userService.getClustering();
             result.put("topic", topicCollection);
             result.put("time", topicCollection.get(0).getTime());
+        } catch (Exception e) {
+            status = -1;
+            message = "未知错误";
+            e.printStackTrace();
+        }
+
+        return JSONResult.fillResultString(status, message, result);
+    }
+
+    @RequestMapping(value = "/getRecommend", method = RequestMethod.POST)
+    public String getRecommend(@RequestBody String info) {
+        /**
+         * 获取推荐的关键字
+         */
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
+        Integer status = 1;
+        String message = "";
+        Map<String, Object> result = new HashMap<String, Object>();
+        
+        try {
+            // 获取用户，为以后查询用户信息做准备
+            JwtUser jwtUser = GetUser.getPrincipal();
+            User user = userService.findByUserName(jwtUser.getUsername());
+
+            Recommend recommend = userService.getRecommend(user);
+            
+            if (recommend == null) {
+                // 此时没有为该用户做生成推荐，使用公共推荐
+                User publicUser = new User(0);
+                recommend = userService.getRecommend(publicUser);
+            }
+
+            System.out.println(recommend.getWords());
+            System.out.println(recommend.getDate());
+
+            result.put("words", recommend.getWords());
+            result.put("date", recommend.getDate());
         } catch (Exception e) {
             status = -1;
             message = "未知错误";

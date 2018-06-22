@@ -243,4 +243,8 @@ public class UserServiceImpl implements UserService {
     public List<MsgPolarity> getModifyPolarity(User user) {
         return userDao.getModifyPolarity(user);
     }
+
+    public Recommend getRecommend(User user){
+        return userDao.getRecommend(user);
+    }
 }

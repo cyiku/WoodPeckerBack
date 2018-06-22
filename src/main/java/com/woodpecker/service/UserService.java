@@ -89,4 +89,6 @@ public interface UserService {
 
     //modify polarity
     List<MsgPolarity> getModifyPolarity(User user);
+
+    Recommend getRecommend(User user);
 }
