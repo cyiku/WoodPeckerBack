@@ -16,6 +16,10 @@ import org.json.JSONObject;
 
 public class EsSearch {
     public static List<JSONObject> esSearch(String host, String stringPort, int beginIndex, int count, String keyword, List<String> type) {
+        /**
+         * es搜索，具体api可参照官方文档:
+         * https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-getting-started-initialization.html
+         */
         ObjectMapper mapper = new ObjectMapper();   //map to json
         List<JSONObject> result = new ArrayList<>();
         int port = Integer.parseInt(stringPort);

@@ -17,19 +17,25 @@ import java.util.Map;
 @RestController
 @PreAuthorize("hasRole('USER')")
 public class SiteController {
+    /**
+     * 添加关键字时，获取爬取站点的信息
+     */
     @Resource
     private UserService userService;
 
     @RequestMapping(value = "/getSites", method = RequestMethod.POST)
     public String getSites() {
 
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
         Integer status = 1;
         String message = "";
         Map<String, Object> result = new HashMap<String, Object>();
 
         try {
+            // 从site_t中读取站点信息
             List<Site> sites = userService.getSite();
 
+            // 将站点信息分成四大类返回
             List<String> portal = new LinkedList<>();   //门户
             List<String> forum = new LinkedList<>();
             List<String> weibo = new LinkedList<>();
@@ -56,7 +62,6 @@ public class SiteController {
             result.put("portal", portal);
             result.put("weibo", weibo);
             result.put("agency", agency);
-
         } catch (Exception e) {
             status = -1;
             message="未知错误";
