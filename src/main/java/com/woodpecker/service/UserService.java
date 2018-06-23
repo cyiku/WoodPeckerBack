@@ -91,4 +91,8 @@ public interface UserService {
     List<MsgPolarity> getModifyPolarity(User user);
 
     Recommend getRecommend(User user);
+
+    Integer delRecommend(Recommend recommend);
+
+    List<Recommend> getDelRecommend(User user);
 }

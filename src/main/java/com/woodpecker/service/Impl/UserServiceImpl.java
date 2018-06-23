@@ -247,4 +247,12 @@ public class UserServiceImpl implements UserService {
     public Recommend getRecommend(User user){
         return userDao.getRecommend(user);
     }
+
+    public Integer delRecommend(Recommend recommend) {
+        return userDao.delRecommend(recommend);
+    }
+
+    public List<Recommend> getDelRecommend(User user) {
+        return userDao.getDelRecommend(user);
+    }
 }

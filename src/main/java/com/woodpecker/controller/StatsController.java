@@ -260,12 +260,98 @@ public class StatsController {
                 User publicUser = new User(0);
                 recommend = userService.getRecommend(publicUser);
             }
+            
+            // 得到推荐的words后，去掉deleteRecommend里的
+            String words = recommend.getWords();
+            String [] eachWord = words.split(" ");
 
-            System.out.println(recommend.getWords());
-            System.out.println(recommend.getDate());
+            // 得到用户删除的推荐
+            List<Recommend> delRecommend = userService.getDelRecommend(user);
 
-            result.put("words", recommend.getWords());
+            // newWords: 用于保存新的推荐
+            String newWords = null;
+            StringBuffer newWordsBuff = new StringBuffer();
+
+            // 遍历查询
+            for (int i = 0; i < eachWord.length; ++i) {
+                // 如果是空就直接略过
+                if (eachWord[i].trim().length() == 0)
+                    continue;   
+                int j = 0;
+                String delword;
+                for (; j < delRecommend.size(); ++j) {
+                    delword = delRecommend.get(j).getWords();
+                    if (eachWord[i].equals(delword))
+                        break;
+                }
+                // 遍历完delRecommend都没发现相同的关键字，则没删除
+                // 不同关键字用空格隔开
+                if (j == delRecommend.size()) {
+                    newWordsBuff.append(eachWord[i] + " ");
+                }
+            }
+            newWords = newWordsBuff.toString();
+
+            result.put("words", newWords);
             result.put("date", recommend.getDate());
+        } catch (Exception e) {
+            status = -1;
+            message = "未知错误";
+            e.printStackTrace();
+        }
+
+        return JSONResult.fillResultString(status, message, result);
+    }
+
+    @RequestMapping(value = "/delRecommend", method = RequestMethod.POST)
+    public String delRecommend(@RequestBody String info) {
+        /**
+         * 删除推荐的关键字
+         */
+        // status: 状态码，message: 存储错误信息，result: 存放返回结果
+        Integer status = 1;
+        String message = "";
+        Map<String, Object> result = new HashMap<String, Object>();
+        
+        try {
+            // 获取用户，为以后查询用户信息做准备
+            JwtUser jwtUser = GetUser.getPrincipal();
+            User user = userService.findByUserName(jwtUser.getUsername());
+            Integer userid = user.getId();
+
+            // 将info的格式由String转为jsonObject
+            JSONObject jsonObject = new JSONObject(info);
+            String word = jsonObject.getString("word");
+            String date = jsonObject.getString("date");
+
+            // 查看推荐给该用户的关键字，要删除的关键字在不在这里面
+            Recommend existRecommend = userService.getRecommend(user);
+            if (existRecommend == null) {
+                // 此时没有为该用户做生成推荐，使用公共推荐
+                User publicUser = new User(0);
+                existRecommend = userService.getRecommend(publicUser);
+            }
+
+            String words = existRecommend.getWords();
+            String [] eachWord = words.split(" ");
+            int i = 0;
+            for(; i < eachWord.length; ++i) {
+                if (eachWord[i].equals(word)){
+                    // 说明在里面
+                    break;
+                }
+            }
+
+            if(i == eachWord.length) {
+                // 此时不在里面
+                status = -1;
+                message = "未推荐该关键字，无法删除";
+                return JSONResult.fillResultString(status, message, result);
+            }
+
+            Recommend delRecommend = new Recommend(word, date, userid);
+            userService.delRecommend(delRecommend);
+
         } catch (Exception e) {
             status = -1;
             message = "未知错误";

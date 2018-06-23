@@ -300,4 +300,16 @@
 		SELECT * FROM recommend_t WHERE uid = ${user.id}
 	</select>
 	<!-- endregion -->
+
+	<!-- region delRecommend -->
+	<select id="delRecommend" resultType="Integer">
+		INSERT INTO deleteRecommend_t(userid, words, date) VALUES('${recommend.userid}', '${recommend.words}', '${recommend.date}')
+	</select>
+	<!-- endregion -->
+
+	<!-- region getDelRecommend -->
+	<select id="getDelRecommend" resultMap="Recommend">
+		SELECT * FROM deleteRecommend_t WHERE userid = ${user.id}
+	</select>
+	<!-- endregion -->
 </mapper>

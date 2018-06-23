@@ -90,4 +90,8 @@ public interface UserDao {
 	public List<MsgPolarity> getModifyPolarity(@Param("user")User user);
 
 	public Recommend getRecommend(@Param("user")User user);
+
+	public Integer delRecommend(@Param("recommend")Recommend recommend);
+
+	public List<Recommend> getDelRecommend(@Param("user")User user);
 }
