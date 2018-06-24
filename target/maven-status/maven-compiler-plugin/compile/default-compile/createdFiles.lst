@@ -8,6 +8,8 @@ com/woodpecker/controller/StatsController.class
 com/woodpecker/domain/Keyword.class
 com/woodpecker/controller/KeywordController.class
 com/woodpecker/service/Impl/JwtUserDetailsServiceImpl.class
+com/woodpecker/util/MyTest.class
+com/woodpecker/util/EsExtract.class
 com/woodpecker/controller/BriefReportController.class
 com/woodpecker/security/JwtAuthenticationTokenFilter.class
 com/woodpecker/domain/NormalCollection.class
@@ -41,8 +43,8 @@ com/woodpecker/util/EsSearch.class
 com/woodpecker/domain/Distribution.class
 com/woodpecker/util/JSONResult.class
 com/woodpecker/redis/CacheConfig.class
-com/woodpecker/controller/testController.class
 com/woodpecker/config/WebSecurityConfig.class
 com/woodpecker/util/GenSpider.class
+com/woodpecker/domain/Recommend.class
 com/woodpecker/service/Impl/UserServiceImpl.class
 com/woodpecker/service/AuthService.class
