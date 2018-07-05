@@ -63,6 +63,8 @@ public class AuthServiceImpl implements AuthService {
         userDao.createCollectionNormal("collectionAgency_" + Integer.toString(id));
         userDao.createCollectionNormal("collectionPortal_" + Integer.toString(id));
         userDao.createCollectionNormal("collectionWeibo_" + Integer.toString(id));
+        userDao.createCollectionNormal("collectionBusiness_" + Integer.toString(id));
+        userDao.createCollectionNormal("collectionIndustry_" + Integer.toString(id));
 
         return user;
     }

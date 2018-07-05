@@ -40,6 +40,8 @@ public class SiteController {
             List<String> forum = new LinkedList<>();
             List<String> weibo = new LinkedList<>();
             List<String> agency = new LinkedList<>();
+            List<String> business = new LinkedList<>();
+            List<String> industry = new LinkedList<>();
             for (Site site: sites) {
                 String type = site.getType();
                 String name = site.getName();
@@ -56,12 +58,20 @@ public class SiteController {
                     case "培训机构":
                         agency.add(name);
                         break;
+                    case "商务资讯":
+                        business.add(name);
+                        break;
+                    case "行业动态":
+                        industry.add(name);
+                        break;
                 }
             }
             result.put("forum", forum);
             result.put("portal", portal);
             result.put("weibo", weibo);
             result.put("agency", agency);
+            result.put("business", business);
+            result.put("industry", industry);
         } catch (Exception e) {
             status = -1;
             message="未知错误";

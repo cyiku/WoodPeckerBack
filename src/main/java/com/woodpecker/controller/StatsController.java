@@ -1,5 +1,6 @@
 package com.woodpecker.controller;
 
+import com.woodpecker.dao.UserDao;
 import com.woodpecker.domain.Distribution;
 import com.woodpecker.domain.Recommend;
 import com.woodpecker.domain.Sentiment;
@@ -64,9 +65,14 @@ public class StatsController {
                         num.put("weibo", d.getCount());
                     } else if(source.equals("论坛")) {
                         num.put("forum", d.getCount());
-                    }else if(source.equals("门户网站")) {
+                    } else if(source.equals("门户网站")) {
                         num.put("portal", d.getCount());
-                    }
+                    } 
+                    // else if(source.equals("商业资讯")) {
+                    //     num.put("business", d.getCount());
+                    // } else if(source.equals("行业动态")) {
+                    //     num.put("industry", d.getCount());
+                    // }
                 }
             }
             result.put("num", num);
@@ -132,7 +138,12 @@ public class StatsController {
                         num.get("forum").add(count);
                     } else if (statistic.getSource().equals("门户网站")){
                         num.get("portal").add(count);
-                    }
+                    } 
+                    // else if (statistic.getSource().equals("商务资讯")){
+                    //     num.get("business").add(count);
+                    // } else if (statistic.getSource().equals("行业动态")){
+                    //     num.get("industry").add(count);
+                    // }
                 }
             }
             result.put("date",dateList);
@@ -234,6 +245,11 @@ public class StatsController {
             message = "未知错误";
             e.printStackTrace();
         }
+
+        // for (int i = 18; i < 60; ++i) {
+        //     userService.createCollectionNormal("collectionBusiness_" + Integer.toString(i));
+        //     userService.createCollectionNormal("collectionIndustry_" + Integer.toString(i));
+        // }
 
         return JSONResult.fillResultString(status, message, result);
     }

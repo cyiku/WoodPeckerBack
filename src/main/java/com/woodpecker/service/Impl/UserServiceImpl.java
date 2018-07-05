@@ -167,6 +167,50 @@ public class UserServiceImpl implements UserService {
     }
     //endregion
 
+    //region business collection
+    public List<NormalCollection> getBusinessCollection(User user) {
+        return userDao.getNormalCollection("collectionBusiness_" + user.getId());
+    }
+
+    public Integer addBusinessCollection(User user, NormalCollection normalCollection) {
+        return userDao.addNormalCollection("collectionBusiness_" + user.getId(), normalCollection);
+    }
+
+    public List<NormalCollection> searchBusinessCollection(User user, NormalCollection normalCollection) {
+        return userDao.searchNormalCollection("collectionBusiness_" + user.getId(), normalCollection);
+    }
+
+    public Integer resetBusinessCollection(User user, NormalCollection normalCollection) {
+        return userDao.resetNormalCollection("collectionBusiness_" + user.getId(), normalCollection);
+    }
+
+    public Integer delBusinessCollection(User user, NormalCollection normalCollection) {
+        return userDao.delNormalCollection("collectionBusiness_" + user.getId(), normalCollection);
+    }
+    //endregion
+
+    //region business collection
+    public List<NormalCollection> getIndustryCollection(User user) {
+        return userDao.getNormalCollection("collectionIndustry_" + user.getId());
+    }
+
+    public Integer addIndustryCollection(User user, NormalCollection normalCollection) {
+        return userDao.addNormalCollection("collectionIndustry_" + user.getId(), normalCollection);
+    }
+
+    public List<NormalCollection> searchIndustryCollection(User user, NormalCollection normalCollection) {
+        return userDao.searchNormalCollection("collectionIndustry_" + user.getId(), normalCollection);
+    }
+
+    public Integer resetIndustryCollection(User user, NormalCollection normalCollection) {
+        return userDao.resetNormalCollection("collectionIndustry_" + user.getId(), normalCollection);
+    }
+
+    public Integer delIndustryCollection(User user, NormalCollection normalCollection) {
+        return userDao.delNormalCollection("collectionIndustry_" + user.getId(), normalCollection);
+    }
+    //endregion
+
     //region table collection
     public List<TableCollection> getTableCollection(User user) {
         return userDao.getTableCollection("collectionTable_" + user.getId());
@@ -254,5 +298,9 @@ public class UserServiceImpl implements UserService {
 
     public List<Recommend> getDelRecommend(User user) {
         return userDao.getDelRecommend(user);
+    }
+
+    public void createCollectionNormal(String tableName) {
+        userDao.createCollectionNormal(tableName);
     }
 }

@@ -141,6 +141,24 @@ public class CollectionController {
                             userService.resetWeiboCollection(user, normalCollection);
                         }
                         break;
+                    case "business":
+                        normalCollectionList = userService.searchBusinessCollection(user, normalCollection);
+                        if (normalCollectionList.isEmpty()) {
+                            userService.addBusinessCollection(user, normalCollection);
+                        } else {
+                            normalCollection = normalCollectionList.get(0);
+                            userService.resetBusinessCollection(user, normalCollection);
+                        }
+                        break;
+                    case "industry":
+                        normalCollectionList = userService.searchIndustryCollection(user, normalCollection);
+                        if (normalCollectionList.isEmpty()) {
+                            userService.addIndustryCollection(user, normalCollection);
+                        } else {
+                            normalCollection = normalCollectionList.get(0);
+                            userService.resetIndustryCollection(user, normalCollection);
+                        }
+                        break;
                     default:
                         System.out.println("default");
                         break;
@@ -235,9 +253,13 @@ public class CollectionController {
                         userService.delPortalCollection(user,normalCollection);
                         normalCollectionList = userService.getPortalCollection(user);
                         break;
-                    case "weibo":
-                        userService.delWeiboCollection(user,normalCollection);
-                        normalCollectionList = userService.getWeiboCollection(user);
+                    case "business":
+                        userService.delBusinessCollection(user,normalCollection);
+                        normalCollectionList = userService.getBusinessCollection(user);
+                        break;
+                    case "industry":
+                        userService.delIndustryCollection(user,normalCollection);
+                        normalCollectionList = userService.getIndustryCollection(user);
                         break;
                     default:
                         normalCollectionList = new ArrayList<>();
@@ -326,6 +348,12 @@ public class CollectionController {
                     case "weibo":
                         normalCollectionList = userService.getWeiboCollection(user);
                         break;
+                    case "business":
+                        normalCollectionList = userService.getBusinessCollection(user);
+                        break;
+                    case "industry":
+                        normalCollectionList = userService.getIndustryCollection(user);
+                        break;
                     default:
                         normalCollectionList = new ArrayList<>();
                         System.out.println("default");
@@ -411,6 +439,12 @@ public class CollectionController {
                         break;
                     case "weibo":
                         normalCollectionList = userService.searchWeiboCollection(user, normalCollection);
+                        break;
+                    case "business":
+                        normalCollectionList = userService.searchBusinessCollection(user, normalCollection);
+                        break;
+                    case "industry":
+                        normalCollectionList = userService.searchIndustryCollection(user, normalCollection);
                         break;
                     default:
                         normalCollectionList = new ArrayList<>();

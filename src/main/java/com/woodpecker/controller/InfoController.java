@@ -88,6 +88,18 @@ public class InfoController {
             }
         } else if (webType.equals("weibo")) {
             tableNames.add("weibo");
+        } else if (webType.equals("business")) {
+            for(Site site: sites){
+                if (site.getType().equals("商务资讯")){
+                    tableNames.add(site.getTableName());
+                }
+            }
+        } else if (webType.equals("industry")) {
+            for(Site site: sites){
+                if (site.getType().equals("行业动态")){
+                    tableNames.add(site.getTableName());
+                }
+            }
         }
         
         // 使用es查到查询结果

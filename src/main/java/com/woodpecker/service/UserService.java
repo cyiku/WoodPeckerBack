@@ -61,6 +61,18 @@ public interface UserService {
     List<NormalCollection> searchWeiboCollection(User user, NormalCollection normalCollection);
     Integer resetWeiboCollection(User user, NormalCollection normalCollection);
     Integer delWeiboCollection(User user, NormalCollection normalCollection);
+
+    List<NormalCollection> getBusinessCollection(User user);
+    Integer addBusinessCollection(User user, NormalCollection normalCollection);
+    List<NormalCollection> searchBusinessCollection(User user, NormalCollection normalCollection);
+    Integer resetBusinessCollection(User user, NormalCollection normalCollection);
+    Integer delBusinessCollection(User user, NormalCollection normalCollection);
+
+    List<NormalCollection> getIndustryCollection(User user);
+    Integer addIndustryCollection(User user, NormalCollection normalCollection);
+    List<NormalCollection> searchIndustryCollection(User user, NormalCollection normalCollection);
+    Integer resetIndustryCollection(User user, NormalCollection normalCollection);
+    Integer delIndustryCollection(User user, NormalCollection normalCollection);
     //endregion
 
     //region table collection
@@ -95,4 +107,6 @@ public interface UserService {
     Integer delRecommend(Recommend recommend);
 
     List<Recommend> getDelRecommend(User user);
+
+    public void createCollectionNormal(String tableName);
 }
