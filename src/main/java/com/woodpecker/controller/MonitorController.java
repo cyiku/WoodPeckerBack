@@ -103,6 +103,8 @@ public class MonitorController {
             // 读取来自微博的最新的10条，原因是微博爬虫比较给力
             List<String> type = new LinkedList<>();
             type.add("weibo");
+            // 若不显示指定type，则读取全部来源的最新的(检索速度慢，容易超时)
+            //List<String> type = new LinkedList<>();
             // 使用es读取数据
             List<JSONObject> searchData = EsSearch.esSearch(esHost, esPort, 0, count, keywordName, type);
             // 将读取后的数据中的文本类型设置为weibo

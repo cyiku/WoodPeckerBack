@@ -78,19 +78,18 @@ public class BriefReportController {
                 allMsgNum += d.getCount();
             }
             
-            // 获取关键字的情感数量，共3个情感：正(3)，负(2)，中(1)
+            // 获取关键字的情感数量，共3个情感：正(3)，中(2)，负(1)
             List<Sentiment> sentiments = userService.polarityAllCount(keywordName);
             int posNum = 0, negNum=0, neuNum=0;
             for(Sentiment sentiment: sentiments) {
                 int num = sentiment.getCount();
                 if (sentiment.getSentiment() == 3) {
                     posNum += num;
-                } else if (sentiment.getSentiment() == 2) {
-                    negNum += num;
                 } else if (sentiment.getSentiment() == 1) {
-                    neuNum += num;
-                }
+                    negNum += num;
+                } 
             }
+            neuNum = allMsgNum - posNum - negNum;
 
             // 根据以上得到的值生成KwForReport对象，并加入kwsReport中
             KwForReport kw = new KwForReport(keywordName, time, weiboNum,forumNum,portalNum,agencyNum,allMsgNum,posNum,negNum,neuNum);

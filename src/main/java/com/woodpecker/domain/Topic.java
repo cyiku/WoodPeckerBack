@@ -3,16 +3,16 @@ package com.woodpecker.domain;
 public class Topic {
     /**
      * id: 第几个topic(0-19)
-     * word: 每个topic下的关键词集合(补贴；汽车)
+     * content: 每个topic下的内容
      * time: 聚类时间
      */
     private Integer id;
-    private String word;
+    private String content;
     private String time;
 
-    public Topic(Integer id, String word, String time) {
+    public Topic(Integer id, String content, String time) {
         this.id = id;
-        this.word = word;
+        this.content = content;
         this.time = time;
     }
 
@@ -24,12 +24,12 @@ public class Topic {
         this.id = id;
     }
 
-    public String getWord() {
-        return word;
+    public String getContent() {
+        return content;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setTime(String time) {this.time = time;}

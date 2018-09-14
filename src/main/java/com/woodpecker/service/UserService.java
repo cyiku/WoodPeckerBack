@@ -88,7 +88,7 @@ public interface UserService {
     //endregion
 
     //region topic
-    List<Topic> getClustering();
+    List<Topic> getClustering(String keyword);
     //endregion
 
     //region info
@@ -102,9 +102,9 @@ public interface UserService {
     //modify polarity
     List<MsgPolarity> getModifyPolarity(User user);
 
-    Recommend getRecommend(User user);
+    Recommend getRecommend(String keyword);
 
-    Integer delRecommend(Recommend recommend);
+    Integer delRecommend(User user, Recommend recommend);
 
     List<Recommend> getDelRecommend(User user);
 

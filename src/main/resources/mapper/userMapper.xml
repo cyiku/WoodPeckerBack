@@ -46,7 +46,7 @@
 
 	<resultMap id="TopicMap" type="com.woodpecker.domain.Topic">
 		<result column="topicid" property="id" jdbcType="INTEGER"/>
-		<result column="word" property="word" jdbcType="VARCHAR"/>
+		<result column="content" property="content" jdbcType="VARCHAR"/>
 		<result column="time" property="time" jdbcType="VARCHAR"/>
 	</resultMap>
 
@@ -77,7 +77,7 @@
 	</resultMap>
 
 	<resultMap id="Recommend" type="com.woodpecker.domain.Recommend">
-		<result column="uid" property="userid" jdbcType="INTEGER"/>
+		<result column="keyword" property="keyword" jdbcType="VARCHAR"/>
 		<result column="date" property="date" jdbcType="VARCHAR"/>
 		<result column="words" property="words" jdbcType="VARCHAR"/>
 	</resultMap>
@@ -271,8 +271,12 @@
 
 	<!-- region topic -->
 
-	<select id="getClustering" resultMap="TopicMap">
+	<!-- <select id="getClustering" resultMap="TopicMap">
 		SELECT topicid, word, time from lda WHERE isNew=1
+	</select> -->
+
+	<select id="getClustering" resultMap="TopicMap">
+		SELECT topicid, content, time from lda2 WHERE isNew=1 and keyword = "${keyword}"
 	</select>
 
 	<!-- endregion -->
@@ -297,13 +301,13 @@
 
 	<!-- region getRecommend -->
 	<select id="getRecommend" resultMap="Recommend">
-		SELECT * FROM recommend_t WHERE uid = ${user.id}
+		SELECT * FROM keyword_recommend_t WHERE keyword = "${keyword}"
 	</select>
 	<!-- endregion -->
 
 	<!-- region delRecommend -->
 	<select id="delRecommend" resultType="Integer">
-		INSERT INTO deleteRecommend_t(userid, words, date) VALUES('${recommend.userid}', '${recommend.words}', '${recommend.date}')
+		INSERT INTO deleteRecommend_t(userid, keyword, words, date) VALUES('${user.id}', '${recommend.keyword}', '${recommend.words}', '${recommend.date}')
 	</select>
 	<!-- endregion -->
 

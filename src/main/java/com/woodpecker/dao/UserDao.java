@@ -70,7 +70,7 @@ public interface UserDao {
 	public Integer negTimeCount(@Param("tableName")String tableName,@Param("time")String dateStr);
 	public List<Sentiment> polarityCount(@Param("keyword")String keyword,@Param("time")String dateStr);
 
-	public List<Topic> getClustering();
+	public List<Topic> getClustering(@Param("keyword")String keyword);
 	//endregion
 
 	//region utils
@@ -89,9 +89,9 @@ public interface UserDao {
 
 	public List<MsgPolarity> getModifyPolarity(@Param("user")User user);
 
-	public Recommend getRecommend(@Param("user")User user);
+	public Recommend getRecommend(@Param("keyword")String keyword);
 
-	public Integer delRecommend(@Param("recommend")Recommend recommend);
+	public Integer delRecommend(@Param("user") User user, @Param("recommend")Recommend recommend);
 
 	public List<Recommend> getDelRecommend(@Param("user")User user);
 }

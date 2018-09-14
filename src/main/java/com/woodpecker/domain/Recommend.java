@@ -4,16 +4,16 @@ public class Recommend {
     /**
      * words：所有推荐的关键字，空行隔开
      * date：关键字生成日期
-     * userid：用户Id
+     * keyword：关键词名称
      */
     public String words;
     public String date;
-    public int userid;
+    public String keyword;
     
-    public Recommend(String words, String date, int userid) {
+    public Recommend(String words, String date, String keyword) {
         this.words = words;
         this.date = date;
-        this.userid = userid;
+        this.keyword = keyword;
     }
 
     Recommend(){
@@ -28,8 +28,8 @@ public class Recommend {
         return this.date;
     }
 
-    public int getUserid() {
-        return this.userid;
+    public String getKeyword() {
+        return this.keyword;
     }
 
     public void setWords(String words) {
@@ -40,7 +40,7 @@ public class Recommend {
         this.date = date;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setUserid(String keyword) {
+        this.keyword = keyword;
     }
 }

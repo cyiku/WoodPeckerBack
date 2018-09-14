@@ -8,6 +8,8 @@ import com.woodpecker.security.JwtUser;
 import com.woodpecker.service.UserService;
 import com.woodpecker.util.JSONResult;
 import com.woodpecker.util.GetUser;
+
+import org.elasticsearch.index.mapper.SourceToParse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -241,6 +243,11 @@ public class CollectionController {
                         // 这里为什么又重新获取了一遍新的collection用于返回
                         normalCollectionList = userService.getAgencyCollection(user);
                         break;
+                    case "weibo":
+                        // 删除collection
+                        userService.delWeiboCollection(user,normalCollection);
+                        normalCollectionList = userService.getWeiboCollection(user);
+                        break;
                     case "chart":
                         userService.delChartCollection(user,normalCollection);
                         normalCollectionList = userService.getChartCollection(user);
@@ -270,9 +277,10 @@ public class CollectionController {
                 // 将新的消息转化类型后返回
                 result = new ArrayList<JSONObject>();
                 for (NormalCollection normal : normalCollectionList) {
-                    System.out.println(normal.getData());
+                    // System.out.println(normal.getData());
                     result.add(new JSONObject(normal.getData()));
                 }
+                System.out.println(result.size());
                 map.put("collection",result);
             }
         } catch (Exception e) {

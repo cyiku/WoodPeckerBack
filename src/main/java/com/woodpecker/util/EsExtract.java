@@ -36,7 +36,7 @@ public class EsExtract {
         int port = Integer.parseInt(stringPort);
         try {
             RestClient restClient = RestClient.builder(
-                new HttpHost(host, port, "http")).build();
+                new HttpHost(host, port, "http")).setMaxRetryTimeoutMillis(5*60*1000).build();
             RestHighLevelClient client =
                 new RestHighLevelClient(restClient);
             SearchRequest searchRequest = new SearchRequest("crawler"); 

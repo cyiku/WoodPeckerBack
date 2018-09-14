@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
     public List<Sentiment> polarityCount(String keyword,String dateStr) { return userDao.polarityCount(keyword, dateStr); }
     //endregion
 
-    public List<Topic> getClustering() { return userDao.getClustering(); }
+    public List<Topic> getClustering(String keyword) { return userDao.getClustering(keyword); }
 
     //region info
     public List<String> getInfo (String keywordName, String src) {
@@ -288,12 +288,12 @@ public class UserServiceImpl implements UserService {
         return userDao.getModifyPolarity(user);
     }
 
-    public Recommend getRecommend(User user){
-        return userDao.getRecommend(user);
+    public Recommend getRecommend(String keyword){
+        return userDao.getRecommend(keyword);
     }
 
-    public Integer delRecommend(Recommend recommend) {
-        return userDao.delRecommend(recommend);
+    public Integer delRecommend(User user, Recommend recommend) {
+        return userDao.delRecommend(user, recommend);
     }
 
     public List<Recommend> getDelRecommend(User user) {
